@@ -7,7 +7,11 @@
 
   var T = window.TEXTS;
   var M = window.Meishiki;
-  var PALETTE = ['#00514d', '#8a5a2b', '#3f5f86', '#9a4636', '#5f4f8a', '#4f6f3a', '#7a6420', '#2f6f7a'];
+  /* 色は五行で決める。値は style.css の .el-* の --c と同じ */
+  var STEM_EL = { '甲': 'wood', '乙': 'wood', '丙': 'fire', '丁': 'fire', '戊': 'earth',
+    '己': 'earth', '庚': 'metal', '辛': 'metal', '壬': 'water', '癸': 'water' };
+  var EL_COLOR = { wood: '#3a7d10', fire: '#c03a62', earth: '#946600', metal: '#8648ad', water: '#18709e' };
+  var BASE_COLOR = '#5d6675';
   var GOD_IMG = { '甲': 'tree', '乙': 'flower', '丙': 'sun', '丁': 'flame', '戊': 'mountain',
     '己': 'field', '庚': 'sword', '辛': 'jewel', '壬': 'sea', '癸': 'rain' };
   function godImg(dg, cls) {
@@ -140,7 +144,7 @@
     var curBand = null;
     nodes.forEach(function (nd) {
       var bi = bandOf(c.dayun, nd.row.year);
-      var color = PALETTE[(bi + PALETTE.length) % PALETTE.length];
+      var color = bi >= 0 ? EL_COLOR[STEM_EL[c.dayun[bi].gz.charAt(0)]] : BASE_COLOR;
       if (bi !== curBand) {
         curBand = bi;
         if (bi >= 0) {
@@ -155,8 +159,7 @@
       }
       html += yearNode(nd, color);
     });
-    var nextColor = '#76684d';
-    html += '<li class="tl-year tl-next" style="--c:' + nextColor + '"><div class="node">？</div>' +
+    html += '<li class="tl-year tl-next" style="--c:' + BASE_COLOR + '"><div class="node">？</div>' +
       '<h3>次の節目</h3><p class="tl-text">次に大きく動きやすい年を1つ、無料の会員登録でお見せします。</p>' +
       '<a class="mini-line" data-join href="#join">無料で会員登録</a></li>';
     html += '</ol>';
@@ -198,7 +201,7 @@
     var cards = order.map(function (k) {
       var gz = c.pillars[k], isDay = k === '日柱';
       var hide = c.hide[zk[k]] || [];
-      return '<article class="pcard' + (isDay ? ' is-day' : '') + '">' +
+      return '<article class="pcard el-' + STEM_EL[gz.charAt(0)] + (isDay ? ' is-day' : '') + '">' +
         '<p class="pcard-pos">' + term(k) + (isDay ? '<span class="me">あなた自身</span>' : '') + '</p>' +
         '<p class="pcard-gz">' + esc(gz) + '</p><p class="pcard-yomi">' + esc(M.yomi(gz)) + '</p>' +
         '<dl>' +
@@ -273,8 +276,8 @@
 
     return '<section class="sec" id="sec-aisho"><h2>' + esc(pname) + 'との相性</h2>' +
       '<p class="sec-lead">' + (rel === 'love' ? '恋愛' : '仕事') + 'の関係として見ています。</p>' +
-      '<div class="pair"><figure>' + godImg(me.type.dg, '') + '<figcaption>あなた<b>' + esc(me.type.title) + '</b></figcaption></figure>' +
-      '<figure>' + godImg(pt.type.dg, '') + '<figcaption>' + esc(pname) + '<b>' + esc(pt.type.title) + '</b></figcaption></figure></div>' +
+      '<div class="pair"><figure class="el-' + STEM_EL[me.type.dg] + '">' + godImg(me.type.dg, '') + '<figcaption>あなた<b>' + esc(me.type.title) + '</b></figcaption></figure>' +
+      '<figure class="el-' + STEM_EL[pt.type.dg] + '">' + godImg(pt.type.dg, '') + '<figcaption>' + esc(pname) + '<b>' + esc(pt.type.title) + '</b></figcaption></figure></div>' +
       '<p class="conclusion">' + esc(pname) + 'は、あなたにとって「' + esc(ab) + '」。' + esc(tail) + '</p>' +
       '<h3 style="margin-top:28px">いいこと</h3><ul class="goods">' +
       goods.map(function (g) { return '<li>' + esc(g) + '</li>'; }).join('') + '</ul>' +
@@ -302,7 +305,7 @@
     $('#toc').innerHTML = toc.map(function (t) { return '<a href="#sec-' + t[0] + '" data-sec="' + t[0] + '">' + t[1] + '</a>'; }).join('');
 
     var h = '';
-    h += '<section class="cover">' + godImg(ty.dg, 'cover-art') +
+    h += '<section class="cover"><div class="cover-fig">' + godImg(ty.dg, 'cover-art') + '</div>' +
       '<p class="cover-who">' + esc(who) + 'の生まれ</p>' +
       '<h1 class="cover-title">' + esc(ty.title) + '</h1>' +
       '<p class="cover-origin">日本神話では、<span class="nw">' + esc(ty.god) + '</span><wbr><span class="nw">（' + esc(ty.godYomi) + '）</span><wbr><span class="nw">にあたる生まれ</span></p>' +
@@ -379,6 +382,7 @@
       (me.note.length ? '（' + esc(me.note.join('、')) + '）' : '') + '</p>' +
       '<p><a href="#">入力し直す</a></p></footer>';
 
+    $('#report').className = 'el-' + STEM_EL[ty.dg];
     $('#report').innerHTML = h;
     $('#entry').hidden = true;
     SCREENS.forEach(function (id) { $('#' + id).hidden = true; });

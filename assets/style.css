@@ -1,16 +1,18 @@
-/* 配色・文字はフェリシモ「復刊リクエスト」を参考：生成りの紙＋こげ茶の文字＋深緑の強調。
-   見出しは明朝（秀英明朝の代わりに Shippori Mincho）、本文は角ゴシック（秀英角ゴシック銀の代わりに Zen Kaku Gothic New） */
+/* 配色・構成は神戸女学院大学「blooming」を参考：パステルの花の背景＋中央の白い列＋濃紺の強調。
+   色は五行（木・火・土・金・水）に1色ずつ割り当て、.el-* の --c（文字・線）と --t（色面）で使う。
+   見出しは明朝（秀英明朝の代わりに Shippori Mincho）、本文は角ゴシック（Zen Kaku Gothic New） */
 :root {
-  --page: #f3ecd9;
-  --bg: #faf5e6;
-  --paper: #fcfcfa;
-  --tint: #f1e9d4;
-  --text: #332405;
-  --sub: #5e4f33;
-  --faint: #76684d;
-  --rule: #d9ccae;
-  --green: #00514d;
-  --green-dark: #003e3b;
+  --bg: #fff;
+  --paper: #f4f6f9;
+  --tint: #eaeff6;
+  --text: #262a33;
+  --sub: #4b5361;
+  --faint: #636b79;
+  --rule: #d9dee6;
+  --navy: #0d315a;
+  --navy-dark: #082441;
+  --c: var(--navy);
+  --t: var(--tint);
   --line: #06c755;
   --serif: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
   --sans: 'Zen Kaku Gothic New', 'Hiragino Sans', 'Yu Gothic', sans-serif;
@@ -18,9 +20,15 @@
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+.el-wood { --c: #3a7d10; --t: #e6f4d2; }
+.el-fire { --c: #c03a62; --t: #fde6ec; }
+.el-earth { --c: #946600; --t: #fff1c7; }
+.el-metal { --c: #8648ad; --t: #f0e6fb; }
+.el-water { --c: #18709e; --t: #daf0fa; }
+
 body {
   margin: 0;
-  background: var(--page);
+  background: #fff url(img/bg_flowers.webp) center / cover no-repeat fixed;
   color: var(--text);
   font-family: var(--sans);
   font-size: 16px;
@@ -46,11 +54,15 @@ button { cursor: pointer; }
 .wrap { max-width: 480px; margin: 0 auto; min-height: 100vh; background: var(--bg); }
 
 /* ---------- 入口 ---------- */
-.entry { padding: 44px 24px 60px; }
-.brand { font-family: var(--serif); font-weight: 600; font-size: 19px; letter-spacing: .24em; color: var(--green); }
+.entry { padding: 0 24px 60px; }
+.entry-head { margin: 0 -24px; padding: 28px 16px 32px; background: #fff url(img/bg_flowers.webp) center / cover no-repeat fixed; }
+.hero-card { padding: 30px 22px 28px; background: #fff; border-radius: 24px; }
+.hero-card .lead { color: var(--text) !important; }
+.brand { font-family: var(--serif); font-weight: 600; font-size: 19px; letter-spacing: .24em; color: var(--navy); }
 .brand span { font-family: var(--sans); font-size: 12px; color: var(--faint); letter-spacing: .04em; margin-left: 2px; }
 .entry-head h1 {
-  margin-top: 30px;
+  margin-top: 22px;
+  color: var(--navy);
   font-family: var(--serif);
   font-weight: 600;
   font-size: 30px;
@@ -62,20 +74,27 @@ button { cursor: pointer; }
 .gods { margin-top: 40px; }
 .gods h2 { font-family: var(--serif); font-weight: 600; font-size: 21px; letter-spacing: .12em; word-break: keep-all; word-break: auto-phrase; }
 .gods-lead { margin-top: 8px; font-size: 14px; color: var(--sub); }
-.gods-grid { list-style: none; margin: 18px -12px 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px 0; }
-.gods-grid li { text-align: center; }
+.gods-grid { list-style: none; margin: 20px -14px 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.gods-grid li { padding: 10px 0 12px; background: var(--t); border-radius: 14px; text-align: center; }
+.gods-grid .el {
+  display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; margin: 0 auto 2px;
+  border-radius: 50%; background: var(--c); color: #fff; font-family: var(--serif); font-weight: 600; font-size: 15px; line-height: 1;
+}
+.gods-grid figure { margin: 0; }
+.gods-grid figure + figure { margin-top: 8px; }
 .gods-grid img { display: block; width: 100%; height: auto; }
-.gods-grid span { display: block; margin-top: 2px; font-family: var(--serif); font-weight: 600; font-size: 13px; letter-spacing: .04em; color: var(--text); white-space: nowrap; }
-.gods-grid small { display: block; font-size: 11px; line-height: 1.5; color: var(--sub); white-space: nowrap; letter-spacing: -.02em; }
+.gods-grid figcaption { font-family: var(--serif); font-weight: 600; font-size: 13px; line-height: 1.5; letter-spacing: .02em; color: var(--c); white-space: nowrap; }
+.gods-grid small { display: block; font-family: var(--sans); font-weight: 400; font-size: 10.5px; line-height: 1.5; color: var(--sub); white-space: nowrap; letter-spacing: -.04em; }
 
 .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 20px; }
-.pair figure { margin: 0; text-align: center; }
+.pair figure { margin: 0; padding: 8px 0 14px; background: var(--t); border-radius: 16px; text-align: center; }
 .pair img { display: block; width: 100%; height: auto; }
 .pair figcaption { font-size: 13px; color: var(--sub); }
-.pair figcaption b { display: block; font-family: var(--serif); font-weight: 600; font-size: 17px; color: var(--text); letter-spacing: .06em; word-break: keep-all; }
+.pair figcaption b { display: block; font-family: var(--serif); font-weight: 600; font-size: 17px; color: var(--c); letter-spacing: .06em; word-break: keep-all; }
 
 form { margin-top: 40px; }
-fieldset { border: 0; margin: 0 0 16px; padding: 26px 20px 8px; background: var(--paper); border-radius: 4px; }
+fieldset { border: 0; margin: 0 0 16px; padding: 26px 20px 8px; background: var(--paper); border-radius: 20px; }
+fieldset + fieldset { background: #f5eefb; }
 legend { float: left; width: 100%; padding: 0; margin-bottom: 16px; font-family: var(--serif); font-weight: 600; font-size: 21px; letter-spacing: .12em; }
 legend em, .label em { font-style: normal; font-family: var(--sans); font-weight: 400; font-size: 12px; color: var(--faint); letter-spacing: .04em; margin-left: 8px; }
 .hint { clear: both; color: var(--sub); font-size: 14px; margin-bottom: 16px; }
@@ -86,42 +105,47 @@ input:not([type]), input[type=text], input[type=email], input[type=time], select
   width: 100%;
   height: 50px;
   padding: 0 12px;
-  background: var(--bg);
+  background: #fff;
   border: 1px solid var(--rule);
-  border-radius: 4px;
+  border-radius: 12px;
   font-size: 16px;
   appearance: none;
   -webkit-appearance: none;
 }
-input::placeholder { color: #9a8c70; }
+input::placeholder { color: #8a93a3; }
 select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23332405'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23262a33'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 10px center;
   padding-right: 26px;
 }
-input:focus, select:focus { outline: 2px solid var(--green); outline-offset: 1px; }
+input:focus, select:focus { outline: 2px solid var(--navy); outline-offset: 1px; }
 .ymd { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 8px; }
 .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .seg label { position: relative; }
 .seg input { position: absolute; opacity: 0; inset: 0; }
 .seg span {
   display: flex; align-items: center; justify-content: center;
-  height: 50px; border-radius: 4px; background: var(--bg); border: 1px solid var(--rule); font-weight: 500;
+  height: 50px; border-radius: 999px; background: #fff; border: 1px solid var(--rule); font-weight: 500;
 }
-.seg input:checked + span { background: var(--green); border-color: var(--green); color: #fff; }
-.seg input:focus-visible + span { outline: 2px solid var(--green); outline-offset: 2px; }
+.seg input:checked + span { background: var(--navy); border-color: var(--navy); color: #fff; }
+.seg input:focus-visible + span { outline: 2px solid var(--navy); outline-offset: 2px; }
 .more { margin: -4px 0 18px; }
 .more summary { font-size: 14px; color: var(--sub); cursor: pointer; padding: 6px 0; }
 .more-body { padding-top: 12px; }
 .error { min-height: 1.7em; color: #a3361f; font-size: 14px; font-weight: 500; margin: 8px 0; }
 .submit {
-  width: 100%; height: 60px; border: 0; border-radius: 4px;
-  background: var(--green); color: #fff; font-size: 18px; font-weight: 700; letter-spacing: .12em;
+  position: relative; width: 100%; height: 62px; border: 0; border-radius: 999px;
+  background: var(--navy); color: #fff; font-size: 18px; font-weight: 700; letter-spacing: .12em;
 }
-.submit:hover { background: var(--green-dark); }
+/* 参考サイトの「丸の中の矢印」。押すと先へ進むボタンにだけ付ける */
+.submit::after, .line-btn::after, .mini-line::after {
+  content: ''; position: absolute; right: 12px; top: 50%; width: 30px; height: 30px; margin-top: -15px; border-radius: 50%;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='12'%3E%3Cpath d='M1.5 1l5 5-5 5' fill='none' stroke='%230d315a' stroke-width='2'/%3E%3C/svg%3E") center / 8px 12px no-repeat;
+}
+.submit:hover { background: var(--navy-dark); }
 .privacy { margin-top: 14px; font-size: 13px; color: var(--faint); }
-.sample-link { display: block; margin-top: 22px; text-align: center; font-size: 14px; color: var(--green); font-weight: 500; }
+.sample-link { display: block; margin-top: 22px; text-align: center; font-size: 14px; color: var(--navy); font-weight: 500; }
 
 /* ---------- 目次 ---------- */
 .result { padding-bottom: 112px; }
@@ -135,17 +159,23 @@ input:focus, select:focus { outline: 2px solid var(--green); outline-offset: 1px
   flex: none; padding: 6px 10px;
   color: var(--sub); font-size: 14px; font-weight: 500; text-decoration: none;
 }
-.toc a.on { color: var(--green); font-weight: 700; }
+.toc a.on { color: var(--navy); font-weight: 700; }
 
 /* ---------- 表紙 ---------- */
 img.cover-art, .gods-grid img, .pair img, img.photo { mix-blend-mode: multiply; }
-.cover { padding: 28px 26px 44px; background: var(--bg); text-align: center; }
-.cover-art { display: block; width: 240px; height: auto; margin: 0 auto 4px; }
+.cover { padding: 24px 24px 44px; background: var(--bg); text-align: center; }
+.cover-fig { margin: 0 auto; padding-top: 12px; background: var(--t); border-radius: 28px; }
+.cover-art { display: block; width: 240px; height: auto; margin: 0 auto; }
 .cover-only { text-align: left; }
-.cover-who { font-family: var(--serif); font-size: 15px; letter-spacing: .12em; color: var(--sub); }
-.cover-title { margin-top: 16px; font-family: var(--serif); font-weight: 600; font-size: 44px; line-height: 1.35; letter-spacing: .12em; }
+/* 参考サイトの名前のリボン。人物（神）の名札としてここだけで使う */
+.cover-who {
+  display: inline-block; margin-top: -22px; padding: 6px 30px; position: relative;
+  background: var(--c); color: #fff; font-family: var(--serif); font-weight: 600; font-size: 15px; letter-spacing: .12em;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 50%, 100% 100%, 0 100%, 12px 50%);
+}
+.cover-title { margin-top: 14px; font-family: var(--serif); font-weight: 600; font-size: 44px; line-height: 1.35; letter-spacing: .12em; color: var(--c); }
 .cover-origin { margin-top: 14px; font-size: 15px; color: var(--sub); }
-.cover-only { margin-top: 28px; padding: 18px 20px; background: var(--paper); border-radius: 4px; font-size: 15px; }
+.cover-only { margin-top: 28px; padding: 18px 20px; background: var(--paper); border-radius: 16px; font-size: 15px; }
 .nw { white-space: nowrap; }
 .cover-meta { margin-top: 18px; font-size: 13px; color: var(--faint); }
 
@@ -181,7 +211,7 @@ img.cover-art, .gods-grid img, .pair img, img.photo { mix-blend-mode: multiply; 
 .tl-more { margin-top: 8px; font-size: 15px; color: var(--sub); }
 .hit { display: flex; gap: 8px; margin-top: 16px; }
 .hit button {
-  flex: 1; height: 46px; border-radius: 4px; border: 1px solid var(--rule); background: var(--paper);
+  flex: 1; height: 46px; border-radius: 999px; border: 1px solid var(--rule); background: #fff;
   font-size: 15px; font-weight: 700; color: var(--sub);
 }
 .hit button[aria-pressed=true] { background: var(--c); border-color: var(--c); color: #fff; }
@@ -189,20 +219,21 @@ img.cover-art, .gods-grid img, .pair img, img.photo { mix-blend-mode: multiply; 
 .tl-next .node { border-style: dashed; color: var(--faint); border-color: var(--faint); }
 .tl-next { border-left-color: transparent !important; }
 .tl-next h3 { color: var(--sub); }
-.tally { margin-top: 20px; padding: 16px 18px; background: var(--paper); border-radius: 4px; font-size: 16px; }
-.tally b { font-family: var(--serif); font-size: 26px; color: var(--green); margin: 0 3px; }
+.tally { margin-top: 20px; padding: 16px 18px; background: var(--paper); border-radius: 16px; font-size: 16px; }
+.tally b { font-family: var(--serif); font-size: 26px; color: var(--navy); margin: 0 3px; }
 .mini-line {
-  display: inline-block; margin-top: 14px; padding: 9px 18px; border-radius: 4px;
-  background: var(--green); color: #fff; font-size: 15px; font-weight: 700; text-decoration: none;
+  position: relative; display: inline-block; margin-top: 14px; padding: 10px 52px 10px 22px; border-radius: 999px;
+  background: var(--navy); color: #fff; font-size: 15px; font-weight: 700; text-decoration: none;
 }
 
 /* ---------- 命式 ---------- */
 .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 26px -8px 0; }
 @media (max-width: 359px) { .cards { grid-template-columns: 1fr; } }
-.pcard { min-width: 0; padding: 16px 14px 14px; background: var(--paper); border-radius: 4px; }
-.pcard.is-day { background: color-mix(in srgb, var(--green) 7%, var(--paper)); }
+.pcard { min-width: 0; padding: 16px 14px 14px; background: var(--t); border-radius: 16px; }
+.pcard.is-day { box-shadow: inset 0 0 0 2px var(--c); }
+.pcard-gz { color: var(--c); }
 .pcard-pos { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--sub); }
-.pcard-pos .me { font-size: 13px; color: var(--green); font-weight: 700; }
+.pcard-pos .me { font-size: 13px; color: var(--c); font-weight: 700; }
 .pcard-gz { margin-top: 4px; font-family: var(--serif); font-weight: 600; font-size: 44px; line-height: 1.25; letter-spacing: .08em; }
 .pcard-yomi { font-size: 13px; color: var(--sub); }
 .pcard dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; margin: 14px 0 0; font-size: 14px; }
@@ -211,18 +242,18 @@ img.cover-art, .gods-grid img, .pair img, img.photo { mix-blend-mode: multiply; 
 .pcard dd { margin: 0; font-weight: 500; }
 .term {
   padding: 0; border: 0; background: none; color: inherit; font-weight: inherit;
-  text-decoration: underline dotted; text-underline-offset: 4px; text-decoration-color: #a8987a;
+  text-decoration: underline dotted; text-underline-offset: 4px; text-decoration-color: #8a93a3;
 }
-.term-box { margin-top: 14px; padding: 14px 18px; background: var(--tint); border-radius: 4px; font-size: 15px; }
-.term-box b { color: var(--green); margin-right: 8px; }
+.term-box { margin-top: 14px; padding: 14px 18px; background: var(--tint); border-radius: 16px; font-size: 15px; }
+.term-box b { color: var(--navy); margin-right: 8px; }
 .swipe-hint { margin-top: 8px; font-size: 13px; color: var(--faint); }
 
 /* ---------- 性格 ---------- */
 .flip {
   display: block; width: 100%; margin-top: 24px; padding: 24px 22px; text-align: left;
-  border: 0; border-radius: 4px; background: var(--paper); line-height: 1.9;
+  border: 0; border-radius: 16px; background: var(--paper); line-height: 1.9;
 }
-.flip[aria-pressed=true] { background: var(--green); color: #fff; }
+.flip[aria-pressed=true] { background: var(--navy); color: #fff; }
 .flip-label { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--serif); font-weight: 600; font-size: 21px; letter-spacing: .1em; }
 .flip-label small { font-family: var(--sans); font-weight: 400; font-size: 13px; letter-spacing: .04em; opacity: .75; }
 .flip-text { display: block; margin-top: 12px; font-size: 16px; }
@@ -241,44 +272,45 @@ img.cover-art, .gods-grid img, .pair img, img.photo { mix-blend-mode: multiply; 
 .star-row .nm { font-weight: 700; }
 .star-row .nm small { font-weight: 400; color: var(--sub); font-size: 14px; margin-left: 8px; }
 .dots { display: flex; gap: 4px; }
-.dots i { width: 18px; height: 18px; border-radius: 2px; background: #e6dcc4; }
-.dots i.on { background: var(--green); }
-.star-row.top .nm { color: var(--green); }
+.dots i { width: 18px; height: 18px; border-radius: 50%; background: #e3e7ee; }
+.dots i.on { background: var(--c); }
+.star-row.top .nm { color: var(--c); }
 
 /* ---------- 九星 ---------- */
 .kyu { margin-top: 24px; display: grid; gap: 12px; }
-.kyu div { padding: 18px 20px; background: var(--paper); border-radius: 4px; }
+.kyu div { padding: 18px 20px; background: var(--paper); border-radius: 16px; }
 .kyu .k-label { font-size: 14px; color: var(--sub); }
 .kyu .k-name { font-family: var(--serif); font-weight: 600; font-size: 25px; letter-spacing: .1em; margin-top: 2px; }
 .kyu .k-text { margin-top: 6px; font-size: 16px; }
 
 /* ---------- まとめ ---------- */
-.summary { margin-top: 60px; padding: 52px 26px; background: var(--green); color: #fff; scroll-margin-top: 52px; }
-.summary h2 { font-family: var(--serif); font-weight: 600; font-size: 28px; letter-spacing: .12em; }
+.summary { margin: 60px 12px 0; padding: 48px 22px; background: var(--t); border-radius: 28px; scroll-margin-top: 52px; }
+.summary h2 { font-family: var(--serif); font-weight: 600; font-size: 28px; letter-spacing: .12em; color: var(--c); }
+.summary .big { color: var(--c); }
 .summary p { margin-top: 18px; font-size: 16px; }
 .summary .big { font-family: var(--serif); font-weight: 600; font-size: 27px; line-height: 1.6; letter-spacing: .1em; }
 
 /* ---------- 相性 ---------- */
 .conclusion { margin-top: 22px; font-family: var(--serif); font-weight: 600; font-size: 22px; line-height: 1.75; letter-spacing: .06em; }
 .goods { margin: 18px 0 0; padding: 0; list-style: none; display: grid; gap: 12px; }
-.goods li { padding: 16px 18px; background: var(--paper); border-radius: 4px; font-size: 16px; }
+.goods li { padding: 16px 18px; background: var(--paper); border-radius: 16px; font-size: 16px; }
 .caution { margin-top: 12px; font-size: 13px; color: var(--faint); }
 
 /* ---------- 鍵付き ---------- */
-.locked { margin-top: 22px; padding: 24px 22px; background: var(--paper); border-radius: 4px; }
+.locked { margin-top: 22px; padding: 24px 22px; background: var(--paper); border-radius: 16px; }
 .locked h3 { font-size: 20px; }
 .locked ul { margin: 12px 0 0; padding-left: 1.2em; color: var(--sub); }
 .locked .price { margin-top: 16px; font-size: 16px; }
-.locked .price b { font-family: var(--serif); font-size: 24px; color: var(--green); }
+.locked .price b { font-family: var(--serif); font-size: 24px; color: var(--navy); }
 .locked .note { margin-top: 6px; font-size: 13px; color: var(--faint); }
 
 .foot { padding: 44px 24px 20px; font-size: 13px; color: var(--faint); }
-.foot a { color: var(--green); font-weight: 500; }
+.foot a { color: var(--navy); font-weight: 500; }
 .foot p + p { margin-top: 10px; }
 
 /* ---------- 会員登録 ---------- */
 .join { padding: 20px 24px 60px; }
-.join .back { display: inline-block; padding: 8px 0; font-size: 14px; font-weight: 500; color: var(--green); }
+.join .back { display: inline-block; padding: 8px 0; font-size: 14px; font-weight: 500; color: var(--navy); }
 .join .brand { margin-top: 24px; }
 .join h1 { margin-top: 14px; font-family: var(--serif); font-weight: 600; font-size: 30px; line-height: 1.5; letter-spacing: .1em; }
 .join .lead { margin-top: 14px; font-size: 15px; color: var(--sub); }
@@ -286,12 +318,12 @@ img.cover-art, .gods-grid img, .pair img, img.photo { mix-blend-mode: multiply; 
 .pv {
   position: relative;
   display: flex; align-items: center; justify-content: center; width: 100%; height: 54px;
-  border: 1px solid transparent; border-radius: 4px; font-size: 16px; font-weight: 700; letter-spacing: .06em;
+  border: 1px solid transparent; border-radius: 999px; font-size: 16px; font-weight: 700; letter-spacing: .06em;
 }
 .pv-line { background: var(--line); color: #fff; }
 .pv-google { background: #fff; color: #1f1f1f; border-color: #747775; }
 .pv-apple { background: #000; color: #fff; }
-.pv-mail { margin-top: 10px; background: var(--green); color: #fff; }
+.pv-mail { margin-top: 10px; background: var(--navy); color: #fff; }
 .pv { gap: 10px; }
 .pv-logo { flex: none; width: 22px; height: 22px; }
 .pv-line .pv-logo { width: 28px; height: 28px; margin-right: -2px; }
@@ -301,14 +333,14 @@ img.cover-art, .gods-grid img, .pair img, img.photo { mix-blend-mode: multiply; 
 .mail .label { margin-bottom: 8px; }
 .pv-last {
   position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-  padding: 2px 8px; border-radius: 4px; background: #fff; color: var(--text);
+  padding: 2px 8px; border-radius: 999px; background: #fff; color: var(--text);
   font-size: 12px; font-weight: 700; letter-spacing: .04em;
 }
 .pv-google .pv-last { background: var(--tint); }
-.pv-main { background: var(--green); color: #fff; }
+.pv-main { background: var(--navy); color: #fff; }
 .pv-sub { background: var(--paper); color: var(--text); border-color: var(--rule); }
-.save-note { margin-top: 18px; padding: 14px 16px; background: var(--paper); border-radius: 4px; font-size: 14px; }
-.recover-link { display: inline-block; margin-top: 22px; font-size: 14px; font-weight: 500; color: var(--green); }
+.save-note { margin-top: 18px; padding: 14px 16px; background: var(--paper); border-radius: 16px; font-size: 14px; }
+.recover-link { display: inline-block; margin-top: 22px; font-size: 14px; font-weight: 500; color: var(--navy); }
 .join .lead b { color: var(--text); }
 .join .lead, .join-notes, .save-note { word-break: keep-all; word-break: auto-phrase; overflow-wrap: anywhere; }
 .separate { margin-top: 36px; font-size: 14px; color: var(--sub); }
@@ -325,13 +357,13 @@ img.cover-art, .gods-grid img, .pair img, img.photo { mix-blend-mode: multiply; 
   border-top: 1px solid var(--rule);
 }
 .line-btn {
-  display: flex; align-items: center; justify-content: center;
-  max-width: 448px; height: 54px; margin: 0 auto; border-radius: 4px;
-  background: var(--green); color: #fff; font-weight: 700; font-size: 17px; letter-spacing: .08em; text-decoration: none;
+  position: relative; display: flex; align-items: center; justify-content: center;
+  max-width: 448px; height: 56px; margin: 0 auto; border-radius: 999px;
+  background: var(--navy); color: #fff; font-weight: 700; font-size: 17px; letter-spacing: .08em; text-decoration: none;
 }
 .toast {
   position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); z-index: 30;
-  padding: 10px 16px; border-radius: 4px; background: var(--text); color: var(--bg); font-size: 14px;
+  padding: 10px 16px; border-radius: 999px; background: var(--text); color: var(--bg); font-size: 14px;
 }
 
 @media (min-width: 720px) {
