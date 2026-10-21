@@ -62,8 +62,25 @@ button { cursor: pointer; }
 .entry-head {
   display: flex; flex-direction: column;
   margin: 0 -24px; min-height: min(100svh, 820px); padding: 28px 24px 40px;
-  background: #0e0f0e url(img/bg_yama.webp) 52% 70% / cover no-repeat;
+  position: relative; overflow: hidden; isolation: isolate;
+  background: #0e0f0e;
   color: #f4efe4;
+}
+.entry-head::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: url(img/bg_yama.webp) 52% 70% / cover no-repeat;
+  animation: hero-bg 3.2s ease-out both;
+}
+.entry-head h1 span { display: block; animation: hero-write 1.4s cubic-bezier(.55,0,.25,1) both; }
+.entry-head h1 span:nth-child(1) { animation-delay: .6s; }
+.entry-head h1 span:nth-child(2) { animation-delay: 1.5s; }
+.entry-head h1 span:nth-child(3) { animation-delay: 2.6s; }
+.entry-head .brand, .entry-head .lead { animation: hero-fade 1.2s ease-out 3.4s both; }
+@keyframes hero-bg { from { opacity: 0; transform: scale(1.08); } to { opacity: 1; transform: none; } }
+@keyframes hero-write { from { clip-path: inset(0 0 100% 0); opacity: .3; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
+@keyframes hero-fade { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .entry-head::before, .entry-head h1 span, .entry-head .brand, .entry-head .lead { animation: none; }
 }
 .hero-card { display: contents; }
 .brand { font-family: var(--serif); font-weight: 600; font-size: 19px; letter-spacing: .24em; color: var(--navy); }
@@ -71,7 +88,7 @@ button { cursor: pointer; }
 .entry-head h1 {
   align-self: center; margin: auto 0;
   writing-mode: vertical-rl;
-  font-family: var(--display); font-weight: 400; font-size: 32px; line-height: 1.9; letter-spacing: .26em;
+  font-family: var(--display); font-weight: 400; font-size: 30px; line-height: 2.1; letter-spacing: .2em;
   color: #f4efe4;
 }
 .entry-head .lead { margin-top: 32px; color: #ebe6da; font-size: 15px; line-height: 2; }
