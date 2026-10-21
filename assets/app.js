@@ -10,8 +10,8 @@
   /* 色は五行で決める。値は style.css の .el-* の --c と同じ */
   var STEM_EL = { '甲': 'wood', '乙': 'wood', '丙': 'fire', '丁': 'fire', '戊': 'earth',
     '己': 'earth', '庚': 'metal', '辛': 'metal', '壬': 'water', '癸': 'water' };
-  var EL_COLOR = { wood: '#3a7d10', fire: '#c03a62', earth: '#946600', metal: '#8648ad', water: '#18709e' };
-  var BASE_COLOR = '#5d6675';
+  var EL_COLOR = { wood: '#a9c98a', fire: '#ea9888', earth: '#dcb766', metal: '#c3b2de', water: '#8dbde3' };
+  var BASE_COLOR = '#a29b8c';
   var GOD_IMG = { '甲': 'tree', '乙': 'flower', '丙': 'sun', '丁': 'flame', '戊': 'mountain',
     '己': 'field', '庚': 'sword', '辛': 'jewel', '壬': 'sea', '癸': 'rain' };
   function godImg(dg, cls) {
@@ -183,7 +183,7 @@
       '<div class="node">' + (past ? r.year : '今年') + '</div>' +
       '<h3>' + esc(title) + '</h3>' +
       '<p class="tl-period">' + esc(r.period) + '（' + esc(r.age) + '）</p>';
-    if (ev) h += '<img class="photo" src="assets/img/ev_' + k + '.webp" alt="' + esc(ev.photo) + 'の絵" width="900" height="675" loading="lazy">';
+    if (ev) h += '<div class="photo-wrap"><img class="photo" src="assets/img/ev_' + k + '.webp" alt="' + esc(ev.photo) + 'の絵" width="900" height="675" loading="lazy"></div>';
     h += '<p class="tl-text">' + esc(ev ? ev[past ? 'pastText' : 'nowText'] : T.quietYear) + '</p>';
     more.forEach(function (t) { h += '<p class="tl-more">' + esc(t) + '</p>'; });
     if (past) {
