@@ -4,6 +4,7 @@ const CFG = window.HIYOMI_FIREBASE;
 const SDK = 'https://www.gstatic.com/firebasejs/10.14.1/';
 const KEY_MAIL = 'hiyomi:mailForLink';
 const KEY_PENDING_LINK = 'hiyomi:pendingForLink';
+const KEY_PENDING_REDIRECT = 'hiyomi:pendingForRedirect';
 
 if (CFG) {
   const { initializeApp } = await import(SDK + 'firebase-app.js');
@@ -74,15 +75,34 @@ if (CFG) {
     location.hash = '#mypage';
   }
 
+  /* LINE は Identity Platform の OIDC プロバイダ（ID は firebase-config.js の lineProviderId、既定 oidc.line） */
+  const LINE_ID = CFG.lineProviderId || 'oidc.line';
+  const providerFor = (p) => {
+    if (p === 'google') return new A.GoogleAuthProvider();
+    const line = new A.OAuthProvider(LINE_ID);
+    ['openid', 'profile', 'email'].forEach((s) => line.addScope(s));
+    return line;
+  };
+
   window.HiyomiAuth = {
-    can: (p) => p === 'google' || p === 'email',
+    can: (p) => p === 'google' || p === 'email' || (p === 'line' && CFG.line !== false),
     isReady: () => ready,
     user: () => auth.currentUser,
     readings,
     async signIn(p, pendingHash) {
-      if (p !== 'google') throw new Error('unsupported');
-      const res = await A.signInWithPopup(auth, new A.GoogleAuthProvider());
-      await afterSignIn(res.user, 'google', pendingHash);
+      if (p !== 'google' && p !== 'line') throw new Error('unsupported');
+      try {
+        const res = await A.signInWithPopup(auth, providerFor(p));
+        await afterSignIn(res.user, p, pendingHash);
+      } catch (e) {
+        /* アプリ内ブラウザなど小窓が開けないときは、画面ごと移ってログインする */
+        if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment')) {
+          try { localStorage.setItem(KEY_PENDING_REDIRECT, JSON.stringify({ p, hash: pendingHash || '' })); } catch (err) { /* 戻ってから保存できないだけ */ }
+          await A.signInWithRedirect(auth, providerFor(p));
+          return;
+        }
+        throw e;
+      }
     },
     async sendLink(email, pendingHash) {
       await A.sendSignInLinkToEmail(auth, email, {
@@ -117,6 +137,19 @@ if (CFG) {
     } catch (e) {
       history.replaceState(null, '', location.pathname + '#join');
       document.dispatchEvent(new CustomEvent('hiyomi:authError', { detail: 'link' }));
+    }
+  }
+
+  /* 画面ごと移ってログインし、戻ってきたとき */
+  let pendingRedirect = null;
+  try { pendingRedirect = JSON.parse(localStorage.getItem(KEY_PENDING_REDIRECT) || 'null'); } catch (e) { /* 戻り先の鑑定書を保存しないだけ */ }
+  if (pendingRedirect) {
+    try { localStorage.removeItem(KEY_PENDING_REDIRECT); } catch (e) { /* 次回もう一度読むだけ */ }
+    try {
+      const res = await A.getRedirectResult(auth);
+      if (res) await afterSignIn(res.user, pendingRedirect.p, pendingRedirect.hash);
+    } catch (e) {
+      document.dispatchEvent(new CustomEvent('hiyomi:authError', { detail: e && e.code === 'auth/account-exists-with-different-credential' ? 'exists' : 'login' }));
     }
   }
 

@@ -434,6 +434,11 @@
 
   /* ---------- 共通 ---------- */
   var PROVIDER = { line: 'LINE', google: 'Google', apple: 'Apple', email: 'メールアドレス' };
+  var AUTH_ERROR = {
+    link: 'リンクの期限が切れたか、使用済みです。もう一度お送りください',
+    exists: 'このメールアドレスは、別の方法で登録済みです。前回と同じ方法でログインしてください',
+    login: 'ログインできませんでした。もう一度お試しください'
+  };
   var SCREENS = ['entry', 'join', 'found', 'recover', 'mypage'];
   /* member.js（Firebase）がログイン状態を知らせてくる。設定が空なら null のまま */
   var authUser = null;
@@ -455,10 +460,11 @@
     markLastProvider();
     var A = window.HiyomiAuth;
     if (!A) { toast('ログインは準備中です'); return; }
-    if (!A.can(p)) { toast(PROVIDER[p] + 'は準備中です。Googleかメールでどうぞ'); return; }
+    if (!A.can(p)) { toast(PROVIDER[p] + 'は準備中です。ほかの方法でどうぞ'); return; }
     A.signIn(p, store('session', KEY_PENDING) || '').catch(function (e) {
-      if (e && /popup-closed|cancelled-popup/.test(e.code || '')) return;
-      toast('ログインできませんでした。もう一度お試しください');
+      var code = (e && e.code) || '';
+      if (/popup-closed|cancelled-popup/.test(code)) return;
+      toast(code === 'auth/account-exists-with-different-credential' ? AUTH_ERROR.exists : AUTH_ERROR.login);
     });
   }
 
@@ -523,8 +529,8 @@
     $('.line-btn').textContent = authUser ? '会員ページに保存する' : '無料の会員登録で続きを見る';
     if (!$('#mypage').hidden) renderMypage();
   });
-  document.addEventListener('hiyomi:authError', function () {
-    toast('リンクの期限が切れたか、使用済みです。もう一度お送りください');
+  document.addEventListener('hiyomi:authError', function (e) {
+    toast(AUTH_ERROR[e.detail] || AUTH_ERROR.login);
   });
 
   function markLastProvider() {
