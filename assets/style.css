@@ -57,43 +57,23 @@ button { cursor: pointer; }
 .wrap { max-width: 480px; margin: 0 auto; min-height: 100vh; background: var(--bg); }
 
 /* ---------- 入口 ---------- */
-.entry { padding: 0 24px 60px; }
-/* FV：霧の山の写真に縦書きの見出し（BYAKU 寄せ） */
-.entry-head {
-  display: flex; flex-direction: column;
-  margin: 0 -24px; min-height: min(100svh, 820px); padding: 28px 24px 40px;
-  position: relative; overflow: hidden; isolation: isolate;
-  background: #0e0f0e;
-  color: #f4efe4;
-}
-.entry-head::before {
-  content: ""; position: absolute; inset: 0; z-index: -1;
-  background: url(img/bg_yama.webp) 52% 70% / cover no-repeat;
-  animation: hero-bg 3.2s ease-out both;
-}
-.entry-head h1 span { display: block; animation: hero-write 1.4s cubic-bezier(.55,0,.25,1) both; }
-.entry-head h1 span:nth-child(1) { animation-delay: .6s; }
-.entry-head h1 span:nth-child(2) { animation-delay: 1.5s; }
-.entry-head h1 span:nth-child(3) { animation-delay: 2.6s; }
-.entry-head .brand, .entry-head .lead { animation: hero-fade 1.2s ease-out 3.4s both; }
-@keyframes hero-bg { from { opacity: 0; transform: scale(1.08); } to { opacity: 1; transform: none; } }
-@keyframes hero-write { from { clip-path: inset(0 0 100% 0); opacity: .3; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
-@keyframes hero-fade { from { opacity: 0; } to { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) {
-  .entry-head::before, .entry-head h1 span, .entry-head .brand, .entry-head .lead { animation: none; }
-}
-.hero-card { display: contents; }
+.entry { padding: 44px 24px 60px; }
 .brand { font-family: var(--serif); font-weight: 600; font-size: 19px; letter-spacing: .24em; color: var(--navy); }
-.entry-head .brand { font-weight: 500; font-size: 18px; letter-spacing: .32em; color: #f4efe4; }
 .entry-head h1 {
-  align-self: center; margin: auto 0;
-  writing-mode: vertical-rl;
-  font-family: var(--display); font-weight: 400; font-size: 30px; line-height: 2.1; letter-spacing: .2em;
-  color: #f4efe4;
+  margin-top: 30px;
+  font-family: var(--serif); font-weight: 600; font-size: 30px; line-height: 1.6; letter-spacing: .1em;
 }
-.entry-head .lead { margin-top: 32px; color: #ebe6da; font-size: 15px; line-height: 2; }
+.entry-head h1 span { display: block; animation: hero-in 1s ease-out both; }
+.entry-head h1 span:nth-child(1) { animation-delay: .2s; }
+.entry-head h1 span:nth-child(2) { animation-delay: .6s; }
+.entry-head h1 span:nth-child(3) { animation-delay: 1s; }
+.entry-head .lead { margin-top: 20px; color: var(--sub); font-size: 15px; line-height: 1.9; animation: hero-in 1s ease-out 1.4s both; }
+@keyframes hero-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .entry-head h1 span, .entry-head .lead { animation: none; }
+}
 
-.gods { margin-top: 48px; }
+.gods { margin-top: 40px; }
 .gods h2 { font-family: var(--serif); font-weight: 600; font-size: 21px; letter-spacing: .12em; word-break: keep-all; word-break: auto-phrase; }
 .gods-lead { margin-top: 8px; font-size: 14px; color: var(--sub); }
 .gods-grid { list-style: none; margin: 20px -14px 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
