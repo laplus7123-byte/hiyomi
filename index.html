@@ -46,7 +46,7 @@
     <fieldset>
       <legend>あなた</legend>
       <label class="field">
-        <span class="label">お名前<em>任意</em></span>
+        <span class="label">お名前</span>
         <input name="n" maxlength="20" placeholder="例：山田 花子" autocomplete="name">
       </label>
       <div class="field">
@@ -65,20 +65,17 @@
         </div>
         <small>10年ごとの流れの向きが、性別で変わります。</small>
       </div>
-      <details class="more">
-        <summary>生まれた時刻がわかる方（任意）</summary>
-        <div class="more-body">
-          <label class="field">
-            <span class="label">生まれた時刻</span>
-            <input type="time" name="t">
-          </label>
-          <label class="field">
-            <span class="label">生まれた都道府県</span>
-            <select name="p"><option value="">選ばない</option></select>
-          </label>
-          <small>時刻を入れると、命式に4つ目の柱（時柱）が加わります。タイプは変わりません。</small>
-        </div>
-      </details>
+      <div class="more">
+        <label class="field">
+          <span class="label">生まれた時刻<em>任意</em></span>
+          <input type="time" name="t">
+        </label>
+        <label class="field">
+          <span class="label">生まれた都道府県<em>任意</em></span>
+          <select name="p"><option value="">選ばない</option></select>
+        </label>
+        <small>時刻を入れると、命式に4つ目の柱（時柱）が加わります。タイプは変わりません。</small>
+      </div>
     </fieldset>
 
     <fieldset>
@@ -97,19 +94,19 @@
         </div>
       </div>
       <div class="field">
-        <span class="label">性別</span>
+        <span class="label">性別<em>任意</em></span>
         <div class="seg">
           <label><input type="radio" name="ps" value="M"><span>男性</span></label>
           <label><input type="radio" name="ps" value="F"><span>女性</span></label>
         </div>
       </div>
       <div class="field">
-        <span class="label">見たい関係</span>
+        <span class="label">見たい関係<em>任意</em></span>
         <div class="seg">
           <label><input type="radio" name="r" value="love"><span>恋愛</span></label>
           <label><input type="radio" name="r" value="work"><span>仕事</span></label>
         </div>
-        <small>上司・部下などの肩書きは聞きません。命式から本来の役割を出します。</small>
+        <small>選ばないときは恋愛で見ます。上司・部下などの肩書きは聞きません。命式から本来の役割を出します。</small>
       </div>
     </fieldset>
 

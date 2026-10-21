@@ -79,13 +79,14 @@
   function onSubmit(ev) {
     ev.preventDefault();
     var f = ev.target, err = $('#err');
+    if (!f.n.value.trim()) return fail('お名前を入れてください。');
     var me = ymdOf(f, 'y', 'm', 'd');
     if (!me) return fail('あなたの生年月日を、年・月・日まで選んでください。');
     var s = radio(f, 's');
     if (!s) return fail('あなたの性別を選んでください。');
     if (me > todayStr()) return fail('生年月日が今日より後になっています。');
     var q = new URLSearchParams();
-    if (f.n.value.trim()) q.set('n', f.n.value.trim());
+    q.set('n', f.n.value.trim());
     q.set('d', me);
     q.set('s', s);
     if (f.t.value) { q.set('t', f.t.value); if (f.p.value) q.set('p', f.p.value); }
@@ -93,10 +94,10 @@
     if (pd === null) return fail('気になる人の生年月日を、年・月・日まで選んでください。');
     if (pd) {
       var ps = radio(f, 'ps'), r = radio(f, 'r');
-      if (!ps) return fail('気になる人の性別を選んでください。');
-      if (!r) return fail('見たい関係（恋愛／仕事）を選んでください。');
       if (pd > todayStr()) return fail('気になる人の生年月日が今日より後になっています。');
-      q.set('pd', pd); q.set('ps', ps); q.set('r', r);
+      q.set('pd', pd);
+      if (ps) q.set('ps', ps);
+      q.set('r', r || 'love');
       if (f.pn.value.trim()) q.set('pn', f.pn.value.trim());
     }
     err.textContent = '';
