@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>HIYOMI｜生まれた日から、人生が動いた年を当てる</title>
+<meta name="description" content="名前と生年月日だけで、これまでの転機の年と今年の流れを無料で。四柱推命をもとにした自己分析。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<main id="entry" class="wrap entry">
+  <header class="entry-head">
+    <p class="brand">HIYOMI</p>
+    <h1>生まれた日から、<br>あなたの人生が<wbr>動いた年を<wbr>当てます。</h1>
+    <p class="lead">名前と生年月日だけで、これまでの転機の年と、今年の流れを無料でお見せします。四柱推命の計算をもとにしています。</p>
+  </header>
+
+  <section class="gods" aria-labelledby="gods-h">
+    <h2 id="gods-h">あなたは、どの神の生まれ？</h2>
+    <p class="gods-lead">生まれた日で、10の神のどれかが決まります。</p>
+    <ul class="gods-grid">
+      <li><img src="assets/img/kami_tree.webp" alt="" width="480" height="640" loading="lazy"><span>大樹神</span><small>久久能智神</small></li>
+      <li><img src="assets/img/kami_flower.webp" alt="" width="480" height="640" loading="lazy"><span>草花神</span><small>木花咲耶姫</small></li>
+      <li><img src="assets/img/kami_sun.webp" alt="" width="480" height="640" loading="lazy"><span>太陽神</span><small>天照大御神</small></li>
+      <li><img src="assets/img/kami_flame.webp" alt="" width="480" height="640" loading="lazy"><span>灯火神</span><small>火之迦具土神</small></li>
+      <li><img src="assets/img/kami_mountain.webp" alt="" width="480" height="640" loading="lazy"><span>山神</span><small>大山津見神</small></li>
+      <li><img src="assets/img/kami_field.webp" alt="" width="480" height="640" loading="lazy"><span>田畑神</span><small>宇迦之御魂神</small></li>
+      <li><img src="assets/img/kami_sword.webp" alt="" width="480" height="640" loading="lazy"><span>剣神</span><small>経津主神</small></li>
+      <li><img src="assets/img/kami_jewel.webp" alt="" width="480" height="640" loading="lazy"><span>宝石神</span><small>玉祖命</small></li>
+      <li><img src="assets/img/kami_sea.webp" alt="" width="480" height="640" loading="lazy"><span>大海神</span><small>綿津見神</small></li>
+      <li><img src="assets/img/kami_rain.webp" alt="" width="480" height="640" loading="lazy"><span>雨神</span><small>罔象女神</small></li>
+    </ul>
+  </section>
+
+  <form id="form" novalidate>
+    <fieldset>
+      <legend>あなた</legend>
+      <label class="field">
+        <span class="label">お名前<em>任意</em></span>
+        <input name="n" maxlength="20" placeholder="例：山田 花子" autocomplete="name">
+      </label>
+      <div class="field">
+        <span class="label">生年月日</span>
+        <div class="ymd" data-ymd="me">
+          <select name="y" aria-label="生まれた年"></select>
+          <select name="m" aria-label="生まれた月"></select>
+          <select name="d" aria-label="生まれた日"></select>
+        </div>
+      </div>
+      <div class="field">
+        <span class="label">性別</span>
+        <div class="seg">
+          <label><input type="radio" name="s" value="M"><span>男性</span></label>
+          <label><input type="radio" name="s" value="F"><span>女性</span></label>
+        </div>
+        <small>10年ごとの流れの向きが、性別で変わります。</small>
+      </div>
+      <details class="more">
+        <summary>生まれた時刻がわかる方（任意）</summary>
+        <div class="more-body">
+          <label class="field">
+            <span class="label">生まれた時刻</span>
+            <input type="time" name="t">
+          </label>
+          <label class="field">
+            <span class="label">生まれた都道府県</span>
+            <select name="p"><option value="">選ばない</option></select>
+          </label>
+          <small>時刻を入れると、命式に4つ目の柱（時柱）が加わります。タイプは変わりません。</small>
+        </div>
+      </details>
+    </fieldset>
+
+    <fieldset>
+      <legend>気になる人<em>任意</em></legend>
+      <p class="hint">生年月日を入れると、二人の相性の結論と、いいことが見られます。</p>
+      <label class="field">
+        <span class="label">お名前<em>任意</em></span>
+        <input name="pn" maxlength="20" placeholder="例：佐藤 太郎">
+      </label>
+      <div class="field">
+        <span class="label">生年月日</span>
+        <div class="ymd" data-ymd="partner">
+          <select name="py" aria-label="相手の生まれた年"></select>
+          <select name="pm" aria-label="相手の生まれた月"></select>
+          <select name="pd" aria-label="相手の生まれた日"></select>
+        </div>
+      </div>
+      <div class="field">
+        <span class="label">性別</span>
+        <div class="seg">
+          <label><input type="radio" name="ps" value="M"><span>男性</span></label>
+          <label><input type="radio" name="ps" value="F"><span>女性</span></label>
+        </div>
+      </div>
+      <div class="field">
+        <span class="label">見たい関係</span>
+        <div class="seg">
+          <label><input type="radio" name="r" value="love"><span>恋愛</span></label>
+          <label><input type="radio" name="r" value="work"><span>仕事</span></label>
+        </div>
+        <small>上司・部下などの肩書きは聞きません。命式から本来の役割を出します。</small>
+      </div>
+    </fieldset>
+
+    <p class="error" id="err" role="alert"></p>
+    <button class="submit" type="submit">無料で鑑定する</button>
+    <p class="privacy">入力した生年月日は送信も保存もしません。この端末の中だけで計算します。</p>
+    <a class="sample-link" href="#kantei?n=山田花子&d=1992-04-18&s=F">先に見本の鑑定書を見る</a>
+  </form>
+</main>
+
+<main id="result" class="wrap result" hidden>
+  <nav class="toc" id="toc" aria-label="章の目次"></nav>
+  <div id="report"></div>
+</main>
+
+<main id="join" class="wrap join" hidden>
+  <a class="back" href="#" data-back>鑑定書に戻る</a>
+  <p class="brand">HIYOMI</p>
+  <h1>無料の会員登録</h1>
+  <p class="lead">鑑定書を保存して、次に大きく動きやすい年を1つお見せします。使いやすい方法を選ぶと、ワンタップで登録できます。</p>
+  <p class="save-note" id="saveNote" hidden></p>
+
+  <div class="providers">
+    <button type="button" class="pv pv-line" data-provider="line" data-pv="line">
+      <svg class="pv-logo" viewBox="0 0 40 40" aria-hidden="true"><path fill="#fff" d="M20 5C10.6 5 3 11.2 3 18.8c0 6.8 6 12.5 14.2 13.6.6.1 1.3.4 1.5.9.2.4.1 1.1.1 1.5l-.2 1.4c-.1.4-.3 1.6 1.4.9s9.2-5.4 12.5-9.3C34.8 25.2 37 22.2 37 18.8 37 11.2 29.4 5 20 5z"/><text x="20" y="22.6" text-anchor="middle" font-size="8.6" font-weight="700" fill="#06c755" font-family="Arial, Helvetica, sans-serif">LINE</text></svg>
+      LINEで続ける
+    </button>
+    <button type="button" class="pv pv-google" data-provider="google" data-pv="google">
+      <svg class="pv-logo" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Googleで続ける
+    </button>
+    <button type="button" class="pv pv-apple" data-provider="apple" data-pv="apple">
+      <svg class="pv-logo" viewBox="0 0 384 512" aria-hidden="true"><path fill="#fff" d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.5 71.9 26.1 2 49.9-11.4 69.4-34.3z"/></svg>
+      Appleで続ける
+    </button>
+  </div>
+
+  <p class="or">ー または ー</p>
+
+  <form class="mail" id="mailForm" novalidate>
+    <label class="label" for="mail">メールアドレスで続ける</label>
+    <input id="mail" type="email" name="mail" placeholder="例：hanako@example.com" autocomplete="email" inputmode="email">
+    <button type="submit" class="pv pv-mail" data-pv="email">ログイン用のリンクを送る</button>
+    <p class="error" id="mailErr" role="alert"></p>
+  </form>
+
+  <div class="join-notes">
+    <p>すでに会員の方も、登録したときと同じ方法でログインできます。</p>
+    <p>メールアドレスの入力は任意です。月額プランをお申し込みのときに入れていただきます。</p>
+    <p>毎月の節入りの日に、今月のテーマをお届けします。メールアドレスのある方にはメールで、LINEで登録した方にはLINEでも届きます。</p>
+  </div>
+  <a class="recover-link" href="#recover">前に別の方法で登録したかもしれない方へ</a>
+</main>
+
+<main id="found" class="wrap join" hidden>
+  <a class="back" href="#join">ログイン方法の選択に戻る</a>
+  <p class="brand">HIYOMI</p>
+  <h1>すでに会員登録が<wbr>あります</h1>
+  <p class="lead"><b id="foundMail"></b> は、<b id="foundOld"></b>で登録されています。同じ会員にまとめると、前の鑑定書や有料プランをそのまま使えます。</p>
+  <div class="providers">
+    <button type="button" class="pv pv-main" data-provider="link-old" id="foundLogin"></button>
+    <button type="button" class="pv pv-sub" data-provider="link-code">メールに届くコードで確かめてまとめる</button>
+  </div>
+  <p class="join-notes">まとめると、次からは<span id="foundNew"></span>と<span id="foundOld2"></span>のどちらでもログインできます。</p>
+  <details class="separate">
+    <summary>別の会員として登録する</summary>
+    <p>前の鑑定書と有料プランは引き継がれません。有料プランが二重になることもあります。</p>
+    <button type="button" class="pv pv-sub" data-provider="separate">それでも別の会員として登録する</button>
+  </details>
+</main>
+
+<main id="recover" class="wrap join" hidden>
+  <a class="back" href="#join">ログイン方法の選択に戻る</a>
+  <p class="brand">HIYOMI</p>
+  <h1>前の登録を探す</h1>
+  <p class="lead">前に登録したときのメールアドレスを入れてください。登録があれば、<wbr><span class="nw">「登録した方法」と</span><wbr><span class="nw">「今の方法とまとめるリンク」を、</span><wbr>そのアドレスにお送りします。</p>
+  <form class="mail" id="recoverForm" novalidate>
+    <label class="label" for="recoverMail">メールアドレス</label>
+    <input id="recoverMail" type="email" placeholder="例：hanako@example.com" autocomplete="email" inputmode="email">
+    <button type="submit" class="pv pv-mail">メールを送る</button>
+    <p class="error" id="recoverErr" role="alert"></p>
+  </form>
+  <div class="join-notes">
+    <p>登録があるかどうかは、この画面には出しません。ほかの人に知られないためです。</p>
+    <p>鑑定書は生年月日から計算し直せるので、まとめれば前の鑑定書も「当たってる」の記録も、そのまま見られます。</p>
+  </div>
+</main>
+
+<div class="line-bar" id="lineBar" hidden>
+  <a class="line-btn" data-join href="#join">無料の会員登録で続きを見る</a>
+</div>
+<p class="toast" id="toast" role="status" hidden></p>
+
+<script src="vendor/lunar.js"></script>
+<script src="assets/meishiki.js"></script>
+<script src="assets/texts.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
