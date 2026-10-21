@@ -28,7 +28,7 @@ html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; -webkit-font-smo
 
 body {
   margin: 0;
-  background: #fff url(img/bg_flowers.webp) center / cover no-repeat fixed;
+  background: #ced4e0 url(img/bg_flowers.webp) center / cover no-repeat fixed;
   color: var(--text);
   font-family: var(--sans);
   font-size: 16px;
@@ -56,8 +56,9 @@ button { cursor: pointer; }
 /* ---------- 入口 ---------- */
 .entry { padding: 0 24px 60px; }
 .entry-head { margin: 0 -24px; padding: 28px 16px 32px; background: #fff url(img/bg_flowers.webp) center / cover no-repeat fixed; }
-@media (max-width: 719px) { .entry-head { padding: 72px 20px 64px; background-position: 12% center; } }
-.hero-card { padding: 30px 22px 28px; background: #fff; border-radius: 24px; }
+.entry-head { padding: 48px 0 0; }
+@media (max-width: 719px) { .entry-head { padding-top: 72px; background-position: 12% center; } }
+.hero-card { padding: 34px 24px 8px; background: #fff; border-radius: 24px 24px 0 0; }
 .hero-card .lead { color: var(--text) !important; }
 .brand { font-family: var(--serif); font-weight: 600; font-size: 19px; letter-spacing: .24em; color: var(--navy); }
 .brand span { font-family: var(--sans); font-size: 12px; color: var(--faint); letter-spacing: .04em; margin-left: 2px; }
