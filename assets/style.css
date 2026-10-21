@@ -56,6 +56,7 @@ button { cursor: pointer; }
 /* ---------- 入口 ---------- */
 .entry { padding: 0 24px 60px; }
 .entry-head { margin: 0 -24px; padding: 28px 16px 32px; background: #fff url(img/bg_flowers.webp) center / cover no-repeat fixed; }
+@media (max-width: 719px) { .entry-head { padding: 72px 20px 64px; background-position: 12% center; } }
 .hero-card { padding: 30px 22px 28px; background: #fff; border-radius: 24px; }
 .hero-card .lead { color: var(--text) !important; }
 .brand { font-family: var(--serif); font-weight: 600; font-size: 19px; letter-spacing: .24em; color: var(--navy); }
