@@ -2,6 +2,8 @@
   'use strict';
 
   var TITLE = 'HIYOMI｜生まれた日から、人生が動いた年を当てる';
+  /* スプレッドシート記録用の Apps Script ウェブアプリのURL（空なら記録しない。手順は gas/README.md） */
+  var RECORD_URL = '';
 
   var T = window.TEXTS;
   var M = window.Meishiki;
@@ -94,8 +96,25 @@
       if (f.pn.value.trim()) q.set('pn', f.pn.value.trim());
     }
     err.textContent = '';
+    record(q);
     location.hash = 'kantei?' + q.toString();
     function fail(msg) { err.textContent = msg; }
+  }
+
+  /* 入力内容をスプレッドシートに1行追記する（受け口は gas/記録.gs）。気になる人の名前は送らない */
+  function record(q) {
+    if (!RECORD_URL) return;
+    var c = M.chart({ name: q.get('n') || '', date: q.get('d'), sex: q.get('s'), time: q.get('t') || null, place: q.get('p') || '' });
+    var data = {
+      name: q.get('n') || '', date: q.get('d'), sex: q.get('s'), time: q.get('t') || '', pref: q.get('p') || '',
+      partnerDate: q.get('pd') || '', partnerSex: q.get('ps') || '', relation: q.get('r') || '',
+      type: c.type.title, src: store('session', KEY_SRC) || '',
+      device: matchMedia('(max-width: 719px)').matches ? 'sp' : 'pc'
+    };
+    try {
+      fetch(RECORD_URL, { method: 'POST', mode: 'no-cors', keepalive: true,
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(data) });
+    } catch (e) { /* 記録に失敗しても鑑定は止めない */ }
   }
   function todayStr() { return thisYear + '-' + pad(today.getMonth() + 1) + '-' + pad(today.getDate()); }
 
