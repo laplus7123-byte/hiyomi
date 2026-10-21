@@ -380,7 +380,7 @@
 
     h += '<footer class="foot"><p>この鑑定は、生年月日から四柱推命の計算で出した自己分析の材料です。' +
       (me.note.length ? '（' + esc(me.note.join('、')) + '）' : '') + '</p>' +
-      '<p><a href="#">入力し直す</a></p></footer>';
+      '<p><a href="#">入力し直す</a>　<a href="privacy.html">プライバシーポリシー</a></p></footer>';
 
     $('#report').className = 'el-' + STEM_EL[ty.dg];
     $('#report').innerHTML = h;
@@ -433,7 +433,9 @@
 
   /* ---------- 共通 ---------- */
   var PROVIDER = { line: 'LINE', google: 'Google', apple: 'Apple', email: 'メールアドレス' };
-  var SCREENS = ['entry', 'join', 'found', 'recover'];
+  var SCREENS = ['entry', 'join', 'found', 'recover', 'mypage'];
+  /* member.js（Firebase）がログイン状態を知らせてくる。設定が空なら null のまま */
+  var authUser = null;
   var KEY_PENDING = 'hiyomi:pending';
   var KEY_LAST = 'hiyomi:lastProvider';
   /* Threads の投稿ごとの印（?p=投稿ID）。会員登録のときにサーバーへ渡す */
@@ -447,11 +449,82 @@
     } catch (err) { return null; }
   }
 
-  function rememberProvider(p) {
+  function startLogin(p) {
     store('local', KEY_LAST, p);
     markLastProvider();
-    toast(PROVIDER[p] + 'でのログインは準備中です');
+    var A = window.HiyomiAuth;
+    if (!A) { toast('ログインは準備中です'); return; }
+    if (!A.can(p)) { toast(PROVIDER[p] + 'は準備中です。Googleかメールでどうぞ'); return; }
+    A.signIn(p, store('session', KEY_PENDING) || '').catch(function (e) {
+      if (e && /popup-closed|cancelled-popup/.test(e.code || '')) return;
+      toast('ログインできませんでした。もう一度お試しください');
+    });
   }
+
+  function sendMailLink(input, note, sentText) {
+    var A = window.HiyomiAuth;
+    if (!A) { toast('メールの送信は準備中です'); return; }
+    var mail = input.value.trim();
+    note.textContent = '送っています…';
+    note.hidden = false;
+    A.sendLink(mail, store('session', KEY_PENDING) || '').then(function () {
+      note.textContent = mail + ' に' + sentText;
+    }, function () {
+      note.hidden = true;
+      toast('送れませんでした。アドレスを確かめて、もう一度お試しください');
+    });
+  }
+
+  function readingHash(r) {
+    var q = new URLSearchParams();
+    [['n', r.name], ['d', r.date], ['s', r.sex], ['t', r.time], ['p', r.pref],
+      ['pd', r.partnerDate], ['ps', r.partnerSex], ['r', r.relation]].forEach(function (kv) { if (kv[1]) q.set(kv[0], kv[1]); });
+    return '#kantei?' + q.toString();
+  }
+
+  function renderMypage() {
+    var A = window.HiyomiAuth;
+    if (!A) { location.hash = '#join'; return; }
+    if (!A.isReady()) return;
+    if (!authUser) { location.hash = '#join'; return; }
+    $('#mpWho').textContent = (authUser.email || authUser.name || '会員') + '（' + PROVIDER[authUser.provider] + 'でログイン中）';
+    $('#mpNext').hidden = true;
+    $('#mpList').innerHTML = '<p class="mp-empty">読み込んでいます…</p>';
+    A.readings().then(function (rs) {
+      if (!rs.length) {
+        $('#mpList').innerHTML = '<p class="mp-empty">まだ保存した鑑定書はありません。鑑定書の下のボタンから保存できます。</p>';
+        return;
+      }
+      var charts = rs.map(function (r) {
+        return M.chart({ name: r.name, date: r.date, sex: r.sex, time: r.time || null, place: r.pref || '' });
+      });
+      var first = charts[0], nx = first.nenpyo.next;
+      var nk = nx ? mainKind(nx.kinds) : null;
+      $('#mpNext').innerHTML = '<p class="mp-label">' + esc(first.name ? first.name + 'さん' : 'あなた') + 'の次の節目</p>' +
+        (nx
+          ? '<p class="mp-year">' + nx.year + '年</p><p class="mp-title">' + esc(nk ? T.events[nk].now : '動きやすい年') + '</p>' +
+            '<p class="mp-text">' + esc(nx.period) + '（' + esc(nx.age) + '）。' + esc(nk ? T.events[nk].nowText : '') + '</p>'
+          : '<p class="mp-text">これから先の年表に、大きな節目はまだ出ていません。</p>');
+      $('#mpNext').hidden = false;
+      $('#mpList').innerHTML = '<ul class="mp-list">' + rs.map(function (r, i) {
+        var c = charts[i];
+        return '<li class="el-' + STEM_EL[c.type.dg] + '"><a href="' + esc(readingHash(r)) + '">' +
+          '<b>' + esc(r.name ? r.name + 'さん' : 'あなた') + '・' + esc(c.type.title) + '</b>' +
+          '<span>' + r.date.replace(/-/g, '/') + '生まれ' + (r.partnerDate ? '・相性つき' : '') + '</span></a></li>';
+      }).join('') + '</ul>';
+    }, function () {
+      $('#mpList').innerHTML = '<p class="mp-empty">読み込めませんでした。時間をおいて開き直してください。</p>';
+    });
+  }
+
+  document.addEventListener('hiyomi:auth', function (e) {
+    authUser = e.detail;
+    $('.line-btn').textContent = authUser ? '会員ページに保存する' : '無料の会員登録で続きを見る';
+    if (!$('#mypage').hidden) renderMypage();
+  });
+  document.addEventListener('hiyomi:authError', function () {
+    toast('リンクの期限が切れたか、使用済みです。もう一度お送りください');
+  });
 
   function markLastProvider() {
     var last = store('local', KEY_LAST);
@@ -485,7 +558,17 @@
 
   document.addEventListener('click', function (e) {
     if (e.target.closest('[data-join]')) {
-      store('session', KEY_PENDING, location.hash.indexOf('#kantei?') === 0 ? location.hash : '');
+      var here = location.hash.indexOf('#kantei?') === 0 ? location.hash : '';
+      store('session', KEY_PENDING, here);
+      if (authUser && window.HiyomiAuth) {
+        e.preventDefault();
+        window.HiyomiAuth.save(here).then(function () { location.hash = '#mypage'; },
+          function () { toast('保存できませんでした。もう一度お試しください'); });
+      }
+      return;
+    }
+    if (e.target.closest('#logout')) {
+      if (window.HiyomiAuth) window.HiyomiAuth.signOut();
       return;
     }
     if (e.target.closest('[data-back]')) {
@@ -496,7 +579,7 @@
     var pv = e.target.closest('[data-provider]');
     if (pv) {
       var p = pv.dataset.provider;
-      if (PROVIDER[p]) { rememberProvider(p); return; }
+      if (PROVIDER[p]) { startLogin(p); return; }
       toast({ 'link-old': '前の方法でのログインは準備中です', 'link-code': '確認コードの送信は準備中です', separate: '別の会員としての登録は準備中です' }[p]);
       return;
     }
@@ -534,7 +617,8 @@
     SCREENS.forEach(function (id) { $('#' + id).hidden = id !== screen; });
     if (screen === 'join') { showSaveNote(); markLastProvider(); }
     if (screen === 'found') showFound(new URLSearchParams(hash.split('?')[1] || ''));
-    var t = { join: '無料の会員登録', found: 'すでに会員登録があります', recover: '前の登録を探す' }[screen];
+    if (screen === 'mypage') renderMypage();
+    var t = { join: '無料の会員登録', found: 'すでに会員登録があります', recover: '前の登録を探す', mypage: '会員ページ' }[screen];
     document.title = t ? t + '｜HIYOMI' : TITLE;
     window.scrollTo(0, 0);
   }
@@ -545,14 +629,16 @@
     var err = $('#mailErr');
     if (!MAIL_RE.test($('#mail').value.trim())) { err.textContent = 'メールアドレスの形を確かめてください。'; return; }
     err.textContent = '';
-    rememberProvider('email');
+    store('local', KEY_LAST, 'email');
+    markLastProvider();
+    sendMailLink($('#mail'), $('#mailSent'), 'ログイン用のリンクを送りました。メールを開いて、リンクを押すと登録が終わります。');
   });
   $('#recoverForm').addEventListener('submit', function (e) {
     e.preventDefault();
     var err = $('#recoverErr');
     if (!MAIL_RE.test($('#recoverMail').value.trim())) { err.textContent = 'メールアドレスの形を確かめてください。'; return; }
     err.textContent = '';
-    toast('メールの送信は準備中です');
+    sendMailLink($('#recoverMail'), $('#recoverSent'), 'ログイン用のリンクを送りました。前に登録したアドレスなら、リンクから前の鑑定書が見られます。');
   });
 
   var src = new URLSearchParams(location.search).get('p');

@@ -1,0 +1,124 @@
+/* 会員ログイン（Firebase Authentication）と会員データ（Firestore）。
+   app.js からは window.HiyomiAuth と、document の 'hiyomi:auth' イベントだけで使う。 */
+const CFG = window.HIYOMI_FIREBASE;
+const SDK = 'https://www.gstatic.com/firebasejs/10.14.1/';
+const KEY_MAIL = 'hiyomi:mailForLink';
+const KEY_PENDING_LINK = 'hiyomi:pendingForLink';
+
+if (CFG) {
+  const { initializeApp } = await import(SDK + 'firebase-app.js');
+  const A = await import(SDK + 'firebase-auth.js');
+  const F = await import(SDK + 'firebase-firestore.js');
+
+  const app = initializeApp(CFG);
+  const auth = A.getAuth(app);
+  auth.languageCode = 'ja';
+  const db = F.getFirestore(app);
+  let ready = false;
+
+  const providerOf = (user) => {
+    const ids = user.providerData.map((p) => p.providerId);
+    if (ids.includes('google.com')) return 'google';
+    if (ids.includes('apple.com')) return 'apple';
+    if (ids.some((i) => i.startsWith('oidc.line'))) return 'line';
+    return 'email';
+  };
+
+  /* 鑑定書のURL（#kantei?...）から、保存する項目だけを取り出す。気になる人の名前は保存しない */
+  const readingOf = (hash) => {
+    const q = new URLSearchParams(String(hash || '').replace(/^#kantei\?/, ''));
+    const d = q.get('d') || '', s = q.get('s') || '';
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d) || !/^[MF]$/.test(s)) return null;
+    const r = { name: q.get('n') || '', date: d, sex: s, time: q.get('t') || '', pref: q.get('p') || '',
+      partnerDate: q.get('pd') || '', partnerSex: q.get('ps') || '', relation: q.get('r') || '' };
+    const id = [r.date, r.sex, r.time, r.partnerDate, r.partnerSex, r.relation].join('_').replace(/[^\w-]/g, '');
+    return { id, r };
+  };
+
+  async function saveMember(user, provider, pendingHash) {
+    const ref = F.doc(db, 'members', user.uid);
+    const snap = await F.getDoc(ref);
+    const base = { email: user.email || '', displayName: user.displayName || '', lastProvider: provider,
+      providers: F.arrayUnion(provider), lastLoginAt: F.serverTimestamp() };
+    if (!snap.exists()) {
+      let src = '';
+      try { src = sessionStorage.getItem('hiyomi:src') || ''; } catch (e) { /* 読めなくても登録は続ける */ }
+      Object.assign(base, { createdAt: F.serverTimestamp(), source: src });
+    }
+    await F.setDoc(ref, base, { merge: true });
+    const rd = readingOf(pendingHash);
+    if (rd) {
+      await F.setDoc(F.doc(db, 'members', user.uid, 'readings', rd.id),
+        Object.assign({}, rd.r, { savedAt: F.serverTimestamp() }), { merge: true });
+    }
+  }
+
+  async function readings() {
+    const u = auth.currentUser;
+    if (!u) return [];
+    const qs = await F.getDocs(F.query(F.collection(db, 'members', u.uid, 'readings'), F.orderBy('savedAt', 'desc')));
+    return qs.docs.map((d) => Object.assign({ id: d.id }, d.data()));
+  }
+
+  function emit() {
+    const u = auth.currentUser;
+    document.dispatchEvent(new CustomEvent('hiyomi:auth', {
+      detail: u ? { uid: u.uid, email: u.email || '', name: u.displayName || '', provider: providerOf(u) } : null
+    }));
+  }
+
+  async function afterSignIn(user, provider, pendingHash) {
+    await saveMember(user, provider, pendingHash);
+    try { localStorage.setItem('hiyomi:lastProvider', provider); } catch (e) { /* 前回バッジが出ないだけ */ }
+    emit();
+    location.hash = '#mypage';
+  }
+
+  window.HiyomiAuth = {
+    can: (p) => p === 'google' || p === 'email',
+    isReady: () => ready,
+    user: () => auth.currentUser,
+    readings,
+    async signIn(p, pendingHash) {
+      if (p !== 'google') throw new Error('unsupported');
+      const res = await A.signInWithPopup(auth, new A.GoogleAuthProvider());
+      await afterSignIn(res.user, 'google', pendingHash);
+    },
+    async sendLink(email, pendingHash) {
+      await A.sendSignInLinkToEmail(auth, email, {
+        url: location.origin + location.pathname + '?login=mail',
+        handleCodeInApp: true
+      });
+      try {
+        localStorage.setItem(KEY_MAIL, email);
+        localStorage.setItem(KEY_PENDING_LINK, pendingHash || '');
+      } catch (e) { /* 別の端末で開いたときと同じく、メールアドレスを聞き直す */ }
+    },
+    async save(hash) {
+      const u = auth.currentUser;
+      if (u) await saveMember(u, providerOf(u), hash);
+    },
+    async signOut() {
+      await A.signOut(auth);
+      location.hash = '';
+    }
+  };
+
+  /* メールに届いたリンクから戻ってきたとき */
+  if (A.isSignInWithEmailLink(auth, location.href)) {
+    let email = '', pending = '';
+    try { email = localStorage.getItem(KEY_MAIL) || ''; pending = localStorage.getItem(KEY_PENDING_LINK) || ''; } catch (e) { /* 下で聞き直す */ }
+    if (!email) email = window.prompt('確認のため、ログインに使ったメールアドレスを入れてください。') || '';
+    try {
+      const res = await A.signInWithEmailLink(auth, email.trim(), location.href);
+      try { localStorage.removeItem(KEY_MAIL); localStorage.removeItem(KEY_PENDING_LINK); } catch (e) { /* 消せなくても害はない */ }
+      history.replaceState(null, '', location.pathname);
+      await afterSignIn(res.user, 'email', pending);
+    } catch (e) {
+      history.replaceState(null, '', location.pathname + '#join');
+      document.dispatchEvent(new CustomEvent('hiyomi:authError', { detail: 'link' }));
+    }
+  }
+
+  A.onAuthStateChanged(auth, () => { ready = true; emit(); });
+}

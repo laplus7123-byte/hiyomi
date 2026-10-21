@@ -116,6 +116,7 @@
     <p class="error" id="err" role="alert"></p>
     <button class="submit" type="submit">無料で鑑定する</button>
     <a class="sample-link" href="#kantei?n=山田花子&d=1992-04-18&s=F">先に見本の鑑定書を見る</a>
+    <p class="entry-foot"><a href="#mypage">会員の方はこちら</a>　<a href="privacy.html">プライバシーポリシー</a></p>
   </form>
 </main>
 
@@ -153,12 +154,14 @@
     <input id="mail" type="email" name="mail" placeholder="例：hanako@example.com" autocomplete="email" inputmode="email">
     <button type="submit" class="pv pv-mail" data-pv="email">ログイン用のリンクを送る</button>
     <p class="error" id="mailErr" role="alert"></p>
+    <p class="sent" id="mailSent" role="status" hidden></p>
   </form>
 
   <div class="join-notes">
     <p>すでに会員の方も、登録したときと同じ方法でログインできます。</p>
     <p>メールアドレスの入力は任意です。月額プランをお申し込みのときに入れていただきます。</p>
     <p>毎月の節入りの日に、今月のテーマをお届けします。メールアドレスのある方にはメールで、LINEで登録した方にはLINEでも届きます。</p>
+    <p>登録すると、<a href="privacy.html">プライバシーポリシー</a>に同意したものとします。</p>
   </div>
   <a class="recover-link" href="#recover">前に別の方法で登録したかもしれない方へ</a>
 </main>
@@ -190,11 +193,26 @@
     <input id="recoverMail" type="email" placeholder="例：hanako@example.com" autocomplete="email" inputmode="email">
     <button type="submit" class="pv pv-mail">メールを送る</button>
     <p class="error" id="recoverErr" role="alert"></p>
+    <p class="sent" id="recoverSent" role="status" hidden></p>
   </form>
   <div class="join-notes">
     <p>登録があるかどうかは、この画面には出しません。ほかの人に知られないためです。</p>
     <p>鑑定書は生年月日から計算し直せるので、まとめれば前の鑑定書も「当たってる」の記録も、そのまま見られます。</p>
   </div>
+</main>
+
+<main id="mypage" class="wrap join" hidden>
+  <a class="back" href="#">トップに戻る</a>
+  <p class="brand">HIYOMI</p>
+  <h1>会員ページ</h1>
+  <p class="lead" id="mpWho"></p>
+  <section class="mp-next" id="mpNext" hidden></section>
+  <h2 class="mp-h">保存した鑑定書</h2>
+  <div id="mpList"></div>
+  <a class="sample-link" href="#">新しく鑑定する</a>
+  <p class="join-notes">月額プラン（500円）と、毎月の節入りのお届けは準備中です。</p>
+  <button type="button" class="pv pv-sub mp-logout" id="logout">ログアウト</button>
+  <p class="join-notes"><a href="privacy.html">プライバシーポリシー</a></p>
 </main>
 
 <div class="line-bar" id="lineBar" hidden>
@@ -206,5 +224,7 @@
 <script src="assets/meishiki.js"></script>
 <script src="assets/texts.js"></script>
 <script src="assets/app.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script type="module" src="assets/member.js"></script>
 </body>
 </html>
