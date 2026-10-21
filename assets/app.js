@@ -10,8 +10,8 @@
   /* 色は五行で決める。値は style.css の .el-* の --c と同じ */
   var STEM_EL = { '甲': 'wood', '乙': 'wood', '丙': 'fire', '丁': 'fire', '戊': 'earth',
     '己': 'earth', '庚': 'metal', '辛': 'metal', '壬': 'water', '癸': 'water' };
-  var EL_COLOR = { wood: '#a9c98a', fire: '#ea9888', earth: '#dcb766', metal: '#c3b2de', water: '#8dbde3' };
-  var BASE_COLOR = '#a29b8c';
+  var EL_COLOR = { wood: '#4f6f3a', fire: '#9a4636', earth: '#7a6420', metal: '#5f4f8a', water: '#3f5f86' };
+  var BASE_COLOR = '#76684d';
   var GOD_IMG = { '甲': 'tree', '乙': 'flower', '丙': 'sun', '丁': 'flame', '戊': 'mountain',
     '己': 'field', '庚': 'sword', '辛': 'jewel', '壬': 'sea', '癸': 'rain' };
   function godImg(dg, cls) {
