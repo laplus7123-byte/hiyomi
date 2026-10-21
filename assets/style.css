@@ -1,4 +1,4 @@
-/* 配色・構成は神戸女学院大学「blooming」を参考：パステルの花の背景＋中央の白い列＋濃紺の強調。
+/* 配色・構成は神戸女学院大学「blooming」を参考：無地の青灰の背景＋中央の白い列＋濃紺の強調。
    色は五行（木・火・土・金・水）に1色ずつ割り当て、.el-* の --c（文字・線）と --t（色面）で使う。
    見出しは明朝（秀英明朝の代わりに Shippori Mincho）、本文は角ゴシック（Zen Kaku Gothic New） */
 :root {
@@ -28,7 +28,7 @@ html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; -webkit-font-smo
 
 body {
   margin: 0;
-  background: #ced4e0 url(img/bg_flowers.webp) center / cover no-repeat fixed;
+  background: #ced4e0;
   color: var(--text);
   font-family: var(--sans);
   font-size: 16px;
@@ -55,9 +55,8 @@ button { cursor: pointer; }
 
 /* ---------- 入口 ---------- */
 .entry { padding: 0 24px 60px; }
-.entry-head { margin: 0 -24px; padding: 28px 16px 32px; background: #fff url(img/bg_flowers.webp) center / cover no-repeat fixed; }
-.entry-head { padding: 48px 0 0; }
-@media (max-width: 719px) { .entry-head { padding-top: 72px; background-position: 12% center; } }
+.entry-head { margin: 0 -24px; padding: 48px 0 0; background: #ced4e0; }
+@media (max-width: 719px) { .entry-head { padding-top: 24px; } }
 .hero-card { padding: 34px 24px 8px; background: #fff; border-radius: 24px 24px 0 0; }
 .hero-card .lead { color: var(--text) !important; }
 .brand { font-family: var(--serif); font-weight: 600; font-size: 19px; letter-spacing: .24em; color: var(--navy); }
@@ -153,15 +152,16 @@ input:focus, select:focus { outline: 2px solid var(--navy); outline-offset: 1px;
 .result { padding-bottom: 112px; }
 .toc {
   position: sticky; top: 0; z-index: 10;
-  display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none;
-  padding: 8px 12px; background: var(--bg); border-bottom: 1px solid var(--rule);
+  display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none;
+  padding: 10px 16px; background: var(--bg); border-bottom: 1px solid var(--rule);
 }
 .toc::-webkit-scrollbar { display: none; }
+.toc::after { content: ''; flex: none; width: 4px; }
 .toc a {
-  flex: none; padding: 6px 10px;
-  color: var(--sub); font-size: 14px; font-weight: 500; text-decoration: none;
+  flex: none; padding: 6px 14px; border-radius: 999px; background: var(--paper);
+  color: var(--text); font-size: 14px; font-weight: 500; line-height: 1.6; text-decoration: none;
 }
-.toc a.on { color: var(--navy); font-weight: 700; }
+.toc a.on { background: var(--navy); color: #fff; font-weight: 700; }
 
 /* ---------- 表紙 ---------- */
 img.cover-art, .gods-grid img, .pair img, img.photo { mix-blend-mode: multiply; }
