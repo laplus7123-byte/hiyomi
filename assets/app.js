@@ -3,7 +3,7 @@
 
   var TITLE = 'HIYOMI｜生まれた日から、人生が動いた年を当てる';
   /* スプレッドシート記録用の Apps Script ウェブアプリのURL（空なら記録しない。手順は gas/README.md） */
-  var RECORD_URL = '';
+  var RECORD_URL = 'https://script.google.com/macros/s/AKfycbxCNLXBqUGHgAUWMBcZ51L3HZmaPvAGFfSreds3zpFCpXK6Zu86Tp02obop_wV8pqTNsw/exec';
 
   var T = window.TEXTS;
   var M = window.Meishiki;
