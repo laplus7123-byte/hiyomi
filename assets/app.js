@@ -108,7 +108,7 @@
 
   /* 入力内容をスプレッドシートに1行追記する（受け口は gas/記録.gs）。気になる人の名前は送らない */
   function record(q) {
-    if (!RECORD_URL) return;
+    if (!RECORD_URL || window.self !== window.top) return;
     var c = M.chart({ name: q.get('n') || '', date: q.get('d'), sex: q.get('s'), time: q.get('t') || null, place: q.get('p') || '' });
     var data = {
       name: q.get('n') || '', date: q.get('d'), sex: q.get('s'), time: q.get('t') || '', pref: q.get('p') || '',
@@ -142,27 +142,25 @@
       .map(function (r) { return { type: 'past', row: r }; });
     nodes.push({ type: 'now', row: n.now });
     var html = '<ol class="tl">';
-    var curBand = null;
     nodes.forEach(function (nd) {
       var bi = bandOf(c.dayun, nd.row.year);
       var color = bi >= 0 ? EL_COLOR[STEM_EL[c.dayun[bi].gz.charAt(0)]] : BASE_COLOR;
-      if (bi !== curBand) {
-        curBand = bi;
-        if (bi >= 0) {
-          var d = c.dayun[bi];
-          var isNow = nd.type === 'now' || (thisYear >= d.start && thisYear < d.start + 10);
-          html += '<li class="tl-band" style="--c:' + color + '"><span class="pill">' + d.start + '〜' + (d.start + 9) +
-            '　｜　' + esc(gzLabel(d.gz)) + '</span><p class="band-title">' +
-            wb(T.dayun[d.star][isNow ? 'now' : 'past']) + '</p></li>';
-        } else {
-          html += '<li class="tl-band" style="--c:' + color + '"><span class="pill">生まれてから最初の10年</span></li>';
-        }
+      var periodContext;
+      if (bi >= 0) {
+        var d = c.dayun[bi];
+        var isNow = nd.type === 'now' || (thisYear >= d.start && thisYear < d.start + 10);
+        periodContext = '<div class="year-decade"><p class="year-detail-label">この10年の流れ</p><p class="pill">' + d.start + '〜' + (d.start + 9) +
+          '　｜　' + esc(gzLabel(d.gz)) + '</p><p class="band-title">' +
+          wb(T.dayun[d.star][isNow ? 'now' : 'past']) + '</p></div>';
+      } else {
+        periodContext = '<div class="year-decade"><p class="pill">生まれてから最初の10年</p></div>';
       }
-      html += yearNode(nd, color);
+      html += yearNode(nd, color, periodContext);
     });
-    html += '<li class="tl-year tl-next" style="--c:' + BASE_COLOR + '"><div class="node">？</div>' +
-      '<h3>次の節目</h3><p class="tl-text">次に大きく動きやすい年を1つ、無料の会員登録でお見せします。</p>' +
-      '<a class="mini-line" data-join href="#join">無料で会員登録</a></li>';
+    html += '<li class="tl-year tl-next" style="--c:' + BASE_COLOR + '"><div class="year-heading">' +
+      '<div class="year-date"><span class="year-future">これから</span></div><div class="year-content">' +
+      '<h3>次の節目</h3><p class="tl-text year-lead">次に大きく動きやすい年を1つ、無料の会員登録でお見せします。</p>' +
+      '<a class="mini-line" data-join href="#join">無料で会員登録</a></div></div></li>';
     html += '</ol>';
     if (n.past.length) {
       html += '<p class="tally" id="tally">' + n.past.length + '年のうち、<b id="hits">0</b>つ当たった</p>';
@@ -172,7 +170,7 @@
     return html;
   }
 
-  function yearNode(nd, color) {
+  function yearNode(nd, color, periodContext) {
     var r = nd.row, past = nd.type === 'past';
     var k = mainKind(r.kinds);
     var ev = k ? T.events[k] : null;
@@ -180,18 +178,30 @@
     var more = r.kinds.filter(function (x) { return x !== k; }).map(function (x) {
       return T.events[x][past ? 'pastText' : 'nowText'];
     });
+    var text = ev ? ev[past ? 'pastText' : 'nowText'] : T.quietYear;
+    var firstStop = text.indexOf('。');
+    var hasMoreSentences = firstStop >= 0 && text.slice(firstStop + 1).trim().length > 0;
+    var lead = hasMoreSentences ? text.slice(firstStop + 1).trim() : text;
+    var basis = hasMoreSentences ? text.slice(0, firstStop + 1) : '';
     var h = '<li class="tl-year ' + (past ? 'tl-past' : 'tl-now') + '" style="--c:' + color + '">' +
-      '<div class="node">' + (past ? r.year : '今年') + '</div>' +
-      '<h3>' + esc(title) + '</h3>' +
-      '<p class="tl-period">' + esc(r.period) + '（' + esc(r.age) + '）</p>';
-    if (ev) h += '<div class="photo-wrap"><img class="photo" src="assets/img/ev_' + k + '.webp" alt="' + esc(ev.photo) + 'の絵" width="900" height="675" loading="lazy"></div>';
-    h += '<p class="tl-text">' + esc(ev ? ev[past ? 'pastText' : 'nowText'] : T.quietYear) + '</p>';
+      '<div class="year-heading"><div class="year-date"><div class="node">' + r.year + '<small>年</small></div>' +
+      '<p class="year-age">' + esc(r.age) + '</p>' + (past ? '' : '<span class="year-current">今年</span>') + '</div>' +
+      '<div class="year-content"><h3>' + esc(past ? title : (ev ? ev.now : '落ち着いた年')) + '</h3>' +
+      '<p class="tl-text year-lead">' + esc(lead) + '</p>' +
+      '<details class="report-detail year-detail"><summary>詳しい時期と鑑定の根拠</summary>' +
+      '<div class="year-notes"><div class="year-notes-copy"><p class="year-detail-label">対象の期間</p>' +
+      '<p class="tl-period">' + esc(r.period) + '</p>' +
+      (basis ? '<p class="year-basis">' + esc(basis) + '</p>' : '');
     more.forEach(function (t) { h += '<p class="tl-more">' + esc(t) + '</p>'; });
+    h += periodContext + '</div>';
+    if (ev) h += '<div class="photo-wrap"><img class="photo" src="assets/img/ev_' + k + '.webp" alt="' + esc(ev.photo) + 'の絵" width="900" height="675" loading="lazy"></div>';
+    h += '</div></details>';
     if (past) {
-      h += '<div class="hit" data-year="' + r.year + '"><button type="button" data-v="1" aria-pressed="false">当たってる</button>' +
-        '<button type="button" data-v="0" aria-pressed="false">違う</button></div>';
+      h += '<div class="year-feedback"><span class="feedback-label">この年に、心当たりは？</span>' +
+        '<div class="hit" data-year="' + r.year + '"><button type="button" data-v="1" aria-pressed="false">当たってる</button>' +
+        '<button type="button" data-v="0" aria-pressed="false">違う</button></div></div>';
     }
-    return h + '</li>';
+    return h + '</div></div></li>';
   }
 
   function renderMeishiki(c) {
@@ -199,20 +209,38 @@
     var gk = { '年柱': '年干', '月柱': '月干', '時柱': '時干' };
     var zk = { '年柱': '年支', '月柱': '月支', '日柱': '日支', '時柱': '時支' };
     var dk = { '年柱': '年', '月柱': '月', '日柱': '日', '時柱': '時' };
-    var cards = order.map(function (k) {
-      var gz = c.pillars[k], isDay = k === '日柱';
-      var hide = c.hide[zk[k]] || [];
-      return '<article class="pcard el-' + STEM_EL[gz.charAt(0)] + (isDay ? ' is-day' : '') + '">' +
-        '<p class="pcard-pos">' + term(k) + (isDay ? '<span class="me">あなた自身</span>' : '') + '</p>' +
-        '<p class="pcard-gz">' + esc(gz) + '</p><p class="pcard-yomi">' + esc(M.yomi(gz)) + '</p>' +
-        '<dl>' +
-        '<dt>上の字の星</dt><dd>' + (isDay ? term('日主') : term(c.ganStar[gk[k]])) + '</dd>' +
-        '<dt>下の字の星</dt><dd>' + term(c.zhiStar[zk[k]]) + '</dd>' +
-        '<dt>' + term('十二運') + '</dt><dd>' + term(c.dishi[dk[k]]) + '</dd>' +
-        '<dt>' + term('蔵干') + '</dt><dd class="nw">' + esc(hide.join('\u2009')) + '</dd>' +
-        '</dl></article>';
+    function pillarClass(k) {
+      return 'el-' + STEM_EL[c.pillars[k].charAt(0)] + (k === '日柱' ? ' is-day' : '');
+    }
+    function cells(render, extraClass) {
+      return order.map(function (k) {
+        return '<td class="' + pillarClass(k) + (extraClass ? ' ' + extraClass : '') + '">' + render(k) + '</td>';
+      }).join('');
+    }
+    var headers = order.map(function (k) {
+      return '<th scope="col" class="' + pillarClass(k) + '">' + term(k) +
+        (k === '日柱' ? '<span class="me">あなた自身</span>' : '') + '</th>';
     }).join('');
-    return '<div class="cards">' + cards + '</div>' +
+    return '<div class="meishiki-table-wrap"><table class="meishiki-table">' +
+      '<caption class="sr-only">あなたの命式</caption>' +
+      '<thead><tr><th scope="col">命式</th>' + headers + '</tr></thead><tbody>' +
+      '<tr><th scope="row">干支</th>' + cells(function (k) {
+        return '<span class="gz-value">' + esc(c.pillars[k]) + '</span><span class="gz-yomi">' + esc(M.yomi(c.pillars[k])) + '</span>';
+      }, 'gz-cell') + '</tr>' +
+      '<tr><th scope="row">上の字の星</th>' + cells(function (k) {
+        return k === '日柱' ? term('日主') : term(c.ganStar[gk[k]]);
+      }) + '</tr>' +
+      '<tr><th scope="row">下の字の星</th>' + cells(function (k) {
+        return term(c.zhiStar[zk[k]]);
+      }) + '</tr>' +
+      '<tr><th scope="row">' + term('十二運') + '</th>' + cells(function (k) {
+        return term(c.dishi[dk[k]]);
+      }) + '</tr>' +
+      '<tr><th scope="row">' + term('蔵干') + '</th>' + cells(function (k) {
+        var hide = c.hide[zk[k]] || [];
+        return esc(hide.join('\u2009'));
+      }, 'nw') + '</tr>' +
+      '</tbody></table></div>' +
       '<p class="swipe-hint">点線の下線がある言葉を押すと、意味が出ます。</p>' +
       '<p class="term-box" id="termBox"><b>日主</b>' + esc(T.terms['日主']) + '</p>' +
       '<p class="basis">命式の根拠：日主は' + c.type.dg + '（' + c.type.material + '）で、' + c.type.shin +
@@ -222,13 +250,13 @@
   function renderStars(c) {
     var rows = T.groups.map(function (g) {
       var n = c.count[g.key] || 0, top = g.key === c.type.group;
-      var dots = '';
-      for (var i = 0; i < 5; i++) dots += '<i class="' + (i < n ? 'on' : '') + '"></i>';
-      return '<div class="star-row' + (top ? ' top' : '') + '"><span class="nm">' + g.role + '<small>' + g.power + '</small></span>' +
-        '<span class="dots" aria-label="' + n + 'つ">' + dots + '</span></div>';
+      return '<div class="trait-row trait-' + ({ '財': 'pioneer', '食傷': 'creator', '印': 'scholar', '官': 'leader', '比劫': 'independent' }[g.key]) + (top ? ' top' : '') + '">' +
+        '<div class="trait-head"><span class="trait-role">' + g.role + (top ? '<small>あなたの中心となる役割</small>' : '') + '</span>' +
+        '<span class="trait-count">' + n + ' / 5</span></div><div class="trait-track" role="img" aria-label="' + g.role + 'の星は5か所中' + n + 'つ"><span style="width:' + (n * 20) + '%"></span></div>' +
+        '<p class="trait-power">' + g.power + '</p></div>';
     }).join('');
     var zero = T.groups.filter(function (g) { return !c.count[g.key]; }).map(function (g) { return g.role; });
-    return '<div class="stars">' + rows + '</div>' +
+    return '<div class="trait-chart">' + rows + '</div><p class="trait-caption">命式の5か所にある星を、役割ごとの数で表しています。</p>' +
       (zero.length ? '<p class="basis">ゼロの星：' + zero.join('・') + '。' + T.zeroNote + '</p>' : '') +
       '<p class="basis">命式の根拠：5か所のうち「' + c.type.role + '」の星が一番多く（決め手は' + c.type.deciding + '）、' +
       'その中でも' + c.type.tenStar + 'なので「' + c.type.ten + '」です。</p>';
@@ -275,13 +303,17 @@
     goods = goods.slice(0, 4);
     var zure = c.rel.filter(function (r) { return r.tag === '冲'; }).length;
 
-    return '<section class="sec" id="sec-aisho"><h2>' + esc(pname) + 'との相性</h2>' +
+    return '<section class="profile-subsection profile-compat" id="sec-aisho"><div class="aisho-intro"><h3>' + esc(pname) + 'との相性</h3>' +
       '<p class="sec-lead">' + (rel === 'love' ? '恋愛' : '仕事') + 'の関係として見ています。</p>' +
+      '<div class="report-verdict"><p class="verdict-label">二人の関係</p><p class="conclusion">' + esc(tail) + '</p></div>' +
       '<div class="pair"><figure class="el-' + STEM_EL[me.type.dg] + '">' + godImg(me.type.dg, '') + '<figcaption>あなた<b>' + esc(me.type.title) + '</b></figcaption></figure>' +
       '<figure class="el-' + STEM_EL[pt.type.dg] + '">' + godImg(pt.type.dg, '') + '<figcaption>' + esc(pname) + '<b>' + esc(pt.type.title) + '</b></figcaption></figure></div>' +
-      '<p class="conclusion">' + esc(pname) + 'は、あなたにとって「' + esc(ab) + '」。' + esc(tail) + '</p>' +
-      '<h3 style="margin-top:28px">いいこと</h3><ul class="goods">' +
-      goods.map(function (g) { return '<li>' + esc(g) + '</li>'; }).join('') + '</ul>' +
+      '<div class="pair-viewpoints"><div class="viewpoint"><p class="viewpoint-label">あなた → ' + esc(pname) + '</p>' +
+      '<p class="viewpoint-value">「' + esc(ab) + '」</p></div>' +
+      '<div class="viewpoint"><p class="viewpoint-label">' + esc(pname) + ' → あなた</p>' +
+      '<p class="viewpoint-value">「' + esc(ba) + '」</p></div></div></div>' +
+      (goods.length > 1 ? '<details class="report-detail aisho-details"><summary>相性の根拠と、いいこと</summary><ul class="goods">' +
+      goods.slice(1).map(function (g) { return '<li>' + esc(g) + '</li>'; }).join('') + '</ul></details>' : '') +
       (rel === 'work' ? '<p class="caution">採用や評価の判断には使わないでください。</p>' : '') +
       '<div class="locked"><h3>二人のズレと、<wbr>向き合い方</h3>' +
       (zure ? '<p class="tl-period">命式の上のズレ：' + zure + 'つ</p>' : '') +
@@ -299,79 +331,91 @@
     var role = T.roles[ty.role];
     var b = me.birth;
 
-    var toc = [['nenpyo', '年表'], ['meishiki', '命式'], ['seikaku', '性格'], ['kachikan', '価値観'], ['hoshi', '星'],
-      ['kyusei', '九星'], ['tsuyomi', '強み'], ['matome', 'まとめ']];
-    if (hasPartner) toc.push(['aisho', '相性']);
-    toc.push(['korekara', 'これから']);
-    $('#toc').innerHTML = toc.map(function (t) { return '<a href="#sec-' + t[0] + '" data-sec="' + t[0] + '">' + t[1] + '</a>'; }).join('');
+    var roleArt = { '賢者': 'scholar', '開拓者': 'pioneer', '表現者': 'creator', '統率者': 'leader', '独立者': 'independent' }[ty.role];
+    function chapterArt(file, alt) {
+      return '<img class="profile-chapter-art" src="assets/img/report-' + file + '.png" alt="' + esc(alt) + '" width="960" height="640" loading="lazy">';
+    }
+    function chapterHeading(number, title) {
+      return '<header class="profile-chapter-heading"><span class="chapter-number">' + number + '</span><h2>' + title + '</h2></header>';
+    }
+    var toc = [['overview', 'あなたのタイプ'], ['seikaku', '性格特性'], ['kachikan', 'キャリアと仕事観'], ['tsuyomi', '自己成長'],
+      ['relations', '人間関係'], ['nenpyo', '人生の節目'], ['meishiki', '鑑定の根拠'], ['korekara', 'これからの流れ']];
+    $('#toc').innerHTML = '<div class="profile-nav-person">' + godImg(ty.dg, '') + '<div><span>' + esc(who) + '</span><b>' + esc(ty.title) + '</b></div></div>' +
+      '<p class="profile-nav-title">このレポートの内容</p><div class="profile-nav-links">' + toc.map(function (t) {
+        return '<a href="#sec-' + t[0] + '" data-sec="' + t[0] + '" onclick="event.preventDefault(); event.stopPropagation(); document.getElementById(\'sec-' + t[0] + '\').scrollIntoView()">' + t[1] + '</a>';
+      }).join('') + '</div><a class="profile-nav-cta" data-join href="#join">結果を保存する<small>無料会員登録</small></a>';
 
     var h = '';
-    h += '<section class="cover"><div class="cover-fig">' + godImg(ty.dg, 'cover-art') + '</div>' +
-      '<p class="cover-who">' + esc(who) + 'の生まれ</p>' +
-      '<h1 class="cover-title">' + esc(ty.title) + '</h1>' +
-      '<p class="cover-origin">日本神話では、<span class="nw">' + esc(ty.god) + '</span><wbr><span class="nw">（' + esc(ty.godYomi) + '）</span><wbr><span class="nw">にあたる生まれ</span></p>' +
-      '<p class="cover-only">あなたと同じ命式を持つのは、同じ誕生日に生まれた人だけです。</p>' +
-      '<p class="cover-meta">' + b.y + '年' + b.m + '月' + b.d + '日生まれ・' + (me.sex === 'M' ? '男性' : '女性') +
-      (me.time ? '・' + esc(me.time) + '生まれ' : '') + '</p></section>';
+    h += '<section class="profile-hero" id="sec-overview"><div class="profile-hero-copy"><p class="profile-kicker">あなたのタイプ</p>' +
+      '<h1>' + esc(ty.title) + '</h1><p class="profile-owner">' + esc(who) + '<span>' + b.y + '年' + b.m + '月' + b.d + '日生まれ・' + (me.sex === 'M' ? '男性' : '女性') +
+      (me.time ? '・' + esc(me.time) + '生まれ' : '') + '</span></p><div class="profile-tags"><span>' + esc(ty.shin) + '</span><span>' + esc(ty.role) + '</span></div>' +
+      '<p class="profile-hero-lead">' + esc(T.face[ty.dg].split('。')[0]) + '。</p>' +
+      '<div class="profile-hero-actions"><button type="button" class="reading-link" onclick="document.getElementById(\'sec-seikaku\').scrollIntoView()">性格特性を見る<span aria-hidden="true">↓</span></button>' +
+      (hasPartner ? '<button type="button" class="reading-link" onclick="document.getElementById(\'sec-aisho\').scrollIntoView()">二人の相性を見る<span aria-hidden="true">↓</span></button>' : '') + '</div></div>' +
+      '<img class="profile-hero-art" src="assets/img/report-' + roleArt + '.png" alt="' + esc(ty.role) + 'の資質を描いたイラスト" width="960" height="640" decoding="async"></section>';
 
-    h += '<section class="sec" id="sec-nenpyo"><h2>あなたの年表</h2>' +
-      '<p class="sec-lead">生まれた日の干支から、人生が動きやすかった年を出しました。当たっていたら押してください。</p>' +
-      renderNenpyo(me) + '</section>';
-
-    h += '<section class="sec" id="sec-meishiki"><h2>あなたの命式</h2>' +
-      '<p class="sec-lead">生まれた年・月・日' + (me.pillars['時柱'] ? '・時刻' : '') + 'の干支です。</p>' +
-      renderMeishiki(me) + '</section>';
-
-    h += '<section class="sec" id="sec-seikaku"><h2>性格</h2><p class="sec-lead">押すと、裏の顔に入れ替わります。</p>' +
+    h += '<section class="sec profile-chapter" id="sec-seikaku">' + chapterHeading('01', 'あなたの性格特性') +
       '<button type="button" class="flip" aria-pressed="false">' +
-      '<span class="front"><span class="flip-label">表の顔<small>押して裏返す</small></span>' +
+      '<span class="front"><span class="flip-label">表の顔<small>押して裏の顔を見る</small></span>' +
       '<span class="flip-text">' + esc(T.face[ty.dg]) + '</span>' +
       '<span class="flip-basis">命式の根拠：日主が' + ty.dg + '（' + ty.material + '）</span></span>' +
       '<span class="back"><span class="flip-label">裏の顔<small>押して戻す</small></span>' +
       '<span class="flip-text">' + esc(T.hidden[ty.tenStar]) + '</span>' +
-      '<span class="flip-basis">命式の根拠：役割を決めている' + ty.deciding + 'の星が' + ty.tenStar + '（' + ty.ten + '）</span></span>' +
-      '</button></section>';
-
-    h += '<section class="sec" id="sec-kachikan"><h2>仕事観・恋愛観・人生観</h2>' +
-      '<div class="block"><h3>仕事観</h3><p>' + esc(T.work[me.zhiStar['月支']]) + '</p>' +
-      '<p class="basis">命式の根拠：仕事の場を表す月の下の字（' + me.pillars['月柱'].charAt(1) + '）の星が' + me.zhiStar['月支'] + '</p></div>' +
-      '<div class="block"><h3>恋愛観</h3><p>' + esc(T.love[me.zhiStar['日支']]) + '</p>' +
-      '<p class="basis">命式の根拠：パートナーの位置を表す日の下の字（' + me.pillars['日柱'].charAt(1) + '）の星が' + me.zhiStar['日支'] + '</p></div>' +
-      '<div class="block"><h3>人生観</h3><p>' + esc(T.life[me.ganStar['月干']]) +
-      (cur ? 'いまは「' + esc(plain(T.dayun[cur.star].now)) + '」の中にいます。' : '') + '</p>' +
-      '<p class="basis">命式の根拠：月の上の字（' + me.pillars['月柱'].charAt(0) + '）の星が' + me.ganStar['月干'] +
-      (cur ? '。今の10年（' + cur.start + '〜' + (cur.start + 9) + '）は' + cur.gz + 'で、星は' + cur.star : '') + '</p></div>' +
-      '</section>';
-
-    h += '<section class="sec" id="sec-hoshi"><h2>持っている星</h2><p class="sec-lead">命式の5か所にある星を、5つの役割にまとめました。</p>' +
-      renderStars(me) + '</section>';
+      '<span class="flip-basis">命式の根拠：役割を決めている' + ty.deciding + 'の星が' + ty.tenStar + '（' + ty.ten + '）</span></span></button>' +
+      '<section class="profile-subsection" id="sec-hoshi"><h3>持っている星のバランス</h3><p class="sec-lead">命式の5か所にある星を、5つの役割にまとめました。</p>' + renderStars(me) + '</section>';
 
     var kh = T.kyusei[me.kyusei.hon], kg = T.kyusei[me.kyusei.getsu];
-    h += '<section class="sec" id="sec-kyusei"><h2>九星</h2><p class="sec-lead">外から見える姿と、内側の本音です。</p>' +
+    h += '<section class="profile-subsection" id="sec-kyusei"><h3>外から見える姿と、内側の本音</h3>' +
       '<div class="kyu"><div><p class="k-label">外から見える姿（本命星）</p><p class="k-name">' + me.kyusei.hon + '</p>' +
       '<p class="k-text">' + esc(kh.out) + 'に見られやすい生まれです。</p></div>' +
       '<div><p class="k-label">内側の本音（月命星）</p><p class="k-name">' + me.kyusei.getsu + '</p>' +
-      '<p class="k-text">心の中では、' + esc(kg.inner) + 'と思っています。</p></div></div></section>';
+      '<p class="k-text">心の中では、' + esc(kg.inner) + 'と思っています。</p></div></div></section></section>';
 
-    h += '<section class="sec" id="sec-tsuyomi"><h2>強みと裏面</h2>' +
-      '<div class="block"><h3>強み</h3><p>' + esc(role.strength) + '。</p></div>' +
-      '<div class="block"><h3>裏面</h3><p>強みの裏返しで、' + esc(role.back) + 'ところがあります。</p></div>' +
-      '<div class="block"><h3>力が出る役回り</h3><p>' + esc(role.place) + '</p></div></section>';
+    h += '<section class="sec profile-chapter" id="sec-kachikan">' + chapterHeading('02', 'あなたのキャリアと仕事観') +
+      chapterArt('leader', '仲間と役割を分け、仕事に取り組む風景') +
+      '<p class="profile-chapter-lead">' + esc(T.work[me.zhiStar['月支']]) + '</p>' +
+      '<p class="basis">命式の根拠：仕事の場を表す月の下の字（' + me.pillars['月柱'].charAt(1) + '）の星が' + me.zhiStar['月支'] + '</p>' +
+      '<div class="insight-block"><h3>力が出る役回り</h3><p>' + esc(role.place) + '</p></div>' +
+      '<div class="insight-grid"><div class="insight-strength"><h3>あなたの強み</h3><p>' + esc(role.strength) + '。</p></div>' +
+      '<div class="insight-care"><h3>気をつけたいこと</h3><p>強みの裏返しで、' + esc(role.back) + 'ところがあります。</p></div></div></section>';
 
-    h += '<section class="summary" id="sec-matome"><h2>まとめ</h2>' +
-      '<p class="big">' + esc(who) + 'は、<wbr>' + esc(ty.title) + '。</p>' +
-      '<p>' + esc(T.face[ty.dg]) + '</p>' +
-      '<p>仕事では、' + esc(role.strength) + 'が武器になります。' + esc(role.place) + '</p>' +
-      (cur ? '<p>いまは「' + esc(plain(T.dayun[cur.star].now)) + '」の途中です。</p>' : '') +
-      '</section>';
+    h += '<section class="sec profile-chapter" id="sec-tsuyomi">' + chapterHeading('03', 'あなたの自己成長') +
+      chapterArt('independent', '自分の歩幅で道を進む風景') +
+      '<p class="profile-chapter-lead">' + esc(T.life[me.ganStar['月干']]) + '</p>' +
+      '<p class="basis">命式の根拠：月の上の字（' + me.pillars['月柱'].charAt(0) + '）の星が' + me.ganStar['月干'] + '</p>' +
+      (cur ? '<div class="insight-block current-flow"><p class="profile-kicker">今のあなたを取り巻く流れ</p><h3>' + wb(T.dayun[cur.star].now) + '</h3>' +
+      '<p class="flow-period">' + cur.start + '〜' + (cur.start + 9) + '年</p><p class="basis">命式の根拠：今の10年は' + cur.gz + 'で、星は' + cur.star + '</p></div>' : '') +
+      '<div class="insight-block"><h3>強みと、その裏面</h3><p>' + esc(role.strength) + '。その一方で、' + esc(role.back) + 'ところがあります。</p></div></section>';
 
+    h += '<section class="sec profile-chapter" id="sec-relations">' + chapterHeading('04', 'あなたの人間関係') +
+      chapterArt('pioneer', '人と人が出会い、つながる風景') +
+      '<p class="profile-chapter-lead">' + esc(T.love[me.zhiStar['日支']]) + '</p>' +
+      '<p class="basis">命式の根拠：パートナーの位置を表す日の下の字（' + me.pillars['日柱'].charAt(1) + '）の星が' + me.zhiStar['日支'] + '</p>';
     if (hasPartner) {
       var pt = M.chart({ name: q.get('pn') || '', date: q.get('pd'), sex: q.get('ps') });
       h += renderCompat(me, pt, q.get('r') === 'work' ? 'work' : 'love', q.get('pn') ? q.get('pn') + 'さん' : 'お相手');
+    } else {
+      h += '<div class="insight-block profile-partner-prompt"><h3>二人の関係を、もう少し深く</h3><p>気になる人の生年月日も入れると、お互いがどう映るか、どんな縁があるかを見られます。</p><a class="reading-link" href="#">相手を追加して鑑定する</a></div>';
     }
+    h += '</section>';
+
+    h += '<section class="sec profile-chapter" id="sec-nenpyo">' + chapterHeading('05', '人生の節目と今の流れ') +
+      '<p class="sec-lead">人生が動きやすかった年を、年齢と一緒に振り返ります。</p>' +
+      renderNenpyo(me) + '</section>';
+
+    h += '<section class="sec profile-chapter" id="sec-meishiki">' + chapterHeading('06', '鑑定の根拠') +
+      '<p class="sec-lead">生まれた年・月・日' + (me.pillars['時柱'] ? '・時刻' : '') + 'の干支です。</p>' + renderMeishiki(me) +
+      '<details class="report-detail report-origin"><summary>神の名前と命式について</summary><div class="profile-origin">' + godImg(ty.dg, 'profile-origin-art') +
+      '<div><p class="cover-origin">日本神話では、' + esc(ty.god) + '（' + esc(ty.godYomi) + '）にあたる生まれ</p>' +
+      '<p class="cover-only">あなたと同じ命式を持つのは、同じ誕生日に生まれた人だけです。</p></div></div></details></section>';
+
+    h += '<section class="summary profile-summary" id="sec-matome"><h2>あなたらしさ</h2>' +
+      '<p class="big">' + esc(who) + 'は、<wbr>' + esc(ty.title) + '。</p><p>' + esc(T.face[ty.dg]) + '</p>' +
+      '<p>仕事では、' + esc(role.strength) + 'が武器になります。' + esc(role.place) + '</p>' +
+      (cur ? '<p>いまは「' + esc(plain(T.dayun[cur.star].now)) + '」の途中です。</p>' : '') + '</section>';
 
     var fu = T.future[hasPartner ? 'pair' : 'solo'];
-    h += '<section class="sec" id="sec-korekara"><h2>これから</h2>' +
+    h += '<section class="sec profile-chapter profile-future" id="sec-korekara">' + chapterHeading('07', 'これからのあなたへ') +
       '<p class="sec-lead">ここまでが、これまでと今です。これからの流れは、会員の方にお届けしています。</p>' +
       '<div class="locked"><h3>' + esc(fu.lead) + '</h3><ul>' +
       fu.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul>' +
@@ -383,7 +427,7 @@
       (me.note.length ? '（' + esc(me.note.join('、')) + '）' : '') + '</p>' +
       '<p><a href="#">入力し直す</a>　<a href="privacy.html">プライバシーポリシー</a></p></footer>';
 
-    $('#report').className = 'el-' + STEM_EL[ty.dg];
+    $('#report').className = 'el-' + STEM_EL[ty.dg] + ' profile-document';
     $('#report').innerHTML = h;
     $('#entry').hidden = true;
     SCREENS.forEach(function (id) { $('#' + id).hidden = true; });

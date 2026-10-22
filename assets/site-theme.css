@@ -1,0 +1,186 @@
+/* HIYOMI shared theme — 2026-10-22
+   入口・会員画面・ポリシーを、白と青緑の鑑定レポートに揃える。 */
+:root {
+  --page: #fff;
+  --bg: #f1f6f5;
+  --paper: #fff;
+  --tint: #e9f1ef;
+  --text: #2d3d43;
+  --sub: #53666c;
+  --faint: #63777d;
+  --rule: #dce6e4;
+  --navy: #36777a;
+  --navy-dark: #245d61;
+  --c: var(--navy);
+  --t: var(--tint);
+  --sans: 'Zen Kaku Gothic New', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+  --serif: var(--sans);
+  --display: var(--sans);
+}
+
+body.hiyomi-theme { background: #fff; color: var(--text); color-scheme: light; font-family: var(--sans); letter-spacing: .02em; line-height: 1.9; }
+.hiyomi-theme ::selection { background: #c6e2df; color: #173e44; }
+.hiyomi-theme :focus-visible { outline: 2px solid #36777a; outline-offset: 4px; }
+.hiyomi-theme .wrap { background: #fff; }
+.hiyomi-theme .brand { color: #2d666d; font-family: var(--sans); font-size: 22px; font-weight: 700; letter-spacing: .18em; }
+.hiyomi-theme .eyebrow { color: #587479; font-size: 12px; font-weight: 500; letter-spacing: .06em; }
+
+/* 入口 */
+.hiyomi-theme .entry { max-width: 1160px; padding: 0 28px 70px; }
+.hiyomi-theme .entry-head { padding: 0; }
+.hiyomi-theme .entry-masthead { min-height: 84px; padding: 18px 0; gap: 24px; border-bottom: 1px solid #e3eae8; }
+.hiyomi-theme .entry-masthead .brand { font-size: 22px; letter-spacing: .18em; }
+.hiyomi-theme .entry-masthead a { display: inline-flex; min-height: 44px; align-items: center; padding: 8px 0; font-size: 13px; text-decoration: none; color: #53666c; }
+.hiyomi-theme .entry-hero { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.06fr); align-items: center; gap: 32px; padding: 52px 22px 48px; }
+.hiyomi-theme .entry-hero-copy { min-width: 0; }
+.hiyomi-theme .entry-head .eyebrow { margin: 0; }
+.hiyomi-theme .entry-head h1 { margin-top: 18px; font-family: var(--sans); font-size: clamp(34px,3.7vw,47px); font-weight: 700; line-height: 1.55; letter-spacing: .015em; color: #2e434a; text-wrap: balance; }
+.hiyomi-theme .entry-head h1 span { animation: none; }
+.hiyomi-theme .hero-emphasis { color: #36777a; }
+.hiyomi-theme .entry-head .lead { margin-top: 22px; font-size: 15px; line-height: 2; color: #53666c; animation: none; }
+.hiyomi-theme .hero-cta { min-height: 54px; max-width: 350px; margin-top: 28px; padding: 13px 21px; border: 1px solid #36777a; border-radius: 4px; background: #36777a; color: #fff; font-size: 16px; font-weight: 700; letter-spacing: .02em; }
+.hiyomi-theme .hero-cta:hover { background: #245d61; border-color: #245d61; }
+.hiyomi-theme .hero-note { max-width: 350px; margin-top: 9px; font-size: 12px; color: #63777d; }
+.hiyomi-theme .entry-preview-links { justify-content: flex-start; gap: 8px 24px; margin-top: 18px; }
+.hiyomi-theme .entry-preview-links a { display: inline-flex; min-height: 44px; align-items: center; color: #36777a; font-size: 13px; padding: 5px 0; }
+.hiyomi-theme .entry-illustration { min-width: 0; margin: 0; }
+.hiyomi-theme .entry-illustration img { display: block; width: 100%; height: auto; max-height: 390px; object-fit: contain; image-rendering: auto; mix-blend-mode: normal; }
+
+/* 神の一覧と入力欄は、内容ごとのまとまりで読み進める。 */
+.hiyomi-theme .gods { max-width: 840px; margin: 0 auto; padding: 21px 26px; background: #f1f6f5; }
+.hiyomi-theme .gods summary { min-height: 44px; font-family: var(--sans); font-size: 17px; font-weight: 700; color: #354e55; }
+.hiyomi-theme .gods summary small { color: #63777d; font-size: 12px; font-weight: 400; }
+.hiyomi-theme .gods-lead { margin-top: 20px; font-size: 14px; color: #53666c; }
+.hiyomi-theme .gods-grid { margin: 20px 0 0; gap: 10px; grid-template-columns: repeat(5,minmax(90px,1fr)); }
+.hiyomi-theme .gods-grid li { background: #fff; padding: 12px 7px; }
+.hiyomi-theme .gods-grid .el { font-family: var(--sans); font-size: 14px; }
+.hiyomi-theme .gods-grid figcaption { font-family: var(--sans); font-size: 14px; font-weight: 700; }
+.hiyomi-theme .gods-grid small { font-size: 11px; }
+.hiyomi-theme #form { max-width: 640px; margin: 0 auto; padding-top: 60px; scroll-margin-top: 22px; }
+.hiyomi-theme .form-intro { margin-bottom: 35px; }
+.hiyomi-theme .form-intro h2 { margin-top: 9px; font-family: var(--sans); font-size: 29px; font-weight: 700; letter-spacing: .01em; color: #2e434a; }
+.hiyomi-theme .form-intro > p:last-child { margin-top: 10px; font-size: 15px; color: #63777d; }
+.hiyomi-theme .entry fieldset { min-width: 0; margin: 0 0 38px; padding: 0; border: 0; border-radius: 0; background: #fff; }
+.hiyomi-theme .entry fieldset + fieldset { padding-top: 32px; border-top: 1px solid #dce6e4; }
+.hiyomi-theme .entry legend { float: none; padding: 0; margin-bottom: 20px; font-family: var(--sans); font-size: 20px; font-weight: 700; letter-spacing: .01em; color: #354e55; }
+.hiyomi-theme .entry .hint { margin: 0 0 23px; font-size: 14px; color: #63777d; }
+.hiyomi-theme .label { font-size: 14px; font-weight: 500; color: #40575e; }
+.hiyomi-theme .label em, .hiyomi-theme legend em { color: #73858a; font-size: 12px; }
+.hiyomi-theme .entry .field { margin-bottom: 22px; }
+.hiyomi-theme .field small, .hiyomi-theme .more small { color: #63777d; font-size: 12px; line-height: 1.85; }
+.hiyomi-theme input:not([type]), .hiyomi-theme input[type=text], .hiyomi-theme input[type=email], .hiyomi-theme input[type=time], .hiyomi-theme select { min-width: 0; min-height: 52px; height: 52px; border: 1px solid #b9cbc9; border-radius: 4px; background-color: #fff; color: #2d3d43; font-size: 16px; }
+.hiyomi-theme select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2353666c'/%3E%3C/svg%3E"); }
+.hiyomi-theme input::placeholder { color: #76898e; }
+.hiyomi-theme .seg span { min-height: 52px; height: 52px; border: 1px solid #b9cbc9; border-radius: 4px; background: #fff; font-size: 15px; }
+.hiyomi-theme .seg input:checked + span { background: #e8f2ef; border-color: #36777a; color: #245d61; font-weight: 700; }
+.hiyomi-theme .more { margin-top: 28px; }
+.hiyomi-theme .submit { min-height: 56px; border-radius: 4px; padding: 14px 44px 14px 20px; background: #36777a; color: #fff; font-family: var(--sans); font-size: 16px; font-weight: 700; letter-spacing: .02em; }
+.hiyomi-theme .submit:hover { background: #245d61; }
+.hiyomi-theme .entry .sample-link { display: flex; min-height: 44px; justify-content: center; align-items: center; margin-top: 16px; color: #36777a; font-size: 14px; }
+.hiyomi-theme .entry-foot { gap: 8px 24px; margin-top: 24px; font-size: 12px; }
+.hiyomi-theme .entry-foot a { display: inline-flex; align-items: center; min-height: 44px; }
+
+/* 会員登録・ログイン・登録の復旧 */
+.hiyomi-theme .join { max-width: 600px; padding: 22px 34px 72px; }
+.hiyomi-theme .join .back { display: inline-flex; min-height: 44px; align-items: center; margin: 0; color: #63777d; font-size: 13px; text-decoration: none; }
+.hiyomi-theme .join .back:hover { color: #36777a; text-decoration: underline; }
+.hiyomi-theme .join .brand { margin-top: 24px; padding-bottom: 25px; border-bottom: 1px solid #e3eae8; font-size: 22px; }
+.hiyomi-theme .account-masthead { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 62px; padding-bottom: 17px; border-bottom: 1px solid #e3eae8; }
+.hiyomi-theme .account-masthead .brand { flex: none; margin: 0; padding: 0; border: 0; }
+.hiyomi-theme .account-masthead .back { margin-left: auto; text-align: right; justify-content: flex-end; line-height: 1.6; }
+.hiyomi-theme .join h1 { margin-top: 30px; font-family: var(--sans); font-size: 32px; font-weight: 700; color: #2e434a; letter-spacing: .015em; line-height: 1.6; text-wrap: balance; }
+.hiyomi-theme .registration-label { margin-top: 19px; color: #36777a; font-size: 13px; font-weight: 700; }
+.hiyomi-theme .join .lead { margin-top: 15px; font-size: 15px; line-height: 2; color: #53666c; }
+.hiyomi-theme .providers { gap: 12px; margin-top: 27px; }
+.hiyomi-theme .pv { min-height: 54px; padding: 13px 18px; border-radius: 4px; font-family: var(--sans); font-size: 15px; font-weight: 500; line-height: 1.8; letter-spacing: .01em; }
+.hiyomi-theme .pv-line { background: #06c755; color: #fff; }
+.hiyomi-theme .pv-google { background: #fff; color: #3c4043; border-color: #c8d5d3; }
+.hiyomi-theme .pv-apple { background: #111; color: #fff; }
+.hiyomi-theme .pv-main, .hiyomi-theme .pv-mail { background: #36777a; color: #fff; border-color: #36777a; }
+.hiyomi-theme .pv-sub { background: #fff; color: #36777a; border-color: #b9cbc9; }
+.hiyomi-theme .pv-main:hover, .hiyomi-theme .pv-mail:hover { background: #245d61; }
+.hiyomi-theme .pv:has(.pv-last) { padding-right: 68px; }
+.hiyomi-theme .pv-last { color: #354e55; background: #fff; }
+.hiyomi-theme .pv-google .pv-last { background: #edf3f1; }
+.hiyomi-theme .join .mail { margin-top: 29px; padding-top: 26px; border-top: 1px solid #dce6e4; }
+.hiyomi-theme .mail .pv { margin-top: 12px; }
+.hiyomi-theme .save-note, .hiyomi-theme .sent { padding: 18px 20px; background: #edf5f1; border-radius: 3px; color: #405b62; font-size: 14px; line-height: 1.9; }
+.hiyomi-theme .join-notes { margin-top: 29px; color: #63777d; font-size: 13px; line-height: 1.95; }
+.hiyomi-theme .join-notes a { color: #36777a; }
+.hiyomi-theme .recover-link { display: inline-flex; min-height: 44px; align-items: center; margin-top: 19px; color: #36777a; font-size: 13px; }
+.hiyomi-theme .separate { margin-top: 32px; color: #63777d; }
+.hiyomi-theme .separate summary { display: list-item; padding: 12px 0; min-height: 44px; font-size: 14px; }
+.hiyomi-theme .error { color: #a14735; }
+
+/* 保存済みの鑑定書 */
+.hiyomi-theme #mypage { max-width: 640px; }
+.hiyomi-theme .mp-next { margin-top: 28px; padding: 25px 26px; background: #edf4f2; border-radius: 0; }
+.hiyomi-theme .mp-label { color: #63777d; font-size: 13px; }
+.hiyomi-theme .mp-year { color: #36777a; font-family: var(--sans); font-size: 42px; font-weight: 700; letter-spacing: -.02em; }
+.hiyomi-theme .mp-title { margin-top: 7px; color: #354e55; font-family: var(--sans); font-size: 21px; font-weight: 700; letter-spacing: .01em; }
+.hiyomi-theme .mp-text { margin-top: 12px; font-size: 15px; color: #53666c; }
+.hiyomi-theme .mp-h { margin-top: 37px; font-family: var(--sans); font-size: 21px; font-weight: 700; color: #354e55; letter-spacing: .01em; }
+.hiyomi-theme .mp-list { gap: 0; margin-top: 16px; border-top: 1px solid #dce6e4; }
+.hiyomi-theme .mp-list a { padding: 21px 0; background: #fff; border-bottom: 1px solid #dce6e4; border-radius: 0; }
+.hiyomi-theme .mp-list b { font-family: var(--sans); color: #36777a; font-size: 18px; font-weight: 700; line-height: 1.7; }
+.hiyomi-theme .mp-list span { display: block; margin-top: 4px; color: #63777d; font-size: 13px; }
+.hiyomi-theme .mp-list a:hover b { text-decoration: underline; text-underline-offset: 4px; }
+.hiyomi-theme #mypage .sample-link { display: flex; min-height: 48px; justify-content: center; align-items: center; margin-top: 27px; color: #36777a; font-size: 14px; }
+
+/* ポリシーは文章を追いやすい幅と見出しに。 */
+.hiyomi-theme .policy { max-width: 760px; padding: 22px 36px 76px; }
+.hiyomi-theme .policy h1 { font-size: 30px; letter-spacing: .01em; }
+.hiyomi-theme .policy h2 { margin-top: 39px; padding-top: 21px; border-top: 1px solid #e3eae8; color: #354e55; font-family: var(--sans); font-size: 21px; font-weight: 700; letter-spacing: .01em; }
+.hiyomi-theme .policy h3 { margin-top: 24px; color: #405b62; font-size: 16px; }
+.hiyomi-theme .policy p, .hiyomi-theme .policy ul { color: #53666c; font-size: 15px; line-height: 2; }
+.hiyomi-theme .policy li + li { margin-top: 8px; }
+.hiyomi-theme .policy-dl { display: grid; grid-template-columns: 110px minmax(0,1fr); gap: 11px 22px; margin-top: 19px; font-size: 15px; line-height: 1.9; }
+.hiyomi-theme .policy-dl dt { margin: 0; font-size: 13px; color: #63777d; }
+.hiyomi-theme .policy-dl dd { margin: 0; color: #53666c; }
+.hiyomi-theme .policy-date { color: #73858a; font-size: 13px; }
+.hiyomi-theme .toast { background: #2d3d43; color: #fff; font-family: var(--sans); border-radius: 4px; }
+.hiyomi-theme .submit::after, .hiyomi-theme .line-btn::after, .hiyomi-theme .mini-line::after { content: '→'; background: none; border: 0; border-radius: 0; width: 24px; font-family: var(--sans); font-size: 22px; font-weight: 400; color: currentColor; }
+
+@media (max-width: 760px) {
+  .hiyomi-theme .entry { padding: 0 24px 54px; }
+  .hiyomi-theme .entry-masthead { min-height: 72px; padding: 12px 0; }
+  .hiyomi-theme .entry-masthead .brand { font-size: 21px; }
+  .hiyomi-theme .entry-hero { grid-template-columns: minmax(0,1fr); gap: 20px; padding: 34px 0 32px; }
+  .hiyomi-theme .entry-head h1 { margin-top: 14px; font-size: 35px; line-height: 1.55; }
+  .hiyomi-theme .entry-head .lead { margin-top: 18px; font-size: 14px; }
+  .hiyomi-theme .hero-cta { max-width: none; margin-top: 23px; }
+  .hiyomi-theme .hero-note { max-width: none; }
+  .hiyomi-theme .entry-preview-links { justify-content: center; gap: 6px 24px; margin-top: 12px; }
+  .hiyomi-theme .entry-illustration { max-width: 520px; width: 100%; margin: 0 auto; }
+  .hiyomi-theme .entry-illustration img { max-height: 270px; }
+  .hiyomi-theme .gods { padding: 19px 20px; }
+  .hiyomi-theme .gods summary { font-size: 16px; }
+  .hiyomi-theme .gods-grid { gap: 7px; }
+  .hiyomi-theme #form { padding-top: 42px; }
+  .hiyomi-theme .form-intro h2 { font-size: 26px; }
+  .hiyomi-theme .join { padding: 16px 26px 56px; }
+  .hiyomi-theme .join .brand { margin-top: 20px; padding-bottom: 21px; }
+  .hiyomi-theme .account-masthead { gap: 16px; padding-bottom: 14px; }
+  .hiyomi-theme .account-masthead .brand { margin: 0; padding: 0; font-size: 21px; }
+  .hiyomi-theme .account-masthead .back { font-size: 12px; }
+  .hiyomi-theme .join h1 { font-size: 29px; margin-top: 25px; }
+  .hiyomi-theme .join .lead { font-size: 14px; }
+  .hiyomi-theme .policy { padding: 16px 26px 56px; }
+  .hiyomi-theme .policy h1 { font-size: 27px; }
+  .hiyomi-theme .policy h2 { font-size: 19px; }
+  .hiyomi-theme .policy-dl { display: block; }
+  .hiyomi-theme .policy-dl dt { margin-top: 15px; }
+  .hiyomi-theme .policy-dl dd { margin-top: 4px; }
+}
+
+@media (max-width: 359px) {
+  .hiyomi-theme .entry, .hiyomi-theme .join { padding-left: 20px; padding-right: 20px; }
+  .hiyomi-theme .entry-head h1 { font-size: 31px; }
+  .hiyomi-theme .entry-head .eyebrow { font-size: 11px; }
+  .hiyomi-theme .entry-preview-links { gap: 4px 17px; }
+  .hiyomi-theme .entry-preview-links a { font-size: 12px; }
+  .hiyomi-theme .join h1 { font-size: 27px; }
+  .hiyomi-theme .policy h1 { font-size: 25px; }
+  .hiyomi-theme .ymd { gap: 6px; }
+  .hiyomi-theme .ymd select { padding-left: 8px; }
+}

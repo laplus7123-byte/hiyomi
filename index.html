@@ -8,22 +8,33 @@
 <meta name="description" content="名前と生年月日だけで、これまでの転機の年と今年の流れを無料で。四柱推命をもとにした自己分析。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/site-theme.css">
+<link rel="stylesheet" href="assets/personality-report.css">
 </head>
-<body>
+<body class="hiyomi-theme">
 
 <main id="entry" class="wrap entry">
   <header class="entry-head">
-    <p class="brand">HIYOMI</p>
-    <h1><span>生まれた日から、</span><span>あなたの人生が<wbr>動いた年を</span><span>当てます。</span></h1>
-    <p class="lead">名前と生年月日だけで、これまでの転機の年と、今年の流れを無料でお見せします。四柱推命の計算をもとにしています。</p>
+    <div class="entry-masthead"><p class="brand">HIYOMI</p><a href="#mypage">マイページ</a></div>
+    <div class="entry-hero">
+      <div class="entry-hero-copy">
+        <p class="eyebrow">生まれた日から読みとく、あなたらしさ</p>
+        <h1><span>じぶんを知る。</span><span class="hero-emphasis">二人が、わかる。</span></h1>
+        <p class="lead">生まれ持った強み、人生の節目、大切な人との相性。<br>四柱推命で読みとく、あなただけの鑑定レポート。</p>
+        <a class="hero-cta" href="#form" onclick="event.preventDefault(); document.getElementById('form').scrollIntoView();">無料で鑑定してみる<span aria-hidden="true">→</span></a>
+        <p class="hero-note">無料・会員登録なしで読めます</p>
+        <div class="entry-preview-links"><a href="#kantei?n=山田花子&d=1992-04-18&s=F">一人の鑑定見本</a><a href="#kantei?n=山田太郎&d=1986-08-12&s=M&pd=1990-03-21&ps=F&r=love&pn=佐藤花子">二人の相性見本</a></div>
+      </div>
+      <figure class="entry-illustration"><img src="assets/img/report-pioneer.png" alt="二人で地図を広げ、それぞれの道を見つける風景" width="1536" height="1024" decoding="async"></figure>
+    </div>
   </header>
 
-  <section class="gods" aria-labelledby="gods-h">
-    <h2 id="gods-h">あなたは、どの神の生まれ？</h2>
-    <p class="gods-lead">生まれた日で、10の神のどれかが決まります。縦の列が五行（木・火・土・金・水）の仲間です。</p>
-    <ul class="gods-grid">
+  <details class="gods">
+    <summary id="gods-h"><span>あなたは、どの神の生まれ？<small>10の神を見てみる</small></span><span class="disclosure-mark" aria-hidden="true">＋</span></summary>
+    <p class="gods-lead">生まれた日で、10の神のどれかが決まります。縦の列が五行（木・火・土・金・水）の仲間です。横に動かして見られます。</p>
+    <ul class="gods-grid" tabindex="0" aria-label="五行ごとの10の神。横にスクロールできます">
       <li class="el-wood"><p class="el">木</p>
         <figure><img src="assets/img/kami_tree.webp" alt="" width="480" height="640" loading="lazy"><figcaption>大樹神<small>久久能智神</small></figcaption></figure>
         <figure><img src="assets/img/kami_flower.webp" alt="" width="480" height="640" loading="lazy"><figcaption>草花神<small>木花咲耶姫</small></figcaption></figure></li>
@@ -40,11 +51,12 @@
         <figure><img src="assets/img/kami_sea.webp" alt="" width="480" height="640" loading="lazy"><figcaption>大海神<small>綿津見神</small></figcaption></figure>
         <figure><img src="assets/img/kami_rain.webp" alt="" width="480" height="640" loading="lazy"><figcaption>雨神<small>罔象女神</small></figcaption></figure></li>
     </ul>
-  </section>
+  </details>
 
   <form id="form" novalidate>
+    <div class="form-intro"><p class="eyebrow">あなたの鑑定レポート</p><h2>まずは、あなたのこと。</h2><p>お名前・生年月日・性別を入れてください。</p></div>
     <fieldset>
-      <legend>あなた</legend>
+      <legend>あなたの生まれ</legend>
       <label class="field">
         <span class="label">お名前</span>
         <input name="n" maxlength="20" placeholder="例：山田 花子" autocomplete="name">
@@ -79,8 +91,8 @@
     </fieldset>
 
     <fieldset>
-      <legend>気になる人<em>任意</em></legend>
-      <p class="hint">生年月日を入れると、二人の相性の結論と、いいことが見られます。</p>
+      <legend>二人だから、わかること。<em>任意</em></legend>
+      <p class="hint">気になる人の生年月日も入れると、二人の相性が加わります。恋人、パートナー、仕事の仲間と一緒に。</p>
       <label class="field">
         <span class="label">お名前<em>任意</em></span>
         <input name="pn" maxlength="20" placeholder="例：佐藤 太郎">
@@ -111,21 +123,22 @@
     </fieldset>
 
     <p class="error" id="err" role="alert"></p>
-    <button class="submit" type="submit">無料で鑑定する</button>
-    <a class="sample-link" href="#kantei?n=山田花子&d=1992-04-18&s=F">先に見本の鑑定書を見る</a>
+    <button class="submit" type="submit">無料で鑑定レポートを見る</button>
+    <a class="sample-link" href="#kantei?n=山田花子&d=1992-04-18&s=F">見本の鑑定レポートを見る</a>
     <p class="entry-foot"><a href="#mypage">会員の方はこちら</a>　<a href="privacy.html">プライバシーポリシー</a></p>
   </form>
 </main>
 
-<main id="result" class="wrap result" hidden>
+<main id="result" class="wrap result personality-report" hidden>
+  <header class="profile-masthead"><a class="profile-brand" href="#">HIYOMI</a><span>鑑定レポート</span><a class="profile-member" href="#mypage">マイページ</a></header>
   <nav class="toc" id="toc" aria-label="章の目次"></nav>
   <div id="report"></div>
 </main>
 
 <main id="join" class="wrap join" hidden>
-  <a class="back" href="#" data-back>鑑定書に戻る</a>
-  <p class="brand">HIYOMI</p>
-  <h1>無料の会員登録</h1>
+  <header class="account-masthead"><p class="brand">HIYOMI</p><a class="back" href="#" data-back>鑑定書に戻る</a></header>
+  <h1>この鑑定書を、<br>いつでも手元に。</h1>
+  <p class="registration-label">無料の会員登録</p>
   <p class="lead">鑑定書を保存して、次に大きく動きやすい年を1つお見せします。使いやすい方法を選ぶと、ワンタップで登録できます。</p>
   <p class="save-note" id="saveNote" hidden></p>
 
@@ -164,8 +177,7 @@
 </main>
 
 <main id="found" class="wrap join" hidden>
-  <a class="back" href="#join">ログイン方法の選択に戻る</a>
-  <p class="brand">HIYOMI</p>
+  <header class="account-masthead"><p class="brand">HIYOMI</p><a class="back" href="#join">ログイン方法の選択に戻る</a></header>
   <h1>すでに会員登録が<wbr>あります</h1>
   <p class="lead"><b id="foundMail"></b> は、<b id="foundOld"></b>で登録されています。同じ会員にまとめると、前の鑑定書や有料プランをそのまま使えます。</p>
   <div class="providers">
@@ -181,8 +193,7 @@
 </main>
 
 <main id="recover" class="wrap join" hidden>
-  <a class="back" href="#join">ログイン方法の選択に戻る</a>
-  <p class="brand">HIYOMI</p>
+  <header class="account-masthead"><p class="brand">HIYOMI</p><a class="back" href="#join">ログイン方法の選択に戻る</a></header>
   <h1>前の登録を探す</h1>
   <p class="lead">前に登録したときのメールアドレスを入れてください。登録があれば、<wbr><span class="nw">「登録した方法」と</span><wbr><span class="nw">「今の方法とまとめるリンク」を、</span><wbr>そのアドレスにお送りします。</p>
   <form class="mail" id="recoverForm" novalidate>
@@ -199,8 +210,7 @@
 </main>
 
 <main id="mypage" class="wrap join" hidden>
-  <a class="back" href="#">トップに戻る</a>
-  <p class="brand">HIYOMI</p>
+  <header class="account-masthead"><p class="brand">HIYOMI</p><a class="back" href="#">トップに戻る</a></header>
   <h1>会員ページ</h1>
   <p class="lead" id="mpWho"></p>
   <section class="mp-next" id="mpNext" hidden></section>

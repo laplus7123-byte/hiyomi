@@ -1,0 +1,222 @@
+/* HIYOMI — 冒険の書
+   2026-10-22 ユーザー指定のクラシックRPGテーマ。
+   既存の鑑定レポート構成を保ち、表示だけを差し替える。 */
+body.rpg-theme {
+  --page: #090f23;
+  --bg: #121e3d;
+  --paper: #182747;
+  --tint: #223756;
+  --text: #f5f2e8;
+  --sub: #c4d1df;
+  --faint: #aebfd2;
+  --rule: #50637e;
+  --navy: #f1d28a;
+  --navy-dark: #ffe4a9;
+  --c: #f1d28a;
+  --t: #223756;
+  --pixel: 'DotGothic16', 'Hiragino Kaku Gothic ProN', monospace;
+  --serif: var(--pixel);
+  --display: var(--pixel);
+  background: var(--page);
+  color: var(--text);
+  letter-spacing: .035em;
+  line-height: 1.85;
+  color-scheme: dark;
+}
+.rpg-theme .el-wood { --c: #acd4a6; --t: #223c3d; }
+.rpg-theme .el-fire { --c: #efa991; --t: #403143; }
+.rpg-theme .el-earth { --c: #edcf88; --t: #3d3b33; }
+.rpg-theme .el-metal { --c: #c9bbef; --t: #303655; }
+.rpg-theme .el-water { --c: #9ccbea; --t: #243b53; }
+.rpg-theme .wrap { background: var(--bg); }
+.rpg-theme a { color: var(--navy); }
+.rpg-theme :focus-visible { outline: 2px solid #ffe4a9; outline-offset: 5px; }
+.rpg-theme ::selection { background: #f1d28a; color: #121e3d; }
+.rpg-theme .brand { font-family: var(--pixel); color: #f1d28a; font-weight: 400; letter-spacing: .16em; }
+.rpg-theme .entry, .rpg-theme .join { padding-left: 22px; padding-right: 22px; }
+.rpg-theme .entry-head { padding: 20px 0 30px; }
+.rpg-theme .entry-masthead { align-items: center; }
+.rpg-theme .entry-masthead .brand { font-size: 27px; }
+.rpg-theme .entry-masthead a { font-family: var(--pixel); color: var(--text); }
+.rpg-theme .adventure-scene { margin: 18px 0 0; overflow: hidden; background: #294c69; }
+.rpg-theme .adventure-scene img { display: block; width: 100%; height: 206px; object-fit: cover; object-position: center 62%; image-rendering: pixelated; }
+.rpg-theme .entry-head .adventure-scene { margin-left: -22px; margin-right: -22px; }
+.rpg-theme .entry-head .eyebrow { margin-top: 23px; color: var(--sub); font-size: 12px; letter-spacing: .07em; }
+.rpg-theme .entry-head h1 { margin-top: 12px; font-family: var(--pixel); font-size: 31px; font-weight: 400; line-height: 1.55; letter-spacing: .035em; }
+.rpg-theme .hero-emphasis { color: var(--navy); }
+.rpg-theme .entry-head .lead { margin-top: 17px; font-size: 14px; line-height: 1.95; }
+.rpg-theme .hero-cta { margin-top: 24px; padding: 15px 18px; border: 4px double #f6f0df; border-radius: 5px; background: #1c3156; color: #fff8e7; font-family: var(--pixel); font-size: 18px; font-weight: 400; }
+.rpg-theme .hero-cta::before { content: '▶'; font-size: 11px; margin-right: 9px; }
+.rpg-theme .hero-cta span { margin-left: auto; font-family: var(--pixel); }
+.rpg-theme .hero-cta:hover { background: #294269; }
+.rpg-theme .hero-note { color: var(--sub); font-size: 12px; }
+.rpg-theme .entry-preview-links { margin-top: 16px; gap: 4px 24px; }
+.rpg-theme .entry-preview-links a { font-size: 13px; }
+.rpg-theme .gods { margin: 0 -22px 24px; padding: 16px 22px 22px; background: #182747; }
+.rpg-theme .gods > summary { color: var(--text); font-family: var(--pixel); }
+.rpg-theme .gods > summary small { color: var(--sub); }
+.rpg-theme .gods-grid { margin-left: -22px; margin-right: -22px; padding-left: 22px; padding-right: 22px; }
+.rpg-theme .gods-grid li { border-radius: 0; }
+.rpg-theme .gods-grid .el { background: none; color: var(--c); border: 1px solid var(--c); border-radius: 0; font-family: var(--pixel); }
+.rpg-theme .gods-grid img { mix-blend-mode: normal; }
+.rpg-theme .gods-grid figcaption { font-family: var(--pixel); }
+.rpg-theme .gods-grid small { color: var(--sub); }
+.rpg-theme #form { margin-top: 30px; }
+.rpg-theme .form-intro h2, .rpg-theme legend { font-family: var(--pixel); font-weight: 400; letter-spacing: .03em; }
+.rpg-theme .form-intro h2 { font-size: 25px; }
+.rpg-theme .form-intro .eyebrow { color: var(--navy); }
+.rpg-theme fieldset { background: none; padding: 24px 0 0; border-radius: 0; }
+.rpg-theme fieldset + fieldset { margin: 18px 0 24px; padding: 26px 0 0; border-top: 1px solid var(--rule); }
+.rpg-theme input:not([type]), .rpg-theme input[type=text], .rpg-theme input[type=email], .rpg-theme input[type=time], .rpg-theme select { background-color: #0c1731; border-color: #7184a2; border-radius: 2px; color: var(--text); }
+.rpg-theme select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23f1d28a'/%3E%3C/svg%3E"); }
+.rpg-theme input::placeholder { color: #9aacbf; }
+.rpg-theme .seg span { border-color: #7184a2; border-radius: 2px; background: #0c1731; }
+.rpg-theme .seg input:checked + span { background: #f1d28a; color: #14213c; border-color: #f1d28a; }
+.rpg-theme .submit { border: 4px double #fff4d7; border-radius: 5px; background: #22395b; color: var(--text); font-family: var(--pixel); font-weight: 400; }
+.rpg-theme .submit:hover { background: #304a72; }
+.rpg-theme .submit::after, .rpg-theme .line-btn::after, .rpg-theme .mini-line::after { content: '▶'; background: none; width: auto; height: auto; margin-top: 0; transform: translateY(-50%); border-radius: 0; font-family: var(--pixel); color: inherit; font-size: 11px; }
+.rpg-theme .error { color: #ffc1ac; }
+
+/* 目次はコマンド。枠は情報のまとまりに限って使用する。 */
+.rpg-theme .result { background: var(--bg); padding-bottom: 92px; }
+.rpg-theme .result .toc { background: #090f23; border-bottom: 1px solid #50637e; padding: 8px 10px; gap: 4px; }
+.rpg-theme .result .toc a { color: #c4d1df; font-family: var(--pixel); padding: 7px 10px; border-radius: 0; font-weight: 400; background: none; }
+.rpg-theme .result .toc a.on { color: #fff5d5; background: #263d61; }
+.rpg-theme .result .toc a.on::before { content: '▶'; font-size: 8px; margin-right: 5px; }
+.rpg-theme .result .report-overview { margin: 16px 14px 0; padding: 16px; background: #142442; border: 4px double #e6e7dc; border-radius: 6px; scroll-margin-top: 68px; }
+.rpg-theme .report-heading { align-items: flex-start; gap: 8px; }
+.rpg-theme .report-heading .brand { font-size: 19px; }
+.rpg-theme .report-heading > p:last-child { font-family: var(--pixel); color: #f5f2e8; font-size: 14px; letter-spacing: 0; }
+.rpg-theme .report-subtitle { display: block; color: #b6c6d9; font-family: var(--sans); font-size: 10px; text-align: right; }
+.rpg-theme .report-overview .adventure-scene { margin: 12px 0 0; }
+.rpg-theme .report-overview .adventure-scene img { height: 76px; object-position: center 40%; }
+.rpg-theme .report-overview .cover-who { padding: 0; margin-top: 12px; font-family: var(--pixel); font-size: 14px; font-weight: 400; color: var(--text); letter-spacing: .02em; clip-path: none; background: none; }
+.rpg-theme .status-window-title { margin-top: 12px; color: var(--sub); font-family: var(--pixel); font-size: 12px; }
+.rpg-theme .report-identity { grid-template-columns: minmax(0,1fr) 64px; gap: 10px; margin-top: 7px; }
+.rpg-theme .report-identity .reading-label { display: none; font-family: var(--sans); color: var(--sub); font-size: 11px; }
+.rpg-theme .report-identity .cover-title { font-family: var(--pixel); font-size: 25px; font-weight: 400; color: var(--navy); letter-spacing: .01em; line-height: 1.5; margin-top: 2px; }
+.rpg-theme .report-identity .cover-fig { border-radius: 1px; background: #e9e5d5; border: 2px solid #c9bb98; padding: 3px; }
+.rpg-theme .report-identity .cover-art { width: 58px; height: auto; mix-blend-mode: normal; }
+.rpg-theme .report-identity .cover-meta { font-size: 11px; line-height: 1.7; margin-top: 4px; color: var(--sub); }
+.rpg-theme .report-facts { margin-top: 12px; gap: 10px; }
+.rpg-theme .report-facts > div { grid-template-columns: 52px minmax(0,1fr); gap: 11px; }
+.rpg-theme .report-facts dt { font-family: var(--pixel); font-size: 12px; color: var(--sub); }
+.rpg-theme .report-facts dd { font-size: 14px; line-height: 1.75; }
+.rpg-theme .report-facts .fact-emphasis { color: #f6d991; font-weight: 700; }
+.rpg-theme .report-facts dd small { margin-top: 2px; font-size: 11px; color: #aebfd2; }
+.rpg-theme .report-years-summary { margin-top: 18px; padding: 14px 0 0; background: none; border-top: 1px solid #50637e; }
+.rpg-theme .report-years-summary h2 { font-family: var(--pixel); font-size: 12px; color: #c4d1df; font-weight: 400; }
+.rpg-theme .report-years { margin-top: 8px; gap: 12px; }
+.rpg-theme .year-number { color: #f1d28a; font-family: var(--pixel); font-size: 26px; font-weight: 400; }
+.rpg-theme .year-kind { font-size: 11px; color: var(--sub); line-height: 1.6; text-wrap: balance; }
+.rpg-theme .report-overview .reading-start { margin-top: 16px; gap: 10px; }
+.rpg-theme .report-overview .reading-link { flex: 1; min-width: 120px; display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border: 1px solid #a2b2c8; border-radius: 2px; color: var(--text); background: #223756; font-family: var(--pixel); font-size: 14px; font-weight: 400; }
+.rpg-theme .report-overview .reading-link:first-child { background: #f1d28a; color: #162340; border-color: #f1d28a; }
+.rpg-theme .report-overview .reading-link span { font-size: 16px; }
+.rpg-theme .report-origin { margin-top: 8px; }
+.rpg-theme .report-detail > summary { font-family: var(--pixel); color: #e7dbba; font-size: 12px; font-weight: 400; padding-top: 10px; padding-bottom: 10px; }
+.rpg-theme .report-detail > summary::after { font-family: var(--pixel); font-size: 16px; }
+.rpg-theme .report-origin .cover-only { background: none; padding-left: 0; padding-right: 0; }
+
+/* 詳細も同じ冒険の書。本文は通常の書体で読みやすさを保つ。 */
+.rpg-theme .result .sec, .rpg-theme .result .summary { margin: 22px 14px 0; padding: 23px 18px; border: 4px double #aebdd0; border-radius: 6px; background: #142442; scroll-margin-top: 65px; }
+.rpg-theme .result .sec h2, .rpg-theme .result .summary h2 { color: #f7f0db; font-family: var(--pixel); font-size: 23px; font-weight: 400; letter-spacing: .02em; }
+.rpg-theme .result .chapter-label { color: #edcf88; font-size: 11px; font-family: var(--pixel); font-weight: 400; letter-spacing: .03em; }
+.rpg-theme .result .sec-lead { color: var(--sub); font-size: 13px; line-height: 1.9; }
+.rpg-theme .result .sec h3 { font-family: var(--pixel); font-weight: 400; color: #f7f0db; }
+.rpg-theme .result .tl > .tl-band { margin-top: 20px; }
+.rpg-theme .result .pill { background: none; padding: 0; color: #edcf88; font-size: 11px; font-weight: 400; }
+.rpg-theme .result .band-title { color: var(--sub); font-family: var(--sans); font-size: 12px; }
+.rpg-theme .result .tl > .tl-year { background: none; padding: 14px 0 16px !important; margin-bottom: 15px; border-bottom: 1px solid #50637e; }
+.rpg-theme .year-heading { grid-template-columns: 70px minmax(0,1fr); gap: 11px; }
+.rpg-theme .result .tl-year .node { color: #f1d28a; font-family: var(--pixel); font-size: 27px; font-weight: 400; background: none; }
+.rpg-theme .result .tl-year h3 { color: var(--text); font-size: 16px; }
+.rpg-theme .result .tl-year .node small { color: #b4d9b1; font-size: 11px; }
+.rpg-theme .result .tl-period { color: var(--sub); }
+.rpg-theme .result .photo { mix-blend-mode: normal; border-radius: 0; }
+.rpg-theme .result .hit button { background: #0e1a33; color: var(--sub); border-color: #8194af; border-radius: 2px; font-family: var(--pixel); font-weight: 400; }
+.rpg-theme .result .hit button[aria-pressed=true] { background: #f1d28a; color: #162340; border-color: #f1d28a; }
+.rpg-theme .result .tl > .tl-next { border-bottom: 0; }
+.rpg-theme .result .tally { color: var(--text); padding-left: 0; background: none; }
+.rpg-theme .result .tally b { font-family: var(--pixel); font-weight: 400; }
+.rpg-theme .chapter-next { color: var(--navy); background: none; font-family: var(--pixel); font-weight: 400; }
+.rpg-theme .meishiki-table { font-size: 14px; }
+.rpg-theme .meishiki-table .is-day { background: #293c58; }
+.rpg-theme .meishiki-table tbody tr + tr { border-color: #3b516c; }
+.rpg-theme .meishiki-table th:first-child { width: 56px; color: var(--sub); }
+.rpg-theme .meishiki-table .me { color: #edcf88; font-size: 10px; }
+.rpg-theme .gz-value { font-family: var(--pixel); font-size: 25px; font-weight: 400; }
+.rpg-theme .gz-yomi { color: var(--sub); font-size: 11px; }
+.rpg-theme .term { text-decoration-color: #8798b2; }
+.rpg-theme .result .term-box { background: #243954; color: var(--text); border-radius: 0; }
+.rpg-theme .result .basis, .rpg-theme .result .swipe-hint { color: #aebfd2; }
+.rpg-theme .result .flip { background: #203657; border: 1px solid #8194af; border-radius: 3px; padding: 18px; }
+.rpg-theme .result .flip-label { font-family: var(--pixel); font-weight: 400; color: #f1d28a; }
+.rpg-theme .result .flip[aria-pressed=true] { background: #30415c; color: var(--text); }
+.rpg-theme .result .flip-basis, .rpg-theme .result .flip-label small { color: #c4d1df; opacity: 1; }
+.rpg-theme .result .block h3 { color: #edcf88; }
+.rpg-theme .result .dots i { width: 14px; height: 14px; border-radius: 0; background: #3b506c; }
+.rpg-theme .result .dots i.on { background: var(--c); }
+.rpg-theme .result .kyu { gap: 16px; }
+.rpg-theme .result .kyu div { padding: 0; background: none; border-radius: 0; }
+.rpg-theme .result .kyu .k-name { font-family: var(--pixel); font-size: 21px; font-weight: 400; color: #f1d28a; }
+.rpg-theme .result .summary .big { font-family: var(--pixel); color: #f1d28a; font-size: 24px; }
+.rpg-theme .result .summary .reading-link { color: #f1d28a; }
+
+/* なかま：結論と、お互いからの見え方を並べる。 */
+.rpg-theme .report-verdict { background: #243954; padding: 16px; border-radius: 0; }
+.rpg-theme .verdict-label { color: #c4d1df; font-family: var(--pixel); font-size: 12px; }
+.rpg-theme .result .report-verdict .conclusion { color: #f1d28a; font-family: var(--pixel); font-size: 21px; font-weight: 400; line-height: 1.7; }
+.rpg-theme .result .pair { gap: 18px; margin-top: 22px; }
+.rpg-theme .result .pair img { mix-blend-mode: normal; background: #e9e5d5; border: 2px solid #c9bb98; width: 66px; height: 88px; padding: 3px; }
+.rpg-theme .result .pair figcaption { color: var(--sub); font-size: 12px; }
+.rpg-theme .result .pair figcaption b { color: #f1d28a; font-family: var(--pixel); font-size: 16px; font-weight: 400; }
+.rpg-theme .result .pair-viewpoints { background: #243954; padding: 14px 12px; gap: 12px; }
+.rpg-theme .result .viewpoint-label { color: #c4d1df; font-size: 11px; }
+.rpg-theme .result .viewpoint-value { color: #f5f2e8; font-family: var(--pixel); font-size: 17px; font-weight: 400; line-height: 1.8; text-wrap: balance; word-break: normal; }
+.rpg-theme .result .goods li { background: none; padding: 0; }
+.rpg-theme .result .locked { background: #203350; border-radius: 0; padding: 17px; }
+.rpg-theme .result .locked h3 { font-size: 18px; }
+.rpg-theme .mini-line { background: #2b4367; border: 1px solid #9dadc3; border-radius: 2px; color: var(--text); font-family: var(--pixel); font-weight: 400; font-size: 14px; padding: 10px 34px 10px 14px; }
+.rpg-theme .result .foot { color: var(--faint); }
+.rpg-theme .line-bar { background: #090f23; border-color: #50637e; padding: 9px 14px calc(9px + env(safe-area-inset-bottom)); }
+.rpg-theme .line-btn { min-height: 48px; border: 4px double #f6f0df; border-radius: 5px; background: #22395b; color: #fff4d7; font-family: var(--pixel); font-weight: 400; font-size: 14px; padding: 11px 29px 11px 12px; }
+
+/* 登録・会員ページ・ポリシーは実際の操作名を明確に保つ。 */
+.rpg-theme .join .brand { margin-top: 18px; }
+.rpg-theme .join h1 { color: #f1d28a; font-family: var(--pixel); font-size: 28px; font-weight: 400; }
+.rpg-theme .join .lead { color: #c4d1df; }
+.rpg-theme .registration-label { color: #f5f2e8; }
+.rpg-theme .pv { border-radius: 2px; }
+.rpg-theme .pv-main, .rpg-theme .pv-mail { background: #2b4367; border: 1px solid #9dadc3; color: #f5f2e8; }
+.rpg-theme .pv-sub { background: #172743; color: #f5f2e8; border-color: #8194af; }
+.rpg-theme .pv-last { color: #15213c; border-radius: 0; }
+.rpg-theme .pv-google .pv-last { background: #f1d28a; }
+.rpg-theme .save-note, .rpg-theme .mp-next, .rpg-theme .mp-list a { background: #223756; color: var(--text); border-radius: 2px; }
+.rpg-theme .mp-year, .rpg-theme .mp-title, .rpg-theme .mp-h, .rpg-theme .mp-list b { font-family: var(--pixel); font-weight: 400; }
+.rpg-theme .sent { background: #25443d; color: #e5f4e5; border-radius: 2px; }
+.rpg-theme .toast { background: #f1d28a; color: #13213c; border-radius: 2px; }
+.rpg-theme .policy h2 { font-family: var(--sans); font-size: 20px; color: #f1d28a; letter-spacing: .02em; }
+.rpg-theme .policy h1 { font-size: 27px; }
+.rpg-theme .policy p, .rpg-theme .policy ul, .rpg-theme .policy-dl { font-size: 14px; line-height: 1.95; }
+@media (min-width: 480px) {
+  .rpg-theme .entry, .rpg-theme .join { padding-left: 28px; padding-right: 28px; }
+  .rpg-theme .entry-head .adventure-scene { margin-left: -28px; margin-right: -28px; }
+  .rpg-theme .adventure-scene img { height: 230px; }
+  .rpg-theme .entry-head h1 { font-size: 36px; }
+  .rpg-theme .result .report-overview { margin-left: 18px; margin-right: 18px; padding: 18px; }
+  .rpg-theme .report-overview .adventure-scene img { height: 66px; }
+  .rpg-theme .report-identity { grid-template-columns: minmax(0,1fr) 70px; }
+  .rpg-theme .report-identity .cover-art { width: 64px; }
+  .rpg-theme .report-identity .cover-title { font-size: 29px; }
+  .rpg-theme .report-facts > div { grid-template-columns: 61px minmax(0,1fr); }
+  .rpg-theme .result .sec, .rpg-theme .result .summary { margin-left: 18px; margin-right: 18px; padding: 26px 22px; }
+}
+@media (max-width: 359px) {
+  .rpg-theme .result .report-overview, .rpg-theme .result .sec, .rpg-theme .result .summary { margin-left: 10px; margin-right: 10px; padding-left: 12px; padding-right: 12px; }
+  .rpg-theme .report-identity { grid-template-columns: minmax(0,1fr) 56px; }
+  .rpg-theme .report-identity .cover-title { font-size: 23px; }
+  .rpg-theme .year-heading { grid-template-columns: 62px minmax(0,1fr); gap: 9px; }
+  .rpg-theme .year-number { font-size: 23px; }
+  .rpg-theme .result .viewpoint-value { font-size: 16px; }
+}
