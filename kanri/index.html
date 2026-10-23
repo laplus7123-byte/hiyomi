@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>HIYOMI 管理</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kanri.css">
+</head>
+<body>
+
+<div id="gate" class="gate" hidden>
+  <form id="gateForm" class="gate-box">
+    <p class="brand">HIYOMI 管理</p>
+    <h1>合言葉を入れてください</h1>
+    <label>合言葉<input name="key" type="password" autocomplete="current-password" required></label>
+    <fieldset><legend>あなたは</legend><div class="who" id="gateWho"></div></fieldset>
+    <p class="err" id="gateErr"></p>
+    <button class="btn primary" type="submit">入る</button>
+  </form>
+</div>
+
+<header class="top">
+  <p class="brand">HIYOMI <span>管理</span></p>
+  <nav class="tabs" id="tabs">
+    <a href="#tasks" data-tab="tasks">タスク</a>
+    <a href="#expenses" data-tab="expenses">経費</a>
+    <a href="#review" data-tab="review">添削</a>
+  </nav>
+  <div class="top-side">
+    <span class="sync" id="sync"></span>
+    <label class="me">操作する人<select id="me"></select></label>
+  </div>
+</header>
+<p class="local-note" id="localNote" hidden>いまは試用モードです。データはこのブラウザだけに保存され、ほかの2人には見えません。</p>
+
+<main>
+  <!-- タスク -->
+  <section id="view-tasks" class="view" hidden>
+    <form id="taskAdd" class="add-row">
+      <input name="title" placeholder="やることを追加（Enter）" required maxlength="200">
+      <select name="owner" aria-label="担当"></select>
+      <input name="due" type="date" aria-label="期限">
+      <button class="btn primary" type="submit">追加</button>
+    </form>
+    <div class="filters">
+      <div class="seg" id="ownerFilter" role="group" aria-label="担当で絞る"></div>
+      <label class="check"><input type="checkbox" id="showDone">完了も表示</label>
+    </div>
+    <div id="taskEmpty" class="empty" hidden>
+      <p>タスクはまだありません。上の欄から追加できます。</p>
+      <button class="btn" type="button" id="seedTasks">共有シートの「やること」18件を取り込む</button>
+    </div>
+    <div id="taskList"></div>
+  </section>
+
+  <!-- 経費 -->
+  <section id="view-expenses" class="view" hidden>
+    <div class="exp-grid">
+      <div class="exp-main">
+        <div class="sum" id="expSum"></div>
+        <div class="toolbar">
+          <h2>明細</h2>
+          <div class="toolbar-side">
+            <select id="expMonth" aria-label="月で絞る"></select>
+            <button class="btn" type="button" id="expCsv">CSVで書き出す</button>
+          </div>
+        </div>
+        <div id="expList"></div>
+      </div>
+      <aside class="exp-side">
+        <h2>経費を記録</h2>
+        <form id="expAdd" class="stack">
+          <label>日付<input name="date" type="date" required></label>
+          <label>内容<input name="item" required maxlength="100" placeholder="例: ドメイン hiyomi.jp 1年分"></label>
+          <label>金額（円・税込）<input name="amount" type="number" inputmode="numeric" min="1" step="1" required></label>
+          <label>区分<select name="category"></select></label>
+          <label>立て替えた人<select name="payer"></select></label>
+          <label>領収書<input name="file" type="file" accept="image/*,application/pdf"></label>
+          <label>領収書のURL（ファイルの代わりに）<input name="receipt" type="url" placeholder="https://"></label>
+          <label>メモ<textarea name="note" rows="2" maxlength="500"></textarea></label>
+          <button class="btn primary" type="submit">記録する</button>
+        </form>
+        <h2 class="settle-h">立て替えの精算</h2>
+        <div id="settle"></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 添削 -->
+  <section id="view-review" class="view review" hidden>
+    <div class="rv-bar">
+      <select id="rvPage" aria-label="ページ"></select>
+      <div class="seg" role="group" aria-label="表示幅">
+        <button type="button" data-dev="sp" aria-pressed="true">スマホ 390</button>
+        <button type="button" data-dev="pc" aria-pressed="false">PC 1280</button>
+      </div>
+      <button type="button" class="btn primary" id="rvMode" aria-pressed="false">コメントを置く</button>
+      <span class="rv-hint" id="rvHint">サイトを普通に操作できます。直したい場所が出たら「コメントを置く」を押して、その場所をクリック。</span>
+    </div>
+    <div class="rv-body">
+      <div class="rv-stage" id="rvStage">
+        <div class="rv-device" id="rvDevice">
+          <iframe id="rvFrame" title="HIYOMI サイト"></iframe>
+          <div class="rv-layer" id="rvLayer">
+            <div class="rv-hover" id="rvHover" hidden></div>
+          </div>
+        </div>
+        <form class="rv-pop" id="rvPop" hidden>
+          <p class="rv-pop-target" id="rvPopTarget"></p>
+          <textarea name="text" rows="4" maxlength="2000" placeholder="直してほしいこと（例: この見出しは2行に収めたい）" required></textarea>
+          <div class="rv-pop-act">
+            <button type="button" class="btn" data-cancel>やめる</button>
+            <button type="submit" class="btn primary">コメントする</button>
+          </div>
+        </form>
+      </div>
+      <aside class="rv-side">
+        <div class="rv-side-head">
+          <h2>コメント</h2>
+          <div class="seg small" id="rvScope" role="group" aria-label="範囲">
+            <button type="button" data-scope="page" aria-pressed="true">このページ</button>
+            <button type="button" data-scope="all" aria-pressed="false">すべて</button>
+          </div>
+          <label class="check"><input type="checkbox" id="rvShowDone">対応済みも表示</label>
+        </div>
+        <ol class="rv-list" id="rvList"></ol>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<dialog id="taskDlg" class="dlg">
+  <form method="dialog" id="taskForm" class="stack">
+    <h2>タスクを編集</h2>
+    <div class="row2">
+      <label class="narrow">番号<input name="no" type="number" min="0"></label>
+      <label>状況<select name="status"></select></label>
+    </div>
+    <label>やること<input name="title" required maxlength="200"></label>
+    <fieldset><legend>担当</legend><div class="who" id="taskOwners"></div></fieldset>
+    <label>期限<input name="due" type="date"></label>
+    <label>メモ<textarea name="note" rows="5" maxlength="3000"></textarea></label>
+    <p class="link-line" id="taskLink"></p>
+    <div class="dlg-act">
+      <button type="button" class="btn danger" data-del>削除</button>
+      <span class="grow"></span>
+      <button type="button" class="btn" data-close autofocus>閉じる</button>
+      <button type="submit" class="btn primary" value="save">保存</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="expDlg" class="dlg">
+  <form method="dialog" id="expForm" class="stack">
+    <h2>経費を編集</h2>
+    <div class="row2">
+      <label>日付<input name="date" type="date" required></label>
+      <label>金額（円）<input name="amount" type="number" min="1" step="1" required></label>
+    </div>
+    <label>内容<input name="item" required maxlength="100"></label>
+    <div class="row2">
+      <label>区分<select name="category"></select></label>
+      <label>立て替えた人<select name="payer"></select></label>
+    </div>
+    <label>領収書のURL<input name="receipt" type="url"></label>
+    <label>領収書を差し替える<input name="file" type="file" accept="image/*,application/pdf"></label>
+    <label>メモ<textarea name="note" rows="2" maxlength="500"></textarea></label>
+    <label class="check"><input type="checkbox" name="settled">精算済み</label>
+    <div class="dlg-act">
+      <button type="button" class="btn danger" data-del>削除</button>
+      <span class="grow"></span>
+      <button type="button" class="btn" data-close autofocus>閉じる</button>
+      <button type="submit" class="btn primary" value="save">保存</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="config.js"></script>
+<script src="seed.js"></script>
+<script src="kanri.js"></script>
+<script src="review.js"></script>
+</body>
+</html>
