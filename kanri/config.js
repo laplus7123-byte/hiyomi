@@ -1,6 +1,6 @@
 /* HIYOMI プロジェクト管理ツールの設定。api が空のあいだは、この端末のブラウザだけに保存する（試用） */
 window.KANRI_CONFIG = {
-  api: '',
+  api: 'https://script.google.com/macros/s/AKfycbwbCYeS-0QVWkSpW5G-d5Gi5lFGNbfAF5XiyNlv7TzAIDTZPPXyFDtnjo8H2CYSBqNEIg/exec',
   members: ['宮野', '丸野', '葛西'],
   /* 経費の負担割合（立て替えの精算に使う）。合計が1になるように */
   shares: { '宮野': 1 / 3, '丸野': 1 / 3, '葛西': 1 / 3 },
