@@ -12,6 +12,8 @@
 <link rel="stylesheet" href="assets/style.css">
 <link rel="stylesheet" href="assets/site-theme.css">
 <link rel="stylesheet" href="assets/personality-report.css">
+<link rel="stylesheet" href="assets/kasai.css">
+<script>if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('anim');</script>
 </head>
 <body class="hiyomi-theme">
 
@@ -20,46 +22,60 @@
     <div class="entry-masthead"><p class="brand">HIYOMI</p><a href="#mypage">マイページ</a></div>
     <div class="entry-hero">
       <div class="entry-hero-copy">
-        <p class="eyebrow">生まれた日から読みとく、あなたらしさ</p>
-        <h1><span>じぶんを知る。</span><span class="hero-emphasis">二人が、わかる。</span></h1>
-        <p class="lead">生まれ持った強み、人生の節目、大切な人との相性。<br>四柱推命で読みとく、あなただけの鑑定レポート。</p>
-        <a class="hero-cta" href="#form" onclick="event.preventDefault(); document.getElementById('form').scrollIntoView();">無料で鑑定してみる<span aria-hidden="true">→</span></a>
-        <p class="hero-note">無料・会員登録なしで読めます</p>
-        <div class="entry-preview-links"><a href="#kantei?n=山田花子&d=1992-04-18&s=F">一人の鑑定見本</a><a href="#kantei?n=山田太郎&d=1986-08-12&s=M&pd=1990-03-21&ps=F&r=love&pn=佐藤花子">二人の相性見本</a></div>
+        <p class="eyebrow">四柱推命の鑑定レポート</p>
+        <h1><span>生まれた日から読む、</span><span>性格と人生の節目。</span></h1>
+        <p class="lead">四柱推命の計算で、<wbr>性格・価値観・<wbr>これまでの節目・<wbr>気をつけたいズレを<wbr>レポートにまとめます。<wbr>気になる人を1人入れると、<wbr>二人の相性も<wbr>無料で読めます。</p>
+        <div class="guide guide-entry">
+          <span class="guide-face"><img src="assets/img/guide-face.webp" alt="" width="160" height="160"></span>
+          <div class="guide-say"><p class="guide-name">案内人 ひよみ</p><p class="guide-text">個人の鑑定と相性の鑑定、どちらにしますか？</p></div>
+        </div>
+        <div class="mode-choices">
+          <button type="button" class="mode-choice mode-solo" data-mode="solo" aria-controls="form" aria-pressed="false">
+            <span class="mode-meta">1名</span>
+            <span class="mode-title">個人の鑑定をする</span>
+            <span class="mode-text">あなた一人について</span>
+          </button>
+          <button type="button" class="mode-choice mode-pair" data-mode="pair" aria-controls="form" aria-pressed="false">
+            <span class="mode-meta">2名</span>
+            <span class="mode-title">相性の鑑定をする</span>
+            <span class="mode-text">あなたと、もう一人について</span>
+          </button>
+        </div>
       </div>
-      <figure class="entry-illustration"><img src="assets/img/report-pioneer.png" alt="二人で地図を広げ、それぞれの道を見つける風景" width="1536" height="1024" decoding="async"></figure>
+      <aside class="report-sample" aria-label="鑑定レポートの見本">
+        <div class="page-run" aria-hidden="true"><span>HIYOMI 鑑定レポート</span><span>山田花子さん</span></div>
+        <div class="sample-head"><p class="sample-doc">レポートの見本</p><p class="sample-who">1992年4月18日生まれ・女性の場合</p></div>
+        <p class="sample-kicker">あなたのタイプ</p>
+        <p class="sample-type"></p>
+        <p class="sample-lead"></p>
+        <p class="sample-label">レポートの内容</p>
+        <ol class="sample-chapters">
+          <li class="c-blue">性格（表の顔と裏の顔）</li><li class="c-yellow">仕事観・恋愛観・人生観</li><li class="c-lavender">人生の節目</li>
+          <li class="c-pink">人との関わり方</li><li class="c-gray">気をつけたいズレ</li><li class="c-mint">豊かに生きるための助言</li>
+        </ol>
+        <p class="sample-note">気になる人を1人入れると、二人の相性（結論・形の違い・いいこと・ズレ・向き合い方）も無料で入ります。</p>
+        <p class="sample-links"><a href="#kantei?n=山田花子&d=1992-04-18&s=F">個人の見本を開く</a><a href="#kantei?n=山田太郎&d=1986-08-12&s=M&pd=1990-03-21&ps=F&r=love&pn=佐藤花子">相性の見本を開く</a></p>
+        <p class="page-no" aria-hidden="true">1 / 9</p>
+      </aside>
     </div>
   </header>
 
-  <details class="gods">
-    <summary id="gods-h"><span>あなたは、どの神の生まれ？<small>10の神を見てみる</small></span><span class="disclosure-mark" aria-hidden="true">＋</span></summary>
-    <p class="gods-lead">生まれた日で、10の神のどれかが決まります。縦の列が五行（木・火・土・金・水）の仲間です。横に動かして見られます。</p>
-    <ul class="gods-grid" tabindex="0" aria-label="五行ごとの10の神。横にスクロールできます">
-      <li class="el-wood"><p class="el">木</p>
-        <figure><img src="assets/img/kami_tree.webp" alt="" width="480" height="640" loading="lazy"><figcaption>大樹神<small>久久能智神</small></figcaption></figure>
-        <figure><img src="assets/img/kami_flower.webp" alt="" width="480" height="640" loading="lazy"><figcaption>草花神<small>木花咲耶姫</small></figcaption></figure></li>
-      <li class="el-fire"><p class="el">火</p>
-        <figure><img src="assets/img/kami_sun.webp" alt="" width="480" height="640" loading="lazy"><figcaption>太陽神<small>天照大御神</small></figcaption></figure>
-        <figure><img src="assets/img/kami_flame.webp" alt="" width="480" height="640" loading="lazy"><figcaption>灯火神<small>火之迦具土神</small></figcaption></figure></li>
-      <li class="el-earth"><p class="el">土</p>
-        <figure><img src="assets/img/kami_mountain.webp" alt="" width="480" height="640" loading="lazy"><figcaption>山神<small>大山津見神</small></figcaption></figure>
-        <figure><img src="assets/img/kami_field.webp" alt="" width="480" height="640" loading="lazy"><figcaption>田畑神<small>宇迦之御魂神</small></figcaption></figure></li>
-      <li class="el-metal"><p class="el">金</p>
-        <figure><img src="assets/img/kami_sword.webp" alt="" width="480" height="640" loading="lazy"><figcaption>剣神<small>経津主神</small></figcaption></figure>
-        <figure><img src="assets/img/kami_jewel.webp" alt="" width="480" height="640" loading="lazy"><figcaption>宝石神<small>玉祖命</small></figcaption></figure></li>
-      <li class="el-water"><p class="el">水</p>
-        <figure><img src="assets/img/kami_sea.webp" alt="" width="480" height="640" loading="lazy"><figcaption>大海神<small>綿津見神</small></figcaption></figure>
-        <figure><img src="assets/img/kami_rain.webp" alt="" width="480" height="640" loading="lazy"><figcaption>雨神<small>罔象女神</small></figcaption></figure></li>
-    </ul>
-  </details>
-
-  <form id="form" novalidate>
-    <div class="form-intro"><p class="eyebrow">あなたの鑑定レポート</p><h2>まずは、あなたのこと。</h2><p>お名前・生年月日・性別を入れてください。</p></div>
-    <fieldset>
-      <legend>あなたの生まれ</legend>
+  <form id="form" novalidate hidden>
+    <div class="form-intro">
+      <div class="mode-switch" role="group" aria-label="鑑定の種類">
+        <button type="button" data-mode="solo" aria-pressed="false">個人の鑑定</button>
+        <button type="button" data-mode="pair" aria-pressed="false">相性の鑑定</button>
+      </div>
+      <h2><span class="only-solo">あなたの生まれを入れてください</span><span class="only-pair">お二人の生まれを入れてください</span></h2>
+      <p><span class="only-solo">お名前・生年月日・性別の3つで、レポートができます。</span><span class="only-pair">1人目にあなた、2人目にお相手を入れてください。</span></p>
+    </div>
+    <div class="form-people">
+    <fieldset class="person person-me">
+      <legend><span class="only-solo">あなた</span><span class="only-pair">1人目　あなた</span></legend>
       <label class="field">
         <span class="label">お名前</span>
         <input name="n" maxlength="20" placeholder="例：山田 花子" autocomplete="name">
+        <small>姓と名の間にスペースを入れると、名前の画数も出ます。</small>
       </label>
       <div class="field">
         <span class="label">生年月日</span>
@@ -77,22 +93,24 @@
         </div>
         <small>10年ごとの流れの向きが、性別で変わります。</small>
       </div>
-      <div class="more">
-        <label class="field">
-          <span class="label">生まれた時刻<em>任意</em></span>
-          <input type="time" name="t">
-        </label>
-        <label class="field">
-          <span class="label">生まれた都道府県<em>任意</em></span>
-          <select name="p"><option value="">選ばない</option></select>
-        </label>
-        <small>時刻を入れると、命式に4つ目の柱（時柱）が加わります。タイプは変わりません。</small>
-      </div>
+      <details class="more-detail">
+        <summary>生まれた時刻・場所も入れる<em>任意</em></summary>
+        <div class="more">
+          <label class="field">
+            <span class="label">生まれた時刻<em>任意</em></span>
+            <input type="time" name="t">
+          </label>
+          <label class="field">
+            <span class="label">生まれた都道府県<em>任意</em></span>
+            <select name="p"><option value="">選ばない</option></select>
+          </label>
+          <small>時刻を入れると、命式に4つ目の柱（時柱）が加わります。タイプは変わりません。</small>
+        </div>
+      </details>
     </fieldset>
 
-    <fieldset>
-      <legend>二人だから、わかること。<em>任意</em></legend>
-      <p class="hint">気になる人の生年月日も入れると、二人の相性が加わります。恋人、パートナー、仕事の仲間と一緒に。</p>
+    <fieldset class="person person-partner only-pair">
+      <legend>2人目　お相手</legend>
       <label class="field">
         <span class="label">お名前<em>任意</em></span>
         <input name="pn" maxlength="20" placeholder="例：佐藤 太郎">
@@ -121,12 +139,26 @@
         <small>選ばないときは恋愛で見ます。上司・部下などの肩書きは聞きません。命式から本来の役割を出します。</small>
       </div>
     </fieldset>
+    </div>
 
-    <p class="error" id="err" role="alert"></p>
-    <button class="submit" type="submit">無料で鑑定レポートを見る</button>
-    <a class="sample-link" href="#kantei?n=山田花子&d=1992-04-18&s=F">見本の鑑定レポートを見る</a>
-    <p class="entry-foot"><a href="#mypage">会員の方はこちら</a>　<a href="privacy.html">プライバシーポリシー</a></p>
+    <div class="form-actions">
+      <p class="error" id="err" role="alert"></p>
+      <button class="submit" type="submit"><span class="only-solo">個人の鑑定レポートを見る</span><span class="only-pair">相性の鑑定レポートを見る</span></button>
+    </div>
   </form>
+
+  <section class="about-report" aria-labelledby="about-h">
+    <h2 id="about-h">このレポートについて</h2>
+    <dl>
+      <div><dt>計算のしかた</dt><dd>生年月日（わかれば生まれた時刻も）から、四柱推命の命式を出します。月の区切りは、暦の節入りで数えます。</dd></div>
+      <div><dt>書いてあること</dt><dd>性格・仕事観・恋愛観・人生観・これまでの節目・人との関わり方・気をつけたいズレと助言です。お名前を入れた人には、名前の画数も出します。どこから読んだかは、各項目の札（生まれ年から・生まれ月から など）を押すと出ます。</dd></div>
+      <div><dt>無料と有料</dt><dd>あなたと、気になる人1人までは無料です。結果の保存とマイページは無料の会員登録で使えます。これからの流れ（10年・毎年・毎月、二人の5年）、3人目からの相性、AIへの相談、PDFの鑑定書は月額500円です。</dd></div>
+      <div><dt>位置づけ</dt><dd>四柱推命の計算で出した、自己分析の材料です。大事な決断は、ほかの情報とあわせてご判断ください。</dd></div>
+      <div><dt>運営</dt><dd>株式会社La plus。入力した内容の扱いは<a href="privacy.html">プライバシーポリシー</a>に書いています。</dd></div>
+    </dl>
+  </section>
+
+  <p class="entry-foot"><a href="#mypage">会員の方はこちら</a>　<a href="privacy.html">プライバシーポリシー</a></p>
 </main>
 
 <main id="result" class="wrap result personality-report" hidden>
@@ -139,7 +171,7 @@
   <header class="account-masthead"><p class="brand">HIYOMI</p><a class="back" href="#" data-back>鑑定書に戻る</a></header>
   <h1>この鑑定書を、<br>いつでも手元に。</h1>
   <p class="registration-label">無料の会員登録</p>
-  <p class="lead">鑑定書を保存して、次に大きく動きやすい年を1つお見せします。使いやすい方法を選ぶと、ワンタップで登録できます。</p>
+  <p class="lead">鑑定書を保存して、マイページからいつでも見返せます。使いやすい方法を選ぶと、ワンタップで登録できます。</p>
   <p class="save-note" id="saveNote" hidden></p>
 
   <div class="providers">
@@ -213,7 +245,6 @@
   <header class="account-masthead"><p class="brand">HIYOMI</p><a class="back" href="#">トップに戻る</a></header>
   <h1>会員ページ</h1>
   <p class="lead" id="mpWho"></p>
-  <section class="mp-next" id="mpNext" hidden></section>
   <h2 class="mp-h">保存した鑑定書</h2>
   <div id="mpList"></div>
   <a class="sample-link" href="#">新しく鑑定する</a>
@@ -223,13 +254,15 @@
 </main>
 
 <div class="line-bar" id="lineBar" hidden>
-  <a class="line-btn" data-join href="#join">無料の会員登録で続きを見る</a>
+  <a class="line-btn" data-join href="#join">結果を保存する（無料の会員登録）</a>
 </div>
+<div class="loading" id="loading" role="status" aria-live="polite" hidden></div>
 <p class="toast" id="toast" role="status" hidden></p>
 
 <script src="vendor/lunar.js"></script>
 <script src="assets/meishiki.js"></script>
 <script src="assets/texts.js"></script>
+<script src="assets/kakusu.js"></script>
 <script src="assets/app.js"></script>
 <script src="assets/firebase-config.js"></script>
 <script type="module" src="assets/member.js"></script>

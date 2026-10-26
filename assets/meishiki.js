@@ -253,7 +253,7 @@
   function values(o) { return Object.keys(o).map(function (k) { return o[k]; }); }
 
   root.Meishiki = {
-    chart: chart, compat: compat, yomi: yomi, yearGz: yearGz,
+    chart: chart, compat: compat, yomi: yomi, yearGz: yearGz, star: star,
     GROUP_OF_STAR: (function () { var m = {}; Object.keys(JA).forEach(function (k) { m[JA[k]] = GROUP[k]; }); return m; })(),
     ROLE: ROLE, PREFS: Object.keys(LON)
   };

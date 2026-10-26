@@ -1,0 +1,772 @@
+/* HIYOMI デザイン④（Codex仕上げ 2026-10-26）。デザイン③を継承し、末尾に④の調整を集約。
+   白地のレポート。操作は紺、内容の種類はパステル5色で見分ける。
+   色の割り当て：稼ぐ＝ピンク、表現＝黄、学ぶ＝青、まとめる＝ラベンダー、自立＝ミント。
+   章も同じ5色＋グレーで塗り分け、同じ色が同じ意味になるようにする。 */
+body.hiyomi-theme {
+  --ink: #1f2a37;
+  --sub: #4a5565;
+  --faint: #5d6878;
+  --rule: #e3e7ee;
+  --navy: #2c4a6e;
+  --navy-dark: #213a58;
+  --blue: #e4eefb;     --blue-ink: #2b5a8c;     --blue-bar: #7fa6d6;
+  --pink: #fce7e4;     --pink-ink: #9c4135;     --pink-bar: #e8a096;
+  --yellow: #fbf1d2;   --yellow-ink: #6f5410;   --yellow-bar: #dfbb55;
+  --mint: #def3e9;     --mint-ink: #276650;     --mint-bar: #7cc3a3;
+  --lavender: #ece7f9; --lavender-ink: #56479a; --lavender-bar: #ab9ce0;
+  --gray: #eef1f5;     --gray-ink: #3a4a5e;
+  color: var(--ink);
+}
+.hiyomi-theme .brand { color: var(--navy); }
+
+/* ---------- 入口 ---------- */
+.hiyomi-theme .entry-masthead { justify-content: flex-start; gap: 18px; border-bottom-color: var(--rule); }
+.hiyomi-theme .entry-masthead .brand { color: var(--navy); }
+.hiyomi-theme .masthead-label { color: var(--faint); font-size: 12px; letter-spacing: .06em; }
+.hiyomi-theme .entry-masthead a { margin-left: auto; }
+.hiyomi-theme .entry-hero { grid-template-columns: minmax(0,1.05fr) minmax(0,.95fr); align-items: start; gap: 56px; padding: 56px 0 64px; }
+.hiyomi-theme .entry-head .eyebrow { color: var(--blue-ink); font-weight: 700; letter-spacing: .06em; }
+.hiyomi-theme .entry-head h1 { margin-top: 14px; color: var(--ink); font-size: clamp(28px,2.9vw,37px); line-height: 1.6; }
+.hiyomi-theme .entry-head h1 span { display: block; }
+.hiyomi-theme .entry-head .lead { max-width: 30em; margin-top: 20px; color: var(--sub); font-size: 15px; word-break: keep-all; overflow-wrap: anywhere; }
+
+.hiyomi-theme .choose-label { margin-top: 34px; color: var(--ink); font-size: 14px; font-weight: 700; }
+.hiyomi-theme .mode-choices { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin-top: 12px; }
+.hiyomi-theme .mode-choice { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 18px 20px 16px; border: 1px solid #c9d1dd; border-radius: 8px; background: #fff; color: var(--ink); font-family: var(--sans); text-align: left; cursor: pointer; }
+.hiyomi-theme .mode-solo:hover, .hiyomi-theme .mode-solo[aria-pressed=true] { border-color: var(--blue-ink); background: var(--blue); }
+.hiyomi-theme .mode-pair:hover, .hiyomi-theme .mode-pair[aria-pressed=true] { border-color: var(--pink-ink); background: var(--pink); }
+.hiyomi-theme .mode-meta { padding: 1px 9px; border-radius: 3px; font-size: 11px; font-weight: 700; line-height: 1.7; }
+.hiyomi-theme .mode-solo .mode-meta { background: var(--blue); color: var(--blue-ink); }
+.hiyomi-theme .mode-pair .mode-meta { background: var(--pink); color: var(--pink-ink); }
+.hiyomi-theme .mode-solo:hover .mode-meta, .hiyomi-theme .mode-solo[aria-pressed=true] .mode-meta,
+.hiyomi-theme .mode-pair:hover .mode-meta, .hiyomi-theme .mode-pair[aria-pressed=true] .mode-meta { background: #fff; }
+.hiyomi-theme .mode-title { margin-top: 6px; font-size: 17px; font-weight: 700; line-height: 1.5; }
+.hiyomi-theme .mode-text { color: var(--sub); font-size: 13px; line-height: 1.75; word-break: keep-all; overflow-wrap: anywhere; }
+
+/* 見本の紙面。実際の鑑定（1992-04-18・女性）の計算値をそのまま載せている */
+.hiyomi-theme .report-sample { padding: 26px 26px 22px; border: 1px solid var(--rule); border-radius: 10px; background: #fff; }
+.hiyomi-theme .sample-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; padding-bottom: 14px; border-bottom: 1px solid var(--rule); }
+.hiyomi-theme .sample-doc { color: var(--navy); font-size: 14px; font-weight: 700; letter-spacing: .06em; }
+.hiyomi-theme .sample-doc small { margin-left: 8px; padding: 1px 8px; border-radius: 3px; background: var(--gray); color: var(--gray-ink); font-size: 11px; font-weight: 500; letter-spacing: .04em; }
+.hiyomi-theme .sample-who { color: var(--faint); font-size: 12px; }
+.hiyomi-theme .sample-kicker { margin-top: 18px; color: var(--faint); font-size: 12px; }
+.hiyomi-theme .sample-type { margin-top: 2px; color: var(--ink); font-size: 26px; font-weight: 700; line-height: 1.5; }
+.hiyomi-theme .sample-label { margin-top: 20px; color: var(--ink); font-size: 13px; font-weight: 700; }
+.hiyomi-theme .sample-label small { margin-left: 8px; color: var(--faint); font-size: 11px; font-weight: 400; }
+.hiyomi-theme .sample-chapters { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px 18px; margin: 10px 0 0; padding: 0; list-style: none; counter-reset: ch; }
+.hiyomi-theme .sample-chapters li { counter-increment: ch; display: flex; align-items: center; gap: 9px; color: var(--sub); font-size: 13px; line-height: 1.6; word-break: keep-all; }
+.hiyomi-theme .sample-chapters li::before { content: counter(ch); flex: none; display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; font-size: 11px; font-weight: 700; }
+.hiyomi-theme .c-blue::before { background: var(--blue); color: var(--blue-ink); }
+.hiyomi-theme .c-yellow::before { background: var(--yellow); color: var(--yellow-ink); }
+.hiyomi-theme .c-mint::before { background: var(--mint); color: var(--mint-ink); }
+.hiyomi-theme .c-pink::before { background: var(--pink); color: var(--pink-ink); }
+.hiyomi-theme .c-lavender::before { background: var(--lavender); color: var(--lavender-ink); }
+.hiyomi-theme .c-gray::before { background: var(--gray); color: var(--gray-ink); }
+.hiyomi-theme .sample-links { display: flex; flex-wrap: wrap; gap: 4px 22px; margin-top: 16px; }
+.hiyomi-theme .sample-links a { display: inline-flex; align-items: center; min-height: 40px; color: var(--navy); font-size: 13px; font-weight: 500; }
+
+/* 入力。個人は1名分、相性は2名分を横に並べる */
+.hiyomi-theme #form { max-width: 640px; padding-top: 8px; scroll-margin-top: 16px; }
+.hiyomi-theme #form[data-mode=pair] { max-width: 1000px; }
+.hiyomi-theme #form:not([data-mode=pair]) .only-pair, .hiyomi-theme #form[data-mode=pair] .only-solo { display: none; }
+.hiyomi-theme .form-intro { margin-bottom: 26px; padding-top: 40px; border-top: 1px solid var(--rule); }
+.hiyomi-theme .form-intro h2 { margin-top: 22px; color: var(--ink); font-size: 26px; }
+.hiyomi-theme .form-intro > p:last-child { color: var(--sub); }
+.hiyomi-theme .mode-switch { display: inline-grid; grid-template-columns: 1fr 1fr; padding: 4px; border-radius: 8px; background: var(--gray); }
+.hiyomi-theme .mode-switch button { min-width: 128px; min-height: 42px; padding: 6px 18px; border: 0; border-radius: 6px; background: none; color: var(--sub); font-family: var(--sans); font-size: 14px; font-weight: 500; cursor: pointer; }
+.hiyomi-theme .mode-switch button[aria-pressed=true] { background: var(--navy); color: #fff; font-weight: 700; }
+.hiyomi-theme .form-people { display: grid; gap: 20px; }
+.hiyomi-theme #form[data-mode=pair] .form-people { grid-template-columns: repeat(2,minmax(0,1fr)); align-items: start; }
+.hiyomi-theme .entry fieldset.person { margin: 0; padding: 0; border: 0; background: #fff; }
+.hiyomi-theme #form[data-mode=pair] fieldset.person { padding: 22px 24px 6px; border-radius: 10px; }
+.hiyomi-theme #form[data-mode=pair] .person-me { background: var(--blue); }
+.hiyomi-theme #form[data-mode=pair] .person-partner { background: var(--pink); }
+.hiyomi-theme .entry fieldset.person legend { float: left; width: 100%; margin-bottom: 18px; padding: 0; color: var(--ink); font-size: 18px; line-height: 1.6; }
+.hiyomi-theme #form[data-mode=pair] .person-me legend { color: var(--blue-ink); }
+.hiyomi-theme #form[data-mode=pair] .person-partner legend { color: var(--pink-ink); }
+.hiyomi-theme fieldset.person legend + * { clear: both; }
+.hiyomi-theme input:not([type]), .hiyomi-theme input[type=time], .hiyomi-theme select, .hiyomi-theme .seg span { border-color: #c9d1dd; }
+.hiyomi-theme .seg input:checked + span { background: var(--navy); border-color: var(--navy); color: #fff; }
+.hiyomi-theme .more-detail { margin: 2px 0 18px; }
+.hiyomi-theme .more-detail > summary { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--navy); font-size: 14px; font-weight: 500; cursor: pointer; list-style: none; }
+.hiyomi-theme .more-detail > summary::-webkit-details-marker { display: none; }
+.hiyomi-theme .more-detail > summary::after { content: '＋'; color: var(--faint); }
+.hiyomi-theme .more-detail[open] > summary::after { content: '－'; }
+.hiyomi-theme .more-detail > summary em { color: var(--faint); font-size: 12px; font-style: normal; font-weight: 400; }
+.hiyomi-theme .more-detail .more { margin-top: 10px; }
+.hiyomi-theme .form-actions { max-width: 640px; margin: 12px auto 0; }
+.hiyomi-theme .submit { width: 100%; background: var(--navy); }
+.hiyomi-theme .submit::after, .hiyomi-theme .line-btn::after, .hiyomi-theme .mini-line::after { line-height: 30px; text-align: center; }
+.hiyomi-theme .submit:hover { background: var(--navy-dark); }
+.hiyomi-theme .submit-note { margin-top: 10px; color: var(--faint); font-size: 12px; text-align: center; }
+
+.hiyomi-theme .about-report { max-width: 1000px; margin: 72px auto 0; padding-top: 40px; border-top: 1px solid var(--rule); }
+.hiyomi-theme .about-report h2 { color: var(--ink); font-size: 20px; font-weight: 700; }
+.hiyomi-theme .about-report dl { display: grid; gap: 18px; margin: 20px 0 0; }
+.hiyomi-theme .about-report dl > div { display: grid; grid-template-columns: 9em minmax(0,1fr); gap: 4px 24px; }
+.hiyomi-theme .about-report dt { color: var(--ink); font-size: 14px; font-weight: 700; }
+.hiyomi-theme .about-report dd { margin: 0; color: var(--sub); font-size: 14px; line-height: 1.9; }
+.hiyomi-theme .about-report a { color: var(--navy); }
+.hiyomi-theme .entry > .entry-foot { display: flex; justify-content: center; margin-top: 28px; }
+.hiyomi-theme .entry-foot a { color: var(--sub); }
+
+/* ---------- 鑑定レポート ---------- */
+#result .profile-masthead .profile-brand { color: var(--navy); }
+#result .profile-hero { background: var(--blue); border-radius: 10px; }
+#result .profile-kicker { color: var(--blue-ink); font-weight: 700; }
+#result .profile-hero h1 { color: var(--ink); }
+#result .profile-tags span { background: #fff; color: var(--blue-ink); }
+#result .profile-hero .reading-link { color: var(--navy); }
+
+#result .chapter-number { border: 0; font-weight: 700; }
+#result #sec-seikaku .chapter-number { color: var(--blue-ink); }
+#result #sec-kachikan .chapter-number { color: var(--yellow-ink); }
+#result #sec-tsuyomi .chapter-number { color: var(--mint-ink); }
+#result #sec-relations .chapter-number { color: var(--pink-ink); }
+#result #sec-nenpyo .chapter-number { color: var(--lavender-ink); }
+#result #sec-meishiki .chapter-number { color: var(--gray-ink); }
+#result #sec-korekara .chapter-number { color: var(--blue-ink); }
+#result #sec-kachikan, #result #sec-relations { background: #fff; }
+
+
+#result .faces { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; margin-top: 24px; }
+#result .face { padding: 20px 22px 18px; border-radius: 8px; }
+#result .face-front { background: var(--blue); }
+#result .face-back { background: var(--lavender); }
+#result .face h3 { margin: 0; font-size: 18px; }
+#result .face-front h3 { color: var(--blue-ink); }
+#result .face-back h3 { color: var(--lavender-ink); }
+#result .face-sub { margin-top: 2px; color: var(--faint); font-size: 12px; }
+#result .face-text { margin-top: 12px; color: var(--ink); font-size: 15px; line-height: 1.95; }
+#result .face .basis { margin-top: 12px; color: var(--faint); font-size: 12px; }
+
+#result .insight-block h3, #result .insight-grid h3 { color: var(--ink); }
+#result .insight-strength, #result .insight-care { padding: 18px 20px; border-radius: 8px; }
+#result .insight-strength { background: var(--yellow); }
+#result .insight-care { background: var(--gray); }
+#result .current-flow { background: var(--mint); border-radius: 8px; }
+#result .current-flow .profile-kicker, #result .current-flow .flow-period { color: var(--mint-ink); }
+
+#result #sec-aisho { border-top-color: var(--rule); }
+#result .report-verdict { background: var(--pink); border-radius: 8px; }
+#result .verdict-label { color: var(--pink-ink); font-weight: 700; }
+#result .report-verdict .conclusion { color: var(--ink); }
+#result .pair-viewpoints { background: #fff; border: 1px solid var(--rule); border-radius: 8px; }
+#result .pair figcaption b { color: var(--ink); }
+
+/* 年表は時間の流れをラベンダーでつなぎ、今年だけ面で示す */
+#result .tl > .tl-year::before { background: var(--lavender-bar); }
+#result .tl > .tl-year:not(:last-child)::after { background: #dcd5f2; }
+#result .tl-year .node { color: var(--ink); }
+#result .tl > .tl-now::before { background: var(--lavender-ink); }
+#result .tl-now .year-content { background: var(--lavender); border-radius: 8px; }
+#result .year-current { background: var(--lavender); color: var(--lavender-ink); }
+#result .tl-now .year-current { background: #fff; }
+#result .year-notes { background: var(--gray); border-radius: 6px; }
+#result .year-feedback .hit button { border-color: #c9d1dd; }
+#result .year-feedback .hit button[aria-pressed=true] { background: var(--navy); border-color: var(--navy); }
+#result .tally b { color: var(--lavender-ink); }
+
+#result .summary { background: var(--yellow); border-radius: 10px; }
+#result .summary h2, #result .summary .big { color: var(--ink); }
+#result .locked, #result #sec-korekara .locked { background: var(--blue); border-radius: 10px; }
+#result .locked h3, #result .locked .price b { color: var(--ink); }
+#result .mini-line { background: var(--navy); border-radius: 4px; }
+#result #toc { border-color: var(--rule); border-radius: 8px; }
+#result #toc a[data-sec].on { background: var(--blue); color: var(--blue-ink); }
+
+/* ---------- 会員・登録画面 ---------- */
+.hiyomi-theme .mp-next { background: var(--lavender); border-radius: 8px; }
+.hiyomi-theme .mp-year { color: var(--lavender-ink); }
+.hiyomi-theme .save-note, .hiyomi-theme .sent { background: var(--mint); color: var(--mint-ink); }
+.hiyomi-theme .registration-label { color: var(--navy); }
+
+@media (max-width: 900px) {
+  .hiyomi-theme .entry-hero { grid-template-columns: minmax(0,1fr); gap: 36px; padding: 36px 0 44px; }
+  .hiyomi-theme #form[data-mode=pair] .form-people { grid-template-columns: minmax(0,1fr); }
+  #result .profile-hero { border-radius: 0; }
+  #result .summary, #result .locked { border-radius: 0; }
+}
+@media (max-width: 760px) {
+  .hiyomi-theme .masthead-label { display: none; }
+  .hiyomi-theme .entry-head h1 { font-size: 30px; }
+  .hiyomi-theme .choose-label { margin-top: 28px; }
+  .hiyomi-theme .mode-choices { grid-template-columns: minmax(0,1fr); gap: 10px; }
+  .hiyomi-theme .mode-choice { padding: 16px 18px 14px; }
+  .hiyomi-theme .about-report { margin-top: 56px; padding-top: 32px; }
+  .hiyomi-theme .about-report dl > div { grid-template-columns: minmax(0,1fr); }
+  .hiyomi-theme .report-sample { padding: 20px 18px 16px; }
+  .hiyomi-theme .sample-type { font-size: 22px; }
+  .hiyomi-theme .sample-chapters { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .hiyomi-theme .mode-switch { display: grid; width: 100%; }
+  .hiyomi-theme .mode-switch button { min-width: 0; }
+  .hiyomi-theme .form-intro h2 { font-size: 22px; }
+  .hiyomi-theme #form[data-mode=pair] fieldset.person { padding: 20px 18px 4px; }
+  #result .faces { grid-template-columns: minmax(0,1fr); gap: 10px; }
+  #result .face { padding: 18px 18px 16px; }
+}
+
+/* ---------- 冒頭の1枚（レポートシート） ---------- */
+#result .report-sheet { padding: 30px 30px 28px; border: 1px solid var(--rule); border-radius: 12px; background: #fff; scroll-margin-top: 24px; }
+#result .sheet-head { display: grid; grid-template-columns: auto minmax(0,1fr); align-items: center; gap: 8px 28px; padding-bottom: 20px; border-bottom: 2px solid var(--navy); }
+#result .sheet-title { margin: 0; color: var(--navy); font-size: 28px; font-weight: 700; letter-spacing: .04em; line-height: 1.4; }
+#result .sheet-desc { color: var(--sub); font-size: 13px; line-height: 1.85; }
+#result .sheet-grid { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,.85fr); gap: 28px; margin-top: 24px; }
+#result .sheet-main, #result .sheet-side { min-width: 0; }
+#result .sheet-label { color: var(--ink); font-size: 13px; font-weight: 700; }
+#result .sheet-label small { margin-left: 8px; color: var(--faint); font-size: 11px; font-weight: 400; }
+#result .sheet-type { padding: 20px 22px; border: 2px solid var(--navy); border-radius: 8px; }
+#result .sheet-type .sheet-label { color: var(--faint); font-size: 12px; font-weight: 500; }
+#result .sheet-type-name { margin-top: 2px; color: var(--navy); font-size: 32px; font-weight: 700; line-height: 1.45; word-break: keep-all; overflow-wrap: anywhere; }
+#result .sheet-type-lead { margin-top: 8px; color: var(--sub); font-size: 14px; line-height: 1.85; }
+#result .sheet-type .profile-tags span { background: var(--blue); color: var(--blue-ink); }
+#result .sheet-info { display: grid; gap: 2px; margin: 18px 0 0; font-size: 13px; }
+#result .sheet-info > div { display: grid; grid-template-columns: 6.5em minmax(0,1fr); }
+#result .sheet-info dt { padding: 8px 10px; background: var(--navy); color: #fff; font-weight: 700; }
+#result .sheet-info dd { margin: 0; padding: 8px 12px; background: var(--gray); color: var(--ink); line-height: 1.7; }
+#result .sheet-art { display: block; width: 100%; height: auto; max-height: 220px; object-fit: contain; margin: 0 0 18px; mix-blend-mode: darken; }
+#result .sheet-points { display: grid; gap: 8px; margin: 10px 0 0; padding: 0; list-style: none; }
+#result .sheet-points a { display: block; padding: 12px 14px 11px; border-radius: 8px; color: var(--ink); text-decoration: none; }
+#result .pt-label { display: inline-block; padding: 0 7px; border-radius: 3px; background: var(--navy); color: #fff; font-size: 11px; font-weight: 700; line-height: 1.8; }
+#result .sheet-points b { display: block; margin-top: 6px; font-size: 14px; font-weight: 700; line-height: 1.7; }
+#result .pt-more { display: inline-block; margin-top: 4px; color: var(--navy); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+#result .pt-kachikan a { background: var(--yellow); }
+#result .pt-relations a { background: var(--pink); }
+#result .pt-seikaku a { background: var(--blue); }
+#result .pt-nenpyo a { background: var(--lavender); }
+#result .pt-tsuyomi a { background: var(--mint); }
+#result .sheet-points a:hover b { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- 鑑定書までのつなぎ ---------- */
+body.is-loading { overflow: hidden; }
+.loading { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 24px; background: #fff; }
+.loading[hidden] { display: none; }
+.loading-inner { width: min(540px, 100%); }
+.loading-brand { color: var(--navy); font-size: 18px; font-weight: 700; letter-spacing: .18em; }
+.loading-title { margin-top: 10px; color: var(--ink); font-size: 20px; font-weight: 700; line-height: 1.6; }
+.loading-bar { height: 4px; margin-top: 18px; border-radius: 2px; background: var(--rule); overflow: hidden; }
+.loading-bar i { display: block; width: 0; height: 100%; background: var(--navy); transition: width .6s ease; }
+.loading-steps { margin: 14px 0 0; padding: 0; list-style: none; }
+.loading-steps li { padding: 13px 0; border-bottom: 1px solid var(--rule); animation: ls-in .45s ease both; }
+.ls-label { display: flex; align-items: center; gap: 10px; color: var(--sub); font-size: 13px; }
+.ls-label::before { content: ''; flex: none; width: 10px; height: 10px; border: 2px solid var(--navy); border-radius: 50%; animation: ls-pulse 1s ease-in-out infinite; }
+.loading-steps li.done .ls-label::before { background: var(--navy); animation: none; }
+.ls-value { margin-top: 5px; padding-left: 20px; color: var(--ink); font-size: 15px; font-weight: 500; line-height: 1.75; }
+.loading-skip { display: block; min-height: 44px; margin: 14px 0 0 auto; padding: 8px 4px; border: 0; background: none; color: var(--navy); font-family: var(--sans); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+@keyframes ls-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes ls-pulse { 50% { opacity: .3; } }
+@media (prefers-reduced-motion: reduce) {
+  .loading-steps li, .ls-label::before { animation: none; }
+  .loading-bar i { transition: none; }
+}
+
+/* ---------- 年表：中央の線に年を置き、出来事を左右交互に ---------- */
+#result #sec-nenpyo .tl { position: relative; }
+@media (min-width: 621px) {
+  #result #sec-nenpyo .tl::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--navy); }
+  #result .tl > .tl-year { padding: 0 0 26px !important; }
+  #result .tl > .tl-year::before, #result .tl > .tl-year:not(:last-child)::after { display: none; }
+  #result .tl .year-heading { grid-template-columns: minmax(0,1fr) 124px minmax(0,1fr); gap: 0; align-items: start; }
+  #result .tl .year-date { grid-column: 2; grid-row: 1; position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding-top: 18px; }
+  #result .tl-year .node { padding: 3px 12px; background: var(--navy); color: #fff; font-size: 21px; letter-spacing: .04em; line-height: 1.4; }
+  #result .tl-year .node small { color: #fff; }
+  #result .year-age { margin: 0; padding: 0 4px; background: #fff; font-size: 12px; }
+  #result .year-current { margin: 0; }
+  #result .year-future { padding: 4px 10px; background: var(--navy); color: #fff; font-size: 13px; font-weight: 700; }
+  #result .tl .year-content { position: relative; grid-row: 1; padding: 18px 20px 14px; background: var(--gray); border-radius: 12px; }
+  #result .tl > .tl-year:nth-child(odd) .year-content { grid-column: 3; }
+  #result .tl > .tl-year:nth-child(even) .year-content { grid-column: 1; }
+  #result .tl .year-content::before { content: ''; position: absolute; top: 33px; width: 20px; border-top: 2px dotted var(--navy); }
+  #result .tl > .tl-year:nth-child(odd) .year-content::before { left: -20px; }
+  #result .tl > .tl-year:nth-child(even) .year-content::before { right: -20px; }
+  #result .tl-now .year-content { margin-top: 0; background: var(--lavender); }
+  #result .tl-year h3 { font-size: 17px; }
+  #result .tl-year .year-lead { font-size: 14px; }
+  #result .year-notes { display: block; background: #fff; }
+  #result .year-detail .photo { margin-top: 14px; }
+  #result .year-feedback .hit { width: 100%; }
+  #result .year-feedback .hit button { flex: 1; min-width: 0; background: #fff; }
+  #result .tally { padding-left: 0; text-align: center; }
+}
+@media (max-width: 620px) {
+  #result .tl > .tl-year::before { left: 2px; width: 12px; height: 12px; top: 10px; border-radius: 2px; background: var(--navy); }
+  #result .tl > .tl-year:not(:last-child)::after { width: 2px; left: 7px; background: var(--navy); }
+  #result .tl .year-content { padding: 14px 16px 10px; background: var(--gray); border-radius: 10px; }
+  #result .tl-now .year-content { background: var(--lavender); }
+}
+
+@media (max-width: 1100px) {
+  #result .sheet-grid { grid-template-columns: minmax(0,1fr); }
+}
+@media (max-width: 620px) {
+  #result .sheet-head { grid-template-columns: minmax(0,1fr); }
+  #result .sheet-title { font-size: 24px; }
+  #result .sheet-type { padding: 16px 18px; }
+  #result .sheet-type-name { font-size: 27px; }
+  .loading-title { font-size: 18px; }
+}
+
+/* ---------- 紙のレポート：章ごとに1ページ（改訂5） ----------
+   グレーの台の上に白いページを重ねる。ページの上に書類名、下にページ番号。 */
+.hiyomi-theme .page-run { display: flex; justify-content: space-between; gap: 16px; padding: 13px 0 11px; border-bottom: 1px solid var(--rule); color: var(--faint); font-size: 11px; letter-spacing: .06em; line-height: 1.6; }
+.hiyomi-theme .page-no { color: var(--faint); font-size: 11px; letter-spacing: .1em; text-align: center; font-variant-numeric: tabular-nums; }
+
+body.hiyomi-theme:has(#result:not([hidden])) { background: var(--gray); }
+#result.personality-report { background: transparent; }
+#result .profile-masthead { border-bottom-color: #d6dde7; }
+#result .report-page { margin: 0 0 22px; padding: 0 52px 20px; border: 1px solid #dbe1ea; border-radius: 4px; background: #fff; scroll-margin-top: 24px; }
+#result .report-page > .page-run { margin-bottom: 36px; }
+#result .report-page > .page-no { margin-top: 44px; }
+#result .summary.report-page { padding: 0 52px 20px; border-radius: 4px; background: #fff; }
+#result .summary h2 { color: var(--ink); }
+#result .summary .big { margin-top: 18px; padding: 18px 22px; border-radius: 6px; background: var(--yellow); }
+#result .foot { padding: 12px 4px 24px; }
+
+/* 章見出し：大きな章番号と「第◯章」 */
+#result .profile-chapter-heading { display: grid; grid-template-columns: auto minmax(0,1fr); column-gap: 18px; align-items: end; }
+#result .profile-chapter-heading .chapter-number { grid-column: 1; grid-row: 1 / span 2; width: auto; height: auto; border-radius: 0; background: none; font-size: 58px; line-height: .92; letter-spacing: -.02em; font-variant-numeric: tabular-nums; vertical-align: 0; }
+#result .chapter-kicker { grid-column: 2; margin: 0; color: var(--faint); font-size: 12px; font-weight: 700; letter-spacing: .14em; line-height: 1.5; }
+#result .profile-chapter-heading h2 { grid-column: 2; margin: 2px 0 0; color: var(--ink); font-size: 27px; font-weight: 700; line-height: 1.45; }
+
+/* 章の要点：章の色の面に、結論を1文 */
+#result .chapter-key { display: grid; grid-template-columns: 7em minmax(0,1fr); gap: 2px 18px; align-items: baseline; margin-top: 28px; padding: 16px 22px; border-radius: 6px; background: var(--gray); }
+#result .chapter-key-label { font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+#result .chapter-key-text { color: var(--ink); font-size: 16px; font-weight: 700; line-height: 1.85; }
+#result #sec-kachikan .chapter-key { background: var(--yellow); }   #result #sec-kachikan .chapter-key-label { color: var(--yellow-ink); }
+#result #sec-relations .chapter-key { background: var(--pink); }   #result #sec-relations .chapter-key-label { color: var(--pink-ink); }
+#result #sec-seikaku .chapter-key { background: var(--blue); }     #result #sec-seikaku .chapter-key-label { color: var(--blue-ink); }
+#result #sec-nenpyo .chapter-key { background: var(--lavender); }  #result #sec-nenpyo .chapter-key-label { color: var(--lavender-ink); }
+#result #sec-tsuyomi .chapter-key { background: var(--mint); }     #result #sec-tsuyomi .chapter-key-label { color: var(--mint-ink); }
+
+/* 本文と図を左右に */
+#result .chapter-intro { display: grid; grid-template-columns: minmax(0,1.3fr) minmax(0,.7fr); gap: 34px; align-items: start; margin-top: 30px; }
+#result .chapter-intro .profile-chapter-lead { margin: 0; color: var(--ink); font-size: 16px; line-height: 2; }
+#result .report-figure { margin: 0; }
+#result .report-figure .profile-chapter-art { width: 100%; max-height: 220px; margin: 0; }
+
+/* 1ページ目：タイプの横に小さなイラスト */
+#result .sheet-type { display: grid; grid-template-columns: minmax(0,1fr) 124px; gap: 16px; align-items: center; }
+#result .sheet-type .sheet-art { width: 100%; max-height: 118px; margin: 0; }
+
+/* 目次にページ番号 */
+#result #toc a[data-sec] { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+#result .toc-page { color: var(--faint); font-size: 11px; font-weight: 400; font-variant-numeric: tabular-nums; }
+
+/* 入口：見本のページをグレーの台に置く */
+.hiyomi-theme .entry-hero { margin-top: 24px; padding: 52px 52px 56px; border-radius: 14px; background: var(--gray); }
+.hiyomi-theme .report-sample { padding: 0 28px 14px; border-color: #dbe1ea; border-radius: 4px; }
+.hiyomi-theme .report-sample > .page-run { margin-bottom: 18px; }
+.hiyomi-theme .report-sample > .page-no { margin-top: 14px; }
+
+@media (max-width: 900px) {
+  .hiyomi-theme .entry-hero { margin: 12px -24px 0; padding: 34px 24px 40px; border-radius: 0; }
+  #result .report-page, #result .summary.report-page { margin: 0 10px 12px; padding: 0 22px 16px; scroll-margin-top: 55px; }
+  #result .report-page > .page-run { margin-bottom: 26px; }
+  #result .report-page > .page-no { margin-top: 30px; }
+  #result .toc-page { display: none; }
+  #result .foot { padding: 12px 18px 24px; }
+}
+@media (max-width: 620px) {
+  .hiyomi-theme .report-sample { padding: 0 18px 12px; }
+  #result .report-page, #result .summary.report-page { padding: 0 18px 14px; }
+  #result .page-run { font-size: 10px; }
+  #result .profile-chapter-heading { column-gap: 14px; }
+  #result .profile-chapter-heading .chapter-number { font-size: 46px; }
+  #result .profile-chapter-heading h2 { font-size: 22px; }
+  #result .chapter-key { grid-template-columns: minmax(0,1fr); padding: 14px 16px; }
+  #result .chapter-intro { grid-template-columns: minmax(0,1fr); gap: 20px; margin-top: 24px; }
+  #result .report-figure .profile-chapter-art { max-height: 170px; }
+  #result .sheet-type { grid-template-columns: minmax(0,1fr) 84px; gap: 10px; }
+  #result .summary .big { padding: 14px 16px; font-size: 21px; }
+}
+
+/* ---------- 動き ----------
+   html.anim は「動きを減らす」設定でない人だけにつく。 */
+@keyframes kz-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes kz-grow { from { width: 0; } }
+@keyframes kz-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.anim .rv { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); transition-delay: var(--d, 0ms); }
+.anim .rv.is-in { opacity: 1; transform: none; }
+.anim #result .report-page.rv { transform: translateY(32px); transition-delay: 0ms; }
+.anim #result .report-page.rv.is-in { transform: none; }
+
+/* 入口の書き出しと見本 */
+.anim .entry-masthead { animation: kz-fade .6s ease both; }
+.anim .entry-hero-copy > :not(h1), .anim .entry-hero-copy h1 span { animation: kz-rise .8s cubic-bezier(.2,.7,.2,1) both; }
+.anim .entry-hero-copy .eyebrow { animation-delay: .05s; }
+.anim .entry-hero-copy h1 span:first-child { animation-delay: .15s; }
+.anim .entry-hero-copy h1 span:last-child { animation-delay: .28s; }
+.anim .entry-hero-copy .lead { animation-delay: .42s; }
+.anim .entry-hero-copy .guide-entry { animation-delay: .56s; }
+.anim .entry-hero-copy .mode-choices { animation-delay: .66s; }
+.anim .report-sample { animation: kz-rise .9s .3s cubic-bezier(.2,.7,.2,1) both; }
+.anim .sample-chapters li { animation: kz-fade .5s ease both; }
+.anim .sample-chapters li:nth-child(1) { animation-delay: 1.2s; }
+.anim .sample-chapters li:nth-child(2) { animation-delay: 1.28s; }
+.anim .sample-chapters li:nth-child(3) { animation-delay: 1.36s; }
+.anim .sample-chapters li:nth-child(4) { animation-delay: 1.44s; }
+.anim .sample-chapters li:nth-child(5) { animation-delay: 1.52s; }
+.anim .sample-chapters li:nth-child(6) { animation-delay: 1.6s; }
+.anim .mode-choice { transition: background-color .2s ease, border-color .2s ease, transform .25s ease; }
+.anim .mode-choice:hover { transform: translateY(-3px); }
+.anim #form:not([hidden]) .form-intro { animation: kz-rise .6s cubic-bezier(.2,.7,.2,1) both; }
+.anim #form[data-mode=pair] .person-partner { animation: kz-rise .55s .08s cubic-bezier(.2,.7,.2,1) both; }
+
+/* レポート：年表の線が上から伸びる */
+.anim #result .tl.rv { opacity: 1; transform: none; }
+.anim #result #sec-nenpyo .tl-year.rv { transform: none; }
+@media (min-width: 621px) {
+  .anim #result #sec-nenpyo .tl::before { transform-origin: top; transform: scaleY(0); transition: transform 1.8s ease; }
+  .anim #result #sec-nenpyo .tl.is-in::before { transform: none; }
+  .anim #result .tl > .tl-year .year-content { transition: transform .7s cubic-bezier(.2,.7,.2,1); }
+  .anim #result .tl > .tl-year.rv:not(.is-in):nth-child(odd) .year-content { transform: translateX(28px); }
+  .anim #result .tl > .tl-year.rv:not(.is-in):nth-child(even) .year-content { transform: translateX(-28px); }
+}
+#result #toc a[data-sec] { transition: background-color .25s ease, color .25s ease; }
+
+/* ---------- 案内人ひよみ ----------
+   丸い顔＋ふきだし。ふきだしの色は置く場所の地色に合わせて --say で変える。 */
+.hiyomi-theme .guide { --say: var(--blue); display: grid; grid-template-columns: 56px minmax(0,1fr); gap: 14px; align-items: center; margin-top: 24px; }
+.hiyomi-theme .guide-face { display: block; width: 56px; height: 56px; border-radius: 50%; background: var(--blue); overflow: hidden; isolation: isolate; }
+.hiyomi-theme .guide-face img { display: block; width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; }
+.hiyomi-theme .guide-say { position: relative; padding: 10px 16px 12px; border-radius: 12px; background: var(--say); }
+.hiyomi-theme .guide-say::before { content: ''; position: absolute; left: -6px; top: 50%; width: 12px; height: 12px; margin-top: -6px; background: inherit; transform: rotate(45deg); }
+.hiyomi-theme .guide-name, #result .insight-block .guide-name { margin: 0; color: var(--blue-ink); font-size: 11px; font-weight: 700; letter-spacing: .06em; line-height: 1.6; }
+.hiyomi-theme .guide-text, #result .insight-block .guide-text { margin: 2px 0 0; color: var(--ink); font-size: 14px; font-weight: 500; line-height: 1.8; }
+.hiyomi-theme .guide-entry { --say: #fff; margin-top: 32px; }
+.hiyomi-theme .guide-entry .guide-face { background: #fff; }
+.hiyomi-theme .guide-entry .guide-text { font-size: 15px; font-weight: 700; }
+.hiyomi-theme .guide-entry + .mode-choices { margin-top: 16px; }
+#result .guide-sheet { margin-top: 20px; }
+#result .guide-mini { --say: #fff; grid-template-columns: 40px minmax(0,1fr); gap: 12px; margin: 14px 0 2px; }
+#result .guide-mini .guide-face { width: 40px; height: 40px; }
+#result .guide-mini .guide-say { padding: 7px 12px 8px; border-radius: 10px; }
+#result .guide-mini .guide-name { display: none; }
+#result .guide-mini .guide-text { margin: 0; font-size: 13px; }
+#result .guide-mini .guide-say { cursor: pointer; }
+#result .guide-mini + .year-detail > summary { color: var(--navy); font-weight: 700; }
+#result .profile-partner-prompt .guide { margin-top: 14px; }
+.guide-loading { margin-top: 18px; }
+.guide-loading .guide-face { width: 64px; height: 64px; }
+.hiyomi-theme .guide-loading { grid-template-columns: 64px minmax(0,1fr); }
+.hiyomi-theme .guide-loading .guide-text { font-size: 15px; }
+
+@keyframes kz-pop { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.anim .guide-pop { animation: kz-pop .35s ease both; }
+.anim .guide.rv { transform: none; }
+.anim .guide.rv .guide-face { opacity: 0; transform: scale(.6); transition: transform .5s cubic-bezier(.3,1.4,.5,1), opacity .3s ease; transition-delay: calc(var(--d, 0ms) + .1s); }
+.anim .guide.rv .guide-say { opacity: 0; transform: translateX(-10px); transition: transform .5s ease, opacity .5s ease; transition-delay: calc(var(--d, 0ms) + .3s); }
+.anim .guide.rv.is-in .guide-face, .anim .guide.rv.is-in .guide-say { opacity: 1; transform: none; }
+.anim .guide-loading .guide-face { animation: kz-rise .5s ease both; }
+
+/* ---------- デザイン③：改修指示で足したもの ---------- */
+/* 入口の見本：タイプと結論の言い切り */
+.hiyomi-theme .sample-lead { margin-top: 8px; color: var(--ink); font-size: 14px; font-weight: 500; line-height: 1.85; }
+.hiyomi-theme .sample-note { margin-top: 14px; color: var(--sub); font-size: 12px; line-height: 1.8; }
+
+/* 1ページ目：タイプ名の下に結論、その下に名前の画数 */
+#result .sheet-conclusion { margin-top: 10px; color: var(--ink); font-size: 17px; font-weight: 700; line-height: 1.85; word-break: auto-phrase; text-wrap: pretty; }
+.hiyomi-theme .sample-lead, #result .chapter-key-text { word-break: auto-phrase; }
+#result .sheet-type .profile-tags { margin-top: 12px; }
+#result .kakusu { margin-top: 22px; }
+#result .kakusu-lead { margin-top: 6px; color: var(--ink); font-size: 15px; font-weight: 700; line-height: 1.7; }
+#result .kakusu-chars { margin-top: 6px; color: var(--ink); font-size: 22px; font-weight: 700; letter-spacing: .04em; line-height: 1.6; }
+#result .kakusu-chars small { margin: 0 8px 0 2px; color: var(--faint); font-size: 12px; font-weight: 500; letter-spacing: 0; }
+#result .kakusu-gap { display: inline-block; width: 8px; }
+#result .kakusu-grid { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 4px; margin: 10px 0 0; }
+#result .kakusu-grid > div { padding: 10px 6px 9px; background: var(--gray); text-align: center; }
+#result .kakusu-grid > div.is-good { background: var(--blue); }
+#result .kakusu-grid dt { color: var(--ink); font-size: 13px; font-weight: 700; line-height: 1.5; }
+#result .kakusu-grid dt small { display: block; color: var(--faint); font-size: 10px; font-weight: 400; }
+#result .kakusu-grid dd { margin: 4px 0 0; }
+#result .kakusu-grid dd b { display: block; color: var(--ink); font-size: 22px; line-height: 1.3; font-variant-numeric: tabular-nums; }
+#result .kakusu-grid dd span { display: block; color: var(--blue-ink); font-size: 11px; font-weight: 700; }
+#result .kakusu-grid dd span.muted { color: var(--faint); font-weight: 400; }
+#result .kakusu-note { margin-top: 18px; color: var(--faint); font-size: 12px; line-height: 1.8; }
+
+/* どこから読んだかの札。押すと説明が開く */
+#result .fuda { margin-top: 12px; font-size: 12px; }
+#result .fuda > summary { display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 2px 10px; border-radius: 3px; background: var(--gray); color: var(--gray-ink); font-weight: 700; cursor: pointer; list-style: none; }
+#result .fuda > summary::-webkit-details-marker { display: none; }
+#result .fuda > summary::after { content: '＋'; color: var(--faint); font-weight: 400; }
+#result .fuda[open] > summary::after { content: '－'; }
+#result .fuda > p { margin-top: 8px; color: var(--sub); font-size: 13px; line-height: 1.85; }
+#result .face .fuda > summary, #result .current-flow .fuda > summary, #result .tl .fuda > summary { background: #fff; }
+
+/* 仕事観・恋愛観・人生観：言い切りの見出しを3つ */
+#result .values { display: grid; gap: 34px; margin-top: 30px; }
+#result .value-label { display: inline-block; padding: 0 8px; border-radius: 3px; background: var(--yellow); color: var(--yellow-ink); font-size: 12px; font-weight: 700; line-height: 1.9; }
+#result .value-block h3 { margin-top: 10px; color: var(--ink); font-size: 20px; line-height: 1.6; word-break: keep-all; overflow-wrap: anywhere; text-wrap: pretty; }
+#result .value-block > p:not(.value-label) { margin-top: 8px; color: var(--sub); font-size: 15px; line-height: 1.95; }
+#result .value-extra b { display: block; color: var(--ink); font-size: 13px; }
+
+/* ズレの表（根拠と、実際の出方の2列） */
+#result .zure-wrap, #result .kakawari-wrap, #result .katachi-wrap { margin-top: 24px; }
+#result .zure-table, #result .kakawari-table, #result .katachi-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.8; }
+#result .zure-table thead th, #result .kakawari-table thead th, #result .katachi-table thead th { padding: 8px 12px; background: var(--navy); color: #fff; font-size: 12px; font-weight: 700; text-align: left; }
+#result .zure-table tbody > tr > *, #result .kakawari-table tbody > tr > *, #result .katachi-table tbody > tr > * { padding: 14px 12px; text-align: left; vertical-align: top; }
+#result .zure-table tbody tr:nth-child(odd) > *, #result .kakawari-table tbody tr:nth-child(odd) > *, #result .katachi-table tbody tr:nth-child(odd) > * { background: var(--gray); }
+#result .zure-table tbody th { width: 26%; color: var(--ink); font-weight: 700; }
+#result .zure-table td:nth-child(2) { width: 30%; color: var(--sub); font-size: 13px; }
+#result .zure-table td:last-child { color: var(--ink); }
+#result .zure-no { display: block; color: var(--faint); font-size: 12px; }
+
+/* 助言：番号つきで3つ */
+#result .advice-list { display: grid; gap: 24px; margin: 26px 0 0; padding: 0; list-style: none; counter-reset: ad; }
+#result .advice-list li { counter-increment: ad; display: grid; grid-template-columns: 34px minmax(0,1fr); column-gap: 14px; }
+#result .advice-list li::before { content: counter(ad); grid-row: 1 / span 2; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: var(--mint); color: var(--mint-ink); font-weight: 700; }
+#result .advice-list h3 { margin: 2px 0 0; color: var(--ink); font-size: 18px; line-height: 1.6; }
+#result .advice-list p { margin-top: 6px; color: var(--sub); font-size: 15px; line-height: 1.9; }
+
+/* 人との関わり方の早見表・二人の形の違い */
+#result .kakawari-table tbody th { width: 34%; color: var(--ink); font-weight: 700; }
+#result .kakawari-table small { display: block; color: var(--faint); font-size: 12px; font-weight: 400; }
+#result .kakawari-table td small { color: var(--pink-ink); font-weight: 500; }
+#result .kakawari-table td b { color: var(--ink); }
+#result .katachi-table tbody th { width: 28%; color: var(--sub); font-size: 13px; font-weight: 700; }
+#result .katachi-table td { color: var(--ink); }
+
+/* 相性：章の中を1画面ずつのページに分ける */
+#result .profile-subpage-heading h2 { margin: 4px 0 0; color: var(--ink); font-size: 24px; font-weight: 700; line-height: 1.5; }
+#result .goods-pair { display: grid; gap: 10px; margin-top: 22px; padding: 0; list-style: none; }
+#result .goods-pair li { padding: 14px 18px; border-radius: 4px; background: var(--pink); color: var(--ink); font-size: 15px; line-height: 1.9; }
+#result .locked-pair { margin-top: 30px; }
+#result .third-person { margin-top: 16px; color: var(--sub); font-size: 13px; line-height: 1.85; }
+
+/* 章の色 */
+#result .ch-relations .chapter-number, #result #sec-kakawari .chapter-number { color: var(--pink-ink); }
+#result .ch-relations .chapter-key, #result #sec-kakawari .chapter-key { background: var(--pink); }
+#result .ch-relations .chapter-key-label, #result #sec-kakawari .chapter-key-label { color: var(--pink-ink); }
+#result #sec-zure .chapter-number, #result #sec-zure .chapter-key-label { color: var(--gray-ink); }
+#result #sec-jogen .chapter-number, #result #sec-jogen .chapter-key-label { color: var(--mint-ink); }
+#result #sec-jogen .chapter-key { background: var(--mint); }
+#result .pt-kakawari a { background: var(--pink); }
+#result .pt-zure a { background: var(--gray); }
+#result .pt-jogen a { background: var(--mint); }
+
+/* まとめ：最後は助言と希望で終える */
+#result .matome-list { margin: 18px 0 0; padding-left: 1.2em; color: var(--ink); font-size: 15px; line-height: 2; }
+#result .matome-end { margin-top: 18px; color: var(--ink) !important; font-size: 16px !important; font-weight: 700; line-height: 1.9; }
+
+@media (max-width: 620px) {
+  #result .sheet-conclusion { font-size: 16px; }
+  #result .kakusu-grid dd b { font-size: 19px; }
+  #result .value-block h3 { font-size: 18px; }
+  #result .profile-subpage-heading h2 { font-size: 21px; }
+  /* ズレの表は1件ずつ縦に積む */
+  #result .zure-table thead { display: none; }
+  #result .zure-table, #result .zure-table tbody, #result .zure-table tr, #result .zure-table tbody th, #result .zure-table td { display: block; width: auto !important; }
+  #result .zure-table tr { margin-bottom: 10px; background: var(--gray); }
+  #result .zure-table tbody > tr > * { padding: 0 16px; background: none !important; }
+  #result .zure-table tbody th { padding-top: 14px; font-size: 16px; }
+  #result .zure-table td::before { content: attr(data-label); display: block; margin-top: 10px; color: var(--faint); font-size: 11px; font-weight: 700; }
+  #result .zure-table td:last-child { padding-bottom: 14px; }
+  #result .kakawari-table tbody > tr > *, #result .katachi-table tbody > tr > * { padding: 12px 10px; }
+}
+
+/* ---------- デザイン④：読む順番と情報の関係を整える ----------
+   表紙はタイプと過去の節目を主役に。色は比較する相手と章の種類に使う。 */
+#result .report-page { border: 0; border-radius: 2px; padding-right: 44px; padding-left: 44px; }
+#result .report-page > .page-run { margin-bottom: 28px; border-bottom: 0; }
+#result .page-run { color: var(--sub); }
+#result .sheet-head { display: block; padding-bottom: 0; border: 0; }
+#result .sheet-title { font-size: 18px; letter-spacing: .04em; }
+#result .sheet-desc { margin-top: 6px; font-size: 14px; }
+#result .sheet-type { display: grid; grid-template-columns: minmax(0,1fr) 210px; gap: 12px 24px; margin-top: 34px; padding: 0; border: 0; border-radius: 0; align-items: center; }
+#result .sheet-type-name { margin-top: 5px; color: var(--ink); font-size: 44px; line-height: 1.4; letter-spacing: .02em; }
+#result .sheet-type .sheet-label { font-size: 14px; }
+#result .sheet-type .profile-tags { gap: 6px 14px; margin-top: 10px; }
+#result .sheet-type .profile-tags span { padding: 0; background: none; color: var(--sub); font-size: 13px; }
+#result .sheet-type .sheet-art { grid-column: 2; grid-row: 1 / span 2; width: 100%; max-height: 190px; margin: 0; }
+#result .sheet-conclusion { grid-column: 1; margin: 8px 0 0; font-size: 18px; font-weight: 500; line-height: 1.9; word-break: normal; overflow-wrap: anywhere; }
+#result .conclusion-main, #result .conclusion-now { display: block; }
+#result .conclusion-years { color: var(--navy); font-weight: 700; white-space: normal; }
+#result .conclusion-now { margin-top: 14px; color: var(--sub); font-size: 15px; font-weight: 400; }
+#result .sheet-timeline-link { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 20px; margin-top: 24px; padding: 15px 18px; background: var(--lavender); color: var(--ink); font-size: 14px; text-decoration: none; }
+#result .sheet-timeline-link span { color: var(--lavender-ink); font-weight: 700; }
+#result .sheet-timeline-link:hover span { text-decoration: underline; text-underline-offset: 4px; }
+#result .sheet-side { margin-top: 38px; }
+#result .sheet-side > .sheet-label { color: var(--sub); font-size: 13px; font-weight: 500; }
+#result .sheet-points { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 28px; margin-top: 4px; }
+#result .sheet-points li { min-width: 0; }
+#result .sheet-points a { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 7px 12px; padding: 20px 0; background: none; border-radius: 0; }
+#result .pt-label { padding: 0; background: none; color: var(--navy); font-size: 14px; }
+#result .pt-no { margin-right: 12px; color: var(--faint); font-size: 12px; font-variant-numeric: tabular-nums; }
+#result .sheet-points b { grid-column: 1 / -1; grid-row: 2; margin: 0; color: var(--sub); font-size: 14px; font-weight: 400; line-height: 1.8; }
+#result .pt-more { grid-column: 2; grid-row: 1; align-self: center; margin: 0; font-size: 12px; text-decoration: none; }
+#result .guide-sheet { --say: var(--gray); margin-top: 14px; }
+#result .guide-sheet .guide-say { border-radius: 4px; }
+#result .guide-sheet .guide-name { display: none; }
+#result .guide-sheet .guide-text { font-weight: 400; }
+#result .sheet-supplements { margin-top: 26px; }
+#result .sheet-extra { margin-top: 6px; background: #f6f7f9; }
+#result .sheet-extra > summary { display: flex; align-items: baseline; gap: 10px; min-height: 48px; padding: 14px 18px; color: var(--ink); font-size: 14px; font-weight: 500; cursor: pointer; list-style: none; }
+#result .sheet-extra > summary::-webkit-details-marker, #result .zure-basis > summary::-webkit-details-marker { display: none; }
+#result .sheet-extra > summary span { color: var(--faint); font-size: 12px; font-weight: 400; }
+#result .sheet-extra > summary::after { content: '＋'; margin-left: auto; color: var(--navy); }
+#result .sheet-extra[open] > summary::after { content: '−'; }
+#result .sheet-extra > .kakusu, #result .sheet-extra > .kakusu-note, #result .sheet-extra > .sheet-info { margin: 0; padding: 4px 18px 20px; }
+#result .kakusu .sheet-label { font-size: 14px; }
+#result .kakusu .sheet-label small { display: block; margin: 5px 0 0; font-size: 12px; }
+#result .kakusu-lead { font-size: 14px; font-weight: 400; }
+#result .kakusu-chars { margin-top: 16px; }
+#result .kakusu-grid { gap: 8px; margin-top: 16px; }
+#result .kakusu-grid > div { background: #fff; padding: 14px 6px; }
+#result .kakusu-grid dt small { margin-top: 4px; font-size: 12px; }
+#result .kakusu-grid dd { margin-top: 8px; }
+#result .kakusu-grid dd span { margin-top: 4px; font-size: 12px; }
+#result .sheet-info { gap: 12px; }
+#result .sheet-info > div { grid-template-columns: 6em minmax(0,1fr); gap: 16px; }
+#result .sheet-info dt, #result .sheet-info dd { padding: 0; background: none; font-size: 14px; }
+#result .sheet-info dt { color: var(--sub); font-weight: 400; }
+
+/* 章見出しは内容を先に読み、番号は目印に。 */
+#result .profile-chapter-heading { align-items: center; column-gap: 18px; }
+#result .profile-chapter-heading .chapter-number { font-size: 42px; }
+#result .profile-chapter-heading h2 { font-size: 26px; }
+#result .chapter-key { grid-template-columns: minmax(0,1fr); gap: 5px; margin-top: 26px; padding: 18px 22px; border-radius: 2px; }
+#result .chapter-key-text { font-size: 17px; font-weight: 500; }
+#result .chapter-key-label { font-size: 12px; }
+#result .sec-lead { font-size: 15px; line-height: 1.9; }
+#result .fuda > summary { min-height: 40px; font-size: 12px; }
+#result .fuda > p { max-width: 46em; font-size: 14px; }
+#result .face { border-radius: 2px; padding: 24px; }
+#result .face-text { font-size: 16px; }
+#result .values { gap: 32px; }
+#result .value-block { display: grid; grid-template-columns: 5em minmax(0,1fr); gap: 8px 24px; }
+#result .value-label { grid-column: 1; grid-row: 1 / span 4; align-self: start; margin: 3px 0 0; padding: 3px 0; background: none; font-size: 14px; }
+#result .value-block h3, #result .value-block > p:not(.value-label), #result .value-block > .fuda { grid-column: 2; margin-top: 0; }
+#result .value-block h3 { font-size: 21px; }
+
+/* 関わり方は早見表。見出しと関係だけを拾って読める2列。 */
+#result .kakawari-table { table-layout: fixed; font-size: 15px; }
+#result .kakawari-table thead th { background: var(--pink); color: var(--pink-ink); padding: 12px 18px; font-size: 13px; }
+#result .kakawari-table thead th:first-child, #result .kakawari-table tbody th { width: 32%; }
+#result .kakawari-table tbody > tr > * { padding: 20px 18px; }
+#result .kakawari-table tbody tr:nth-child(odd) > * { background: #f6f7f9; }
+#result .kakawari-table tbody th { font-size: 14px; font-weight: 500; }
+#result .kakawari-table td b { font-weight: 500; }
+#result .kakawari-table small { margin-top: 8px; line-height: 1.8; }
+
+/* ズレは一件ずつ、場面を先に。根拠は同じ行の開閉補足。 */
+#result .zure-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+#result .zure-list > li { display: grid; grid-template-columns: minmax(0,.85fr) minmax(0,1.15fr); gap: 24px 30px; padding: 28px 0; }
+#result .zure-list > li + li { border-top: 1px solid var(--rule); }
+#result .zure-heading { display: flex; gap: 14px; align-items: baseline; }
+#result .zure-no { flex: none; font-size: 17px; font-weight: 500; color: var(--gray-ink); font-variant-numeric: tabular-nums; }
+#result .zure-heading h3 { margin: 0; color: var(--ink); font-size: 19px; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; }
+#result .zure-scene { margin: 0; color: var(--ink); font-size: 15px; line-height: 1.95; }
+#result .zure-basis { margin-top: 12px; }
+#result .zure-basis > summary { display: inline-flex; gap: 12px; min-height: 40px; align-items: center; color: var(--sub); font-size: 13px; cursor: pointer; list-style: none; }
+#result .zure-basis > summary::after { content: '＋'; }
+#result .zure-basis[open] > summary::after { content: '−'; }
+#result .zure-basis p { margin-top: 4px; padding: 12px 16px; background: var(--gray); font-size: 14px; line-height: 1.9; }
+
+/* 助言はズレと同じ番号で対応。試す動作が先に目に入る。 */
+#result .advice-list { gap: 30px; margin-top: 30px; }
+#result .advice-list li { grid-template-columns: 48px minmax(0,1fr); column-gap: 22px; }
+#result .advice-list li::before { content: none; }
+#result .advice-no { padding-top: 23px; color: var(--mint-ink); font-size: 30px; line-height: 1.4; font-weight: 500; font-variant-numeric: tabular-nums; }
+#result .advice-list .advice-context { margin: 0; color: var(--sub); font-size: 12px; line-height: 1.8; }
+#result .advice-list h3 { margin-top: 6px; color: var(--mint-ink); font-size: 21px; }
+#result .advice-copy > p:last-child { margin-top: 10px; }
+
+/* 二人の比較は項目と2人の列。スマホでも2人を左右で比べる。 */
+#result .katachi-table { table-layout: fixed; font-size: 15px; }
+#result .katachi-table thead th { padding: 14px 16px; background: none; color: var(--sub); font-size: 13px; }
+#result .katachi-table thead th:first-child { width: 24%; }
+#result .katachi-table thead th:nth-child(2) { background: var(--blue); color: var(--blue-ink); }
+#result .katachi-table thead th:nth-child(3) { background: var(--pink); color: var(--pink-ink); }
+#result .katachi-table tbody > tr > * { padding: 20px 16px; }
+#result .katachi-table tbody th { width: 24%; font-size: 13px; font-weight: 500; }
+#result .katachi-table tbody tr:nth-child(odd) > * { background: #f6f7f9; }
+#result .katachi-table td { overflow-wrap: anywhere; }
+#result .pair-viewpoints { border: 0; border-radius: 0; gap: 14px; background: none; }
+#result .pair-viewpoints .viewpoint { padding: 20px; background: var(--blue); }
+#result .pair-viewpoints .viewpoint + .viewpoint { border: 0; background: var(--pink); }
+#result .goods-pair { gap: 0; list-style: decimal; padding-left: 24px; }
+#result .goods-pair li { padding: 16px 0 16px 12px; border-radius: 0; background: none; font-size: 16px; }
+#result .goods-pair li::marker { color: var(--pink-ink); font-weight: 700; }
+#result .locked, #result #sec-korekara .locked { border-radius: 2px; }
+
+@media (max-width: 900px) {
+  #result .report-page, #result .summary.report-page { padding-right: 26px; padding-left: 26px; }
+}
+@media (max-width: 620px) {
+  #result .report-page, #result .summary.report-page { margin-right: 8px; margin-left: 8px; padding-right: 20px; padding-left: 20px; }
+  #result .report-page > .page-run { margin-bottom: 22px; font-size: 11px; }
+  #result .sheet-title { font-size: 17px; }
+  #result .sheet-desc { font-size: 13px; }
+  #result .sheet-type { grid-template-columns: minmax(0,1fr) 88px; gap: 14px 8px; margin-top: 26px; }
+  #result .sheet-type-name { font-size: 31px; }
+  #result .sheet-type .sheet-art { grid-row: 1; max-height: 100px; }
+  #result .sheet-type .sheet-label { font-size: 12px; }
+  #result .sheet-type .profile-tags { display: none; }
+  #result .sheet-conclusion { grid-column: 1 / -1; margin-top: 0; font-size: 17px; }
+  #result .conclusion-now { font-size: 14px; margin-top: 12px; }
+  #result .sheet-timeline-link { display: block; padding: 12px 14px; margin-top: 20px; font-size: 13px; }
+  #result .sheet-timeline-link span { display: block; margin-top: 4px; }
+  #result .sheet-side { margin-top: 28px; }
+  #result .sheet-points { grid-template-columns: minmax(0,1fr); }
+  #result .sheet-points a { padding: 14px 0; gap: 4px 8px; }
+  #result .sheet-points b { padding-left: 29px; font-size: 14px; }
+  #result .pt-label { font-size: 14px; }
+  #result .pt-no { margin-right: 10px; }
+  #result .guide-sheet { grid-template-columns: 44px minmax(0,1fr); gap: 12px; }
+  #result .guide-sheet .guide-face { width: 44px; height: 44px; }
+  #result .guide-sheet .guide-text { font-size: 13px; }
+  #result .sheet-extra > summary { flex-wrap: wrap; gap: 2px 10px; padding: 12px; }
+  #result .sheet-extra > summary span { font-size: 12px; }
+  #result .sheet-extra > .kakusu, #result .sheet-extra > .sheet-info, #result .sheet-extra > .kakusu-note { padding: 4px 12px 16px; }
+  #result .kakusu-grid { grid-template-columns: minmax(0,1fr); gap: 4px; }
+  #result .kakusu-grid > div { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; align-items: center; padding: 12px; text-align: left; }
+  #result .kakusu-grid dt small { margin-top: 2px; }
+  #result .kakusu-grid dd { display: flex; align-items: center; gap: 10px; margin: 0; }
+  #result .kakusu-grid dd b { font-size: 24px; }
+  #result .kakusu-grid dd span { margin: 0; }
+  #result .profile-chapter-heading { column-gap: 12px; }
+  #result .profile-chapter-heading .chapter-number { font-size: 34px; }
+  #result .profile-chapter-heading h2 { font-size: 22px; }
+  #result .chapter-key { padding: 16px; }
+  #result .chapter-key-text { font-size: 16px; }
+  #result .face { padding: 20px; }
+  #result .face-text { font-size: 15px; }
+  #result .value-block { grid-template-columns: minmax(0,1fr); gap: 8px; }
+  #result .value-label { grid-row: auto; }
+  #result .value-block h3, #result .value-block > p:not(.value-label), #result .value-block > .fuda { grid-column: 1; }
+  #result .value-block h3 { font-size: 20px; }
+  #result .kakawari-table thead th, #result .kakawari-table tbody > tr > * { padding: 14px 10px; }
+  #result .kakawari-table thead th:first-child, #result .kakawari-table tbody th { width: 35%; }
+  #result .kakawari-table { font-size: 14px; }
+  #result .zure-list > li { grid-template-columns: minmax(0,1fr); gap: 12px; padding: 24px 0; }
+  #result .zure-heading h3 { font-size: 19px; }
+  #result .zure-reading { padding-left: 32px; }
+  #result .advice-list li { grid-template-columns: 30px minmax(0,1fr); column-gap: 14px; }
+  #result .advice-no { padding-top: 26px; font-size: 23px; }
+  #result .advice-list h3 { font-size: 20px; }
+  #result .katachi-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  #result .katachi-table, #result .katachi-table tbody { display: block; width: 100%; }
+  #result .katachi-table tbody tr { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 4px; margin-bottom: 20px; }
+  #result .katachi-table tbody th { grid-column: 1 / -1; width: auto; padding: 0 0 8px; color: var(--ink); background: none !important; font-size: 14px; font-weight: 700; }
+  #result .katachi-table tbody td { width: auto; padding: 12px; background: #edf3fc !important; font-size: 14px; line-height: 1.85; }
+  #result .katachi-table tbody td:last-child { background: #fdf0ee !important; }
+  #result .katachi-table td::before { content: attr(data-label); display: block; margin-bottom: 8px; color: var(--blue-ink); font-size: 12px; font-weight: 500; }
+  #result .katachi-table td:last-child::before { color: var(--pink-ink); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  .hiyomi-theme *, .hiyomi-theme *::before, .hiyomi-theme *::after { animation: none !important; transition: none !important; }
+  .hiyomi-theme .rv, .hiyomi-theme .rv .guide-face, .hiyomi-theme .rv .guide-say { opacity: 1 !important; transform: none !important; }
+}
+/* 意味のまとまりで改行し、長い固有名だけは折り返せるようにする。 */
+#result .sheet-conclusion, #result .sheet-points b, #result .zure-scene,
+#result .advice-list p, #result .katachi-table td { word-break: auto-phrase; overflow-wrap: anywhere; text-wrap: pretty; }
+#result .sheet-extra, #result .zure-basis { scroll-margin-top: 65px; }
+@media (prefers-reduced-motion: reduce) {
+  .anim #result #sec-nenpyo .tl::before { transform: none !important; }
+}
+#result .advice-list h3 { word-break: auto-phrase; overflow-wrap: anywhere; text-wrap: pretty; }
+@media (min-width: 901px) {
+  #result #toc a.toc-subpage { padding-top: 5px; padding-bottom: 5px; padding-left: 23px; color: var(--sub); font-size: 12px; }
+}
