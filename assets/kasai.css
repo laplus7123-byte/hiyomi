@@ -770,3 +770,165 @@ body.hiyomi-theme:has(#result:not([hidden])) { background: var(--gray); }
 @media (min-width: 901px) {
   #result #toc a.toc-subpage { padding-top: 5px; padding-bottom: 5px; padding-left: 23px; color: var(--sub); font-size: 12px; }
 }
+
+/* ---------- 読みやすさの改訂：内容を隠さず、見出しで探せるレポート ---------- */
+.hiyomi-theme { --ink: #263445; --sub: #526173; --faint: #657286; --navy: #314e72; --rule: #dce3eb; }
+#result .report-page { padding-top: 24px; border-radius: 4px; }
+#result .report-page > .page-run { margin: 0 0 30px; padding: 0; font-size: 12px; }
+#result .report-eyebrow { margin: 0 0 8px; color: var(--sub); font-size: 13px; letter-spacing: .04em; }
+#result .sheet-title { color: var(--ink); font-size: 26px; letter-spacing: .02em; line-height: 1.5; }
+#result .sheet-desc { margin-top: 10px; color: var(--sub); font-size: 15px; line-height: 1.8; }
+#result .sheet-type { grid-template-columns: minmax(0,1fr) 190px; margin-top: 34px; gap: 24px; }
+#result .sheet-type-name { font-size: 42px; }
+#result .sheet-type .sheet-art { grid-row: 1; max-height: 190px; }
+#result .type-definition { margin-top: 12px; font-size: 19px; font-weight: 500; line-height: 1.8; }
+#result .type-caption { margin-top: 12px; color: var(--sub); font-size: 13px; line-height: 1.8; }
+#result .report-highlights { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 30px; padding: 24px; background: #f1f5fa; }
+#result .report-highlights h2 { margin: 0; color: var(--sub); font-size: 13px; font-weight: 500; }
+#result .report-highlights p { margin-top: 8px; font-size: 14px; line-height: 1.8; }
+#result .report-highlights .highlight-years { font-size: 24px; color: var(--navy); font-weight: 700; letter-spacing: .01em; }
+#result .highlight-years span { font-size: 15px; margin-left: 4px; font-weight: 500; }
+#result .report-highlights .highlight-theme { color: var(--ink); font-size: 18px; font-weight: 700; }
+#result .report-highlights a { display: inline-block; margin-top: 10px; padding: 3px 0; color: var(--navy); font-size: 14px; text-decoration: underline; text-underline-offset: 4px; }
+#result .report-context { margin-top: 14px; color: var(--sub); font-size: 13px; line-height: 1.8; }
+#result .sheet-side { margin-top: 36px; }
+#result .sheet-side > .sheet-label { color: var(--ink); font-size: 18px; font-weight: 700; }
+#result .sheet-points { gap: 4px 32px; }
+#result .sheet-points a { padding: 18px 0; }
+#result .pt-label { color: var(--navy); font-size: 15px; }
+#result .sheet-points b { color: var(--sub); font-size: 14px; }
+#result .pt-no { color: var(--sub); }
+#result .sheet-supplements { margin-top: 32px; padding: 24px 0 0; border-top: 1px solid var(--rule); }
+#result .supplement-heading { color: var(--ink); font-size: 18px; }
+#result .sheet-info { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 24px; margin-top: 18px; }
+#result .sheet-info > div { display: block; }
+#result .sheet-info dt { margin-bottom: 4px; font-size: 13px; }
+#result .sheet-info dd { font-size: 15px; }
+#result .kakusu { margin-top: 28px; }
+#result .kakusu .sheet-label { color: var(--ink); font-size: 18px; font-weight: 700; }
+#result .kakusu .sheet-label small { display: inline; margin-left: 12px; font-size: 13px; font-weight: 400; }
+#result .kakusu-chars { margin-top: 12px; font-size: 21px; }
+#result .kakusu-grid > div { background: #f2f5f8; }
+#result .kakusu-grid > .is-good { background: #eaf1fa; }
+#result .kakusu-note { color: var(--sub); font-size: 14px; }
+#result .profile-chapter-heading { grid-template-columns: minmax(0,1fr); gap: 4px; }
+#result .profile-chapter-heading .chapter-kicker { grid-column: 1; color: var(--sub); font-size: 13px; font-weight: 500; letter-spacing: .05em; }
+#result .profile-chapter-heading .chapter-number { display: none; }
+#result .profile-chapter-heading h2 { grid-column: 1; font-size: 28px; line-height: 1.5; }
+#result .profile-subpage-heading h2 { font-size: 27px; line-height: 1.5; }
+#result .chapter-key { margin-top: 22px; padding: 20px 24px; gap: 6px; }
+#result .chapter-key-label { font-size: 13px; }
+#result .chapter-key-text { font-size: 18px; line-height: 1.85; }
+#result .sec-lead { color: var(--sub); margin-top: 18px; font-size: 16px; line-height: 1.9; }
+#result .reading-source { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin-top: 18px; color: var(--sub); font-size: 13px; line-height: 1.8; }
+#result .reading-source a { color: var(--navy); text-decoration: underline; text-underline-offset: 3px; }
+#result .face-sub { margin: 0 0 8px; color: var(--sub); font-size: 13px; }
+#result .face h3 { margin: 0; color: var(--ink); font-size: 20px; line-height: 1.6; }
+#result .face-text { margin-top: 16px; line-height: 1.95; }
+#result .value-block > .reading-source { margin-top: 8px; font-size: 13px; }
+#result .zure-list > li { grid-template-columns: 1fr; gap: 12px; padding: 26px 0; }
+#result .zure-reading { padding-left: 36px; }
+#result .zure-scene { font-size: 16px; }
+#result p.zure-basis { margin-top: 16px; padding: 0; background: none; color: var(--sub); font-size: 13px; line-height: 1.9; }
+#result .zure-basis > span { display: block; margin-bottom: 3px; color: var(--sub); font-weight: 500; }
+#result .advice-list .advice-context { font-size: 13px; }
+#result .advice-list h3 { color: var(--ink); font-size: 21px; }
+#result .advice-copy > p:last-child { font-size: 16px; line-height: 1.95; }
+#result .katachi-table td, #result .kakawari-table td { line-height: 1.85; }
+#result .katachi-table thead th { font-size: 14px; }
+#result .pair-viewpoints .viewpoint-label { color: var(--sub); font-size: 14px; }
+#result .third-person { font-size: 14px; }
+
+/* 年表は上から下へ。対象期間も読むために開く操作を要しない。 */
+#result #sec-nenpyo .tl { margin-top: 30px; padding: 0; }
+#result #sec-nenpyo .tl::before, #result #sec-nenpyo .tl-year::before,
+#result #sec-nenpyo .tl-year::after, #result #sec-nenpyo .year-content::before { content: none; display: none; }
+#result #sec-nenpyo .tl > .tl-year { margin: 0; padding: 28px 0 !important; border: 0; }
+#result #sec-nenpyo .tl > .tl-year + .tl-year { border-top: 1px solid var(--rule); }
+#result #sec-nenpyo .year-heading { display: grid; grid-template-columns: 114px minmax(0,1fr); gap: 24px; align-items: start; }
+#result #sec-nenpyo .year-date { grid-column: 1; grid-row: 1; position: static; display: flex; align-items: flex-start; flex-direction: column; gap: 6px; padding: 0; }
+#result #sec-nenpyo .year-date .node { padding: 0; background: none; color: var(--navy); font-size: 29px; line-height: 1.4; }
+#result #sec-nenpyo .node small { color: var(--navy); font-size: 14px; }
+#result #sec-nenpyo .year-age { margin: 0; padding: 0; background: none; font-size: 14px; }
+#result #sec-nenpyo .year-current { margin-top: 4px; color: var(--navy); background: #eaf1fa; font-size: 12px; padding: 3px 7px; }
+#result #sec-nenpyo .year-future { padding: 0; background: none; color: var(--sub); font-size: 16px; }
+#result #sec-nenpyo .tl-year .year-content { grid-column: 2; grid-row: 1; padding: 0; margin: 0; border: 0; border-radius: 0; background: none; transform: none; }
+#result #sec-nenpyo .year-content h3 { font-size: 20px; line-height: 1.6; }
+#result #sec-nenpyo .year-lead { margin-top: 10px; font-size: 15px; line-height: 1.9; }
+#result #sec-nenpyo .year-detail { margin-top: 16px; }
+#result #sec-nenpyo .year-notes { display: grid; grid-template-columns: minmax(0,1fr) 84px; align-items: center; gap: 18px; padding: 16px; border-radius: 0; background: #f5f7fa; }
+#result #sec-nenpyo .year-detail-label { color: var(--sub); font-size: 12px; }
+#result #sec-nenpyo .tl-period { margin-top: 4px; color: var(--ink); font-size: 14px; line-height: 1.7; }
+#result #sec-nenpyo .year-decade { margin-top: 12px; padding: 0; border: 0; }
+#result #sec-nenpyo .year-decade .pill { margin-top: 4px; padding: 0; color: var(--sub); background: none; font-size: 13px; }
+#result #sec-nenpyo .year-decade .band-title { margin-top: 3px; font-size: 14px; font-weight: 500; line-height: 1.7; }
+#result #sec-nenpyo .photo-wrap { margin: 0; }
+#result #sec-nenpyo .year-detail .photo { width: 84px; height: auto; margin: 0; border-radius: 0; }
+#result #sec-nenpyo .year-feedback { margin-top: 18px; }
+#result #sec-nenpyo .year-feedback .hit { max-width: 330px; }
+#result #sec-nenpyo .year-feedback .hit button { min-height: 44px; }
+#result #sec-nenpyo .tl-more { color: var(--sub); font-size: 14px; line-height: 1.8; }
+#result .service-options { margin-top: 28px; }
+#result .service-free { padding: 0 0 28px; }
+#result .service-options h3 { margin-top: 8px; font-size: 21px; }
+#result .service-options p, #result .service-options li { font-size: 15px; line-height: 1.9; }
+#result .service-options ul { margin-top: 16px; padding-left: 1.2em; }
+#result .service-options .service-status { color: var(--navy); font-size: 13px; font-weight: 700; }
+#result .service-options .locked { margin: 0; padding: 24px; background: #f2f5f8; }
+#result .service-options .price { margin-top: 12px; }
+#result .report-method { margin-top: 20px; padding: 32px 44px; background: #fff; color: var(--sub); scroll-margin-top: 76px; }
+#result .report-method h2 { margin: 0 0 16px; color: var(--ink); font-size: 22px; }
+#result .report-method p { font-size: 14px; line-height: 1.9; }
+#result .method-list { display: grid; gap: 18px; margin: 24px 0; }
+#result .method-list > div { display: grid; grid-template-columns: 112px minmax(0,1fr); gap: 20px; }
+#result .method-list dt { color: var(--ink); font-size: 14px; font-weight: 500; }
+#result .method-list dd { margin: 0; font-size: 14px; line-height: 1.85; }
+#result .method-operator { margin-top: 22px; }
+#result #toc a.toc-subpage { font-size: 13px; padding-top: 8px; padding-bottom: 8px; }
+#result .profile-nav-cta { font-size: 13px; }
+.hiyomi-theme :is(a,button,summary,input,select):focus-visible { outline: 3px solid #567da8; outline-offset: 4px; }
+#result :is(h1,h2,h3,.type-definition,.highlight-theme) { word-break: auto-phrase; overflow-wrap: anywhere; text-wrap: pretty; }
+@media (max-width: 900px) {
+  #result .report-method { padding-right: 26px; padding-left: 26px; }
+}
+@media (max-width: 620px) {
+  #result .report-page { padding-top: 22px; margin-bottom: 16px; }
+  #result .report-page > .page-run { gap: 10px; margin-bottom: 24px; font-size: 11px; }
+  #result .sheet-title { font-size: 22px; }
+  #result .sheet-desc { font-size: 14px; }
+  #result .sheet-type { grid-template-columns: minmax(0,1fr) 86px; gap: 12px; margin-top: 26px; align-items: start; }
+  #result .sheet-type-name { font-size: 31px; }
+  #result .type-definition { font-size: 17px; }
+  #result .type-caption { font-size: 13px; }
+  #result .sheet-type .sheet-art { margin-top: 25px; }
+  #result .report-highlights { grid-template-columns: 1fr; gap: 22px; padding: 20px; margin-top: 24px; }
+  #result .report-highlights .highlight-years { font-size: 24px; }
+  #result .report-highlights .highlight-theme { font-size: 17px; }
+  #result .sheet-points { grid-template-columns: 1fr; }
+  #result .sheet-points a { padding: 15px 0; }
+  #result .sheet-points b { padding-left: 0; }
+  #result .sheet-info { grid-template-columns: 1fr; gap: 16px; }
+  #result .kakusu .sheet-label small { display: block; margin: 4px 0 0; }
+  #result .kakusu-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+  #result .kakusu-grid > div { display: block; padding: 14px; text-align: left; }
+  #result .kakusu-grid dd { margin-top: 8px; }
+  #result .kakusu-grid dt small { font-size: 12px; }
+  #result .profile-chapter-heading h2, #result .profile-subpage-heading h2 { font-size: 24px; }
+  #result .chapter-key { padding: 18px; }
+  #result .chapter-key-text { font-size: 17px; }
+  #result .face { padding: 20px; }
+  #result .face h3 { font-size: 20px; }
+  #result .sec-lead { font-size: 15px; }
+  #result .zure-reading { padding-left: 0; }
+  #result .zure-scene { font-size: 15px; }
+  #result #sec-nenpyo .year-heading { grid-template-columns: 1fr; gap: 14px; }
+  #result #sec-nenpyo .year-date { grid-column: 1; grid-row: 1; flex-direction: row; align-items: center; gap: 12px; flex-wrap: wrap; }
+  #result #sec-nenpyo .year-date .node { font-size: 28px; }
+  #result #sec-nenpyo .tl-year .year-content { grid-column: 1; grid-row: 2; }
+  #result #sec-nenpyo .year-notes { grid-template-columns: 1fr 66px; gap: 10px; padding: 14px; }
+  #result #sec-nenpyo .year-detail .photo { width: 66px; }
+  #result .report-method { margin-right: 8px; margin-left: 8px; padding: 26px 20px; }
+  #result .method-list > div { grid-template-columns: 1fr; gap: 5px; }
+  #result .service-options .locked { padding: 20px; }
+  #result .service-options h3 { font-size: 20px; }
+}

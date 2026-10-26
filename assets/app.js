@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var TITLE = 'HIYOMI｜生まれた日から、人生が動いた年を当てる';
+  var TITLE = 'HIYOMI｜四柱推命で読む、性格と人との関わり方';
   /* スプレッドシート記録用の Apps Script ウェブアプリのURL（空なら記録しない。手順は gas/README.md） */
   var RECORD_URL = 'https://script.google.com/macros/s/AKfycbxCNLXBqUGHgAUWMBcZ51L3HZmaPvAGFfSreds3zpFCpXK6Zu86Tp02obop_wV8pqTNsw/exec';
 
@@ -29,11 +29,11 @@
     return '<div class="guide' + (cls ? ' ' + cls : '') + '"><span class="guide-face"><img src="assets/img/guide-face.webp" alt="" width="160" height="160"></span>' +
       '<div class="guide-say"><p class="guide-name">案内人 ひよみ</p><p class="guide-text">' + text + '</p></div></div>';
   }
-  /* どこから読んだかの札。押すと現代語の説明が開く */
+  /* 読み方の出典は常時表示。共通の説明はレポート末尾にまとめる。 */
   var POS_FUDA = { '年干': 'year', '年支': 'year', '月干': 'month', '月支': 'month', '日支': 'day' };
   function fuda(kind) {
     var f = T.fuda[kind];
-    return '<details class="fuda"><summary>' + f.label + '</summary><p>' + esc(f.text) + '</p></details>';
+    return '<p class="fuda reading-source"><span>読み解きに使った情報</span><a href="#sec-reading" data-jump="reading">' + esc(f.label.replace(/から$/, '')) + '</a></p>';
   }
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
@@ -129,7 +129,7 @@
     var steps = [
       ['生年月日を、暦に直しています', b.y + '年' + b.m + '月' + b.d + '日　→　' + pillarLine(me)],
       ['あなたのタイプを読みとっています', '生まれた日の字は「' + me.type.dg + '」。' + birthOf(me.type) + 'です。'],
-      ['人生が動いた年を探しています', me.nenpyo.past.length ? '15歳からの年表で、' + me.nenpyo.past.length + 'つの年が見つかりました。' : '15歳からの年表を確かめました。']
+      ['振り返りの手がかりになる年を調べています', me.nenpyo.past.length ? '15歳からの年表で、' + me.nenpyo.past.length + 'つの年が見つかりました。' : '15歳からの年表を確かめました。']
     ];
     if (cs.pt) steps.push(['二人の相性を見ています', cs.pname + 'は、' + birthOf(cs.pt.type) + 'です。']);
     var el = $('#loading');
@@ -282,8 +282,8 @@
     });
     html += '<li class="tl-year tl-next" style="--c:' + BASE_COLOR + '"><div class="year-heading">' +
       '<div class="year-date"><span class="year-future">これから</span></div><div class="year-content">' +
-      '<h3>次の節目</h3><p class="tl-text year-lead">次に大きく動きやすい年は、これからの流れと一緒に、月額会員の方にお見せしています。</p>' +
-      '<a class="mini-line" data-jump="korekara" href="#sec-korekara">これからの流れについて</a></div></div></li>';
+      '<h3>次の節目</h3><p class="tl-text year-lead">今後の節目や流れを読める月額プランを準備しています。</p>' +
+      '<a class="mini-line" data-jump="korekara" href="#sec-korekara">月額プランの提供予定を見る</a></div></div></li>';
     html += '</ol>';
     if (n.past.length) {
       html += '<p class="tally" id="tally" hidden>' + n.past.length + '年のうち、<b id="hits">0</b>つ当たった</p>';
@@ -297,7 +297,7 @@
     var r = nd.row, past = nd.type === 'past';
     var k = mainKind(r.kinds);
     var ev = k ? T.events[k] : null;
-    var title = past ? ev.past : (ev ? ev.now : '落ち着いた年');
+    var title = { kirikae: '環境や関心の切り替わり', chu: '暮らしや人間関係の変化', go: '人とのつながり', fukugin: '大切にしたいことの再確認' }[k] || '今の生活を整える';
     var more = r.kinds.filter(function (x) { return x !== k; }).map(function (x) {
       return T.events[x][past ? 'pastText' : 'nowText'];
     });
@@ -308,17 +308,16 @@
     var lead = hasMoreSentences ? text.slice(firstStop + 1).trim() : text;
     var h = '<li class="tl-year ' + (past ? 'tl-past' : 'tl-now') + '" style="--c:' + color + '">' +
       '<div class="year-heading"><div class="year-date"><div class="node">' + r.year + '<small>年</small></div>' +
-      '<p class="year-age">' + esc(r.age) + '</p>' + (past ? '' : '<span class="year-current">今年</span>') + '</div>' +
+      '<p class="year-age">' + esc(r.age) + '</p>' + (past ? '' : '<span class="year-current">今年のテーマ</span>') + '</div>' +
       '<div class="year-content"><h3>' + esc(title) + '</h3>' +
-      '<p class="tl-text year-lead">' + esc(lead) + '</p>' + (ev ? fuda(k === 'kirikae' ? 'dayun' : 'day') : '') +
-      (first ? guide('詳しい時期は、こちらを開いてください。', 'guide-mini') : '') +
-      '<details class="report-detail year-detail"><summary>詳しい時期と、その頃の流れ</summary>' +
+      '<p class="tl-text year-lead">' + esc(lead) + '</p>' +
+      '<div class="year-detail">' +
       '<div class="year-notes"><div class="year-notes-copy"><p class="year-detail-label">対象の期間</p>' +
       '<p class="tl-period">' + esc(r.period) + '</p>';
     more.forEach(function (t) { h += '<p class="tl-more">' + esc(t) + '</p>'; });
     h += periodContext + '</div>';
     if (ev) h += '<div class="photo-wrap"><img class="photo" src="assets/img/ev_' + k + '.webp" alt="' + esc(ev.photo) + 'の絵" width="900" height="675" loading="lazy"></div>';
-    h += '</div></details>';
+    h += '</div></div>';
     if (past) {
       h += '<div class="year-feedback"><span class="feedback-label">この年に、心当たりは？</span>' +
         '<div class="hit" data-year="' + r.year + '"><button type="button" data-v="1" aria-pressed="false">当たってる</button>' +
@@ -336,7 +335,8 @@
   function conclusionOf(c, cur) {
     var years = c.nenpyo.past.map(function (r) { return r.year; }).sort(function (a, b) { return a - b; });
     var line = T.roleLine[c.type.role];
-    var s = years.length ? years.join('年・') + '年に人生が動いた、' + line + '。' : line + '。';
+    var s = line + '。';
+    if (years.length) s += '振り返りの手がかりになる年は、' + years.join('年・') + '年です。';
     if (cur) s += 'いまは「' + plain(T.dayun[cur.star].now) + '」の途中です。';
     return s;
   }
@@ -360,7 +360,7 @@
   }
   function groupOf(key) { return T.groups.filter(function (g) { return g.key === key; })[0]; }
 
-  /* 気をつけたいズレ（自分）：身近な人の位置 → ない星 → 見られ方と本音 → 強みの裏返し の順に3つ */
+  /* つまずきやすい場面（自分）：身近な人の位置 → ない星 → 見られ方と本音 → 強みの裏返し の順に3つ */
   function selfZure(me) {
     var list = [];
     var top = groupOf(me.type.group), topN = me.count[top.key] || 0;
@@ -386,7 +386,7 @@
   }
 
   var POS_NAME = { '年支': '生まれ年', '月支': '生まれ月', '日支': '生まれ日', '時支': '生まれた時刻' };
-  /* 二人のズレ：大事にしたいもの・ぶつかる組み合わせ・同じところで意地・言葉・お金。最大4つ */
+  /* すれ違いやすい場面：大事にしたいもの・ぶつかる組み合わせ・同じところで意地・言葉・お金。最大4つ */
   function pairZure(me, pt, rel, pname, c) {
     var Z = T.pairZure, list = [];
     function add(z, basis) { list.push({ title: z.title, appear: z.appear, advice: z.advice, basis: basis }); }
@@ -414,13 +414,13 @@
     return '<div class="zure-wrap"><ol class="zure-list">' + list.map(function (z, i) {
       return '<li><div class="zure-heading"><span class="zure-no">' + pad(i + 1) + '</span><h3>' + esc(z.title) + '</h3></div>' +
         '<div class="zure-reading"><p class="zure-scene" data-label="実際にどう出やすいか">' + esc(z.appear) + '</p>' +
-        '<details class="zure-basis" data-label="生まれの根拠"><summary>この読みの根拠</summary><p>' + esc(z.basis) + '</p></details></div></li>';
+        '<p class="zure-basis" data-label="生まれの根拠"><span>この項目の読み方</span>' + esc(z.basis) + '。</p></div></li>';
     }).join('') + '</ol></div>';
   }
   function adviceList(list) {
     return '<ol class="advice-list">' + list.map(function (z, i) {
       return '<li><span class="advice-no" aria-hidden="true">' + pad(i + 1) + '</span><div class="advice-copy">' +
-        '<p class="advice-context">ズレ ' + pad(i + 1) + '：' + esc(z.title) + '</p>' +
+        '<p class="advice-context">場面 ' + pad(i + 1) + '：' + esc(z.title) + '</p>' +
         '<h3>' + esc(z.advice[0]) + '</h3><p>' + esc(z.advice[1]) + '</p></div></li>';
     }).join('') + '</ol>';
   }
@@ -430,17 +430,17 @@
     var key = rel === 'love' ? '日支' : '月支';
     var pos = T.position[key].replace('の位置', '');
     var keyRel = c.rel.filter(function (r) { return r.a === key && r.b === key; })[0];
-    if (c.tenchi) return '生まれ日の上の字も下の字も結びつく、とても縁の深い組み合わせです。';
-    if (c.kango) return rel === 'love' ? '生まれ日の上の字どうしが引き合う、自然と惹かれ合う組み合わせです。'
-      : '生まれ日の上の字どうしが引き合う、自然と手を組みやすい組み合わせです。';
-    if (keyRel && keyRel.tag === '支合') return pos + 'どうしが結びつく、息の合う組み合わせです。';
-    if (keyRel && keyRel.tag === '半会') return pos + 'どうしが同じ方向を向く、目標を共有しやすい組み合わせです。';
-    if (keyRel && keyRel.tag === '同じ支') return pos + 'に同じ字を持つ、根っこの似た組み合わせです。';
-    if (keyRel && keyRel.tag === '冲') return pos + 'の違いがはっきりしているぶん、補い合える組み合わせです。';
+    if (c.tenchi) return '親しみを感じやすく、関係が深まりやすい組み合わせです。';
+    if (c.kango) return rel === 'love' ? '互いに惹かれ、距離が縮まりやすい組み合わせです。'
+      : '互いの力を借りて、一緒に進めやすい組み合わせです。';
+    if (keyRel && keyRel.tag === '支合') return '意見を合わせやすく、息の合う組み合わせです。';
+    if (keyRel && keyRel.tag === '半会') return '大事にする方向が近く、目標を共有しやすい組み合わせです。';
+    if (keyRel && keyRel.tag === '同じ支') return '大切にすることが似ていて、共感しやすい組み合わせです。';
+    if (keyRel && keyRel.tag === '冲') return '大切にすることの違いから、互いに学べる組み合わせです。';
     return 'ほどよい距離感で、長く付き合える組み合わせです。';
   }
 
-  /* 相性は鑑定書と同じ順に、1画面に1つの話：結論 → 二人の形の違い → いいこと → ズレ → 向き合い方。二人のこれからの5年だけ有料 */
+  /* 相性は鑑定書と同じ順に、1画面に1つの話：結論 → 二人の価値観を比べる → いいこと → ズレ → 向き合い方。二人のこれからの5年だけ有料 */
   function compatPages(me, pt, rel, pname, num) {
     var c = M.compat(me, pt);
     var as = T.partnerAs[rel];
@@ -451,7 +451,7 @@
     var zl = pairZure(me, pt, rel, pname, c);
     var calm = zl.length === 1 && zl[0].title === T.pairZure.calm.title;
     var concl = compatTail(me, pt, rel) + (calm ? '大きなぶつかりは少なく、穏やかに続きやすい二人です。'
-      : 'ただ、ズレが' + zl.length + 'つあります。どれも、言葉とルールで小さくできるものです。');
+      : '日常ですれ違いやすい' + zl.length + 'つの場面と、関係を育てる工夫を紹介します。');
 
     var goods = ['あなたから見ると' + pname + 'は「' + ab + '」、' + pname + 'から見るとあなたは「' + ba + '」です。'];
     var positives = c.rel.filter(function (r) { return r.tag !== '冲'; });
@@ -477,11 +477,11 @@
       ['タイプ', typeName(me.type), typeName(pt.type)],
       ['周りから見える姿', T.kyusei[me.kyusei.hon].out, T.kyusei[pt.kyusei.hon].out],
       [(rel === 'love' ? '恋愛' : '仕事') + 'で大事にしたいもの', T.values[rel][me.zhiStar[key]], T.values[rel][pt.zhiStar[key]]],
-      ['お金の感覚', T.money[moneyOf(me)], T.money[moneyOf(pt)]],
-      ['言葉の出方', T.words[wordsOf(me)], T.words[wordsOf(pt)]]
+      ['お金の使い方', T.money[moneyOf(me)], T.money[moneyOf(pt)]],
+      ['気持ちの伝え方', T.words[wordsOf(me)], T.words[wordsOf(pt)]]
     ];
 
-    return '<section class="sec profile-chapter ch-relations" id="sec-relations">' + chapterHeading(num, esc(pname) + 'との相性', concl, '結論') +
+    return '<section class="sec profile-chapter ch-relations" id="sec-relations">' + chapterHeading(num, esc(pname) + 'との相性', concl, '二人の関係の特徴') +
       '<p class="sec-lead">' + (rel === 'love' ? '恋愛' : '仕事') + 'の関係として見ています。</p>' +
       '<div class="pair"><figure class="el-' + STEM_EL[me.type.dg] + '">' + godImg(me.type.dg, '') + '<figcaption>あなた<b>' + esc(typeName(me.type)) + '</b></figcaption></figure>' +
       '<figure class="el-' + STEM_EL[pt.type.dg] + '">' + godImg(pt.type.dg, '') + '<figcaption>' + esc(pname) + '<b>' + esc(typeName(pt.type)) + '</b></figcaption></figure></div>' +
@@ -491,20 +491,20 @@
       '<p class="viewpoint-value">「' + esc(ba) + '」</p></div></div>' + fuda('day') +
       (rel === 'work' ? '<p class="caution">採用や評価の判断には使わないでください。</p>' : '') + '</section>' +
 
-      sub('katachi', '二人の形の違い',
-        '<p class="sec-lead">同じものを見ていても、大事にしているものが少しずつ違います。</p>' +
+      sub('katachi', '二人の価値観を比べる',
+        '<p class="sec-lead">同じ項目で見比べると、大切にすることの共通点と違いが分かります。</p>' +
         '<div class="katachi-wrap"><table class="katachi-table"><thead><tr><th scope="col"><span class="sr-only">項目</span></th><th scope="col">あなた</th><th scope="col">' + esc(pname) + '</th></tr></thead><tbody>' +
         rows.map(function (r) { return '<tr><th scope="row">' + esc(r[0]) + '</th><td data-label="あなた">' + esc(r[1]) + '</td><td data-label="' + esc(pname) + '">' + esc(r[2]) + '</td></tr>'; }).join('') +
         '</tbody></table></div>' + fuda(rel === 'love' ? 'day' : 'month')) +
 
-      sub('ii', 'いいこと', '<ul class="goods goods-pair">' + goods.map(function (g) { return '<li>' + esc(g) + '</li>'; }).join('') + '</ul>' + fuda('day')) +
+      sub('ii', '二人が協力しやすいところ', '<p class="sec-lead">互いの違いを活かせる点や、一緒に取り組みやすいことを見ていきます。</p><ul class="goods goods-pair">' + goods.map(function (g) { return '<li>' + esc(g) + '</li>'; }).join('') + '</ul>' + fuda('day')) +
 
-      sub('zure', '二人のズレ', '<p class="sec-lead">日々のやり取りで、すれ違いが出やすい場面です。続く「向き合い方」と同じ番号で読めます。</p>' + zureTable(zl)) +
+      sub('zure', 'すれ違いやすい場面', '<p class="sec-lead">日々のやり取りで、すれ違いが出やすい場面です。次の「すれ違いを減らす工夫」と、同じ番号で対応しています。</p>' + zureTable(zl)) +
 
-      sub('mukiai', '向き合い方', '<p class="sec-lead">ズレを小さくする、' + zl.length + 'つのこと。</p>' + adviceList(zl) +
-        '<div class="locked locked-pair"><h3>二人のこれからの5年</h3><p class="tl-text">二人がそろって動きやすい年、縁が深まりやすい年を、1年ずつお見せします。</p>' +
-        '<p class="note">月額会員（500円）の方が見られます。</p><a class="mini-line" data-jump="korekara" href="#sec-korekara">これからの流れについて</a></div>' +
-        '<p class="third-person">ほかの人との相性（3人目から）も、月額会員の方は何人でも見られます。</p>');
+      sub('mukiai', 'すれ違いを減らす工夫', '<p class="sec-lead">二人で試せる、' + zl.length + 'つのこと。</p>' + adviceList(zl) +
+        '<div class="locked locked-pair"><h3>二人のこれからの5年</h3><p class="tl-text">二人の関係を考える手がかりとして、これからの流れを年ごとにお届けする予定です。</p>' +
+        '<p class="note">月額500円のプランで提供予定です。現在は準備中です。</p><a class="mini-line" data-jump="korekara" href="#sec-korekara">月額プランの提供予定を見る</a></div>' +
+        '<p class="third-person">3人目からの相性も、月額プランで提供予定です。</p>');
   }
 
   /* 人との関わり方：相手の生まれ日（10の生まれ）ごとの早見表 */
@@ -523,9 +523,9 @@
       '<div class="kakawari-wrap"><table class="kakawari-table"><thead><tr><th scope="col">相手の生まれ</th><th scope="col">あなたとの関わり</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       fuda('day') +
       (hasPartner
-        ? '<p class="third-person">相手の生まれは、その人の生年月日を入れると分かります。3人目からの相性は、月額会員の方が見られます。</p>'
+        ? '<p class="third-person">相手の生まれは、その人の生年月日を入れると分かります。3人目からの相性は、月額プランで提供予定です。</p>'
         : '<div class="insight-block profile-partner-prompt"><h3>気になる人との相性を、無料で</h3>' +
-          guide('気になる人の生年月日を1人入れると、二人の形の違い・いいこと・ズレ・向き合い方まで、無料で見られます。') +
+          guide('気になる人の生年月日を1人分入れると、二人の価値観や、協力しやすいところ、すれ違いを減らす工夫を無料で確認できます。') +
           '<a class="reading-link" href="#aisho">相手を追加して鑑定する</a></div>');
   }
 
@@ -546,41 +546,38 @@
   function chapterHeading(number, title, point, keyLabel) {
     return '<header class="profile-chapter-heading"><p class="chapter-kicker">第' + Number(number) + '章</p>' +
       '<span class="chapter-number">' + number + '</span><h2>' + title + '</h2></header>' +
-      (point ? '<div class="chapter-key"><p class="chapter-key-label">' + (keyLabel || 'この章の要点') + '</p><p class="chapter-key-text">' + esc(point) + '</p></div>' : '');
+      (point ? '<div class="chapter-key"><p class="chapter-key-label">' + (keyLabel || 'ここで分かること') + '</p><p class="chapter-key-text">' + esc(point) + '</p></div>' : '');
   }
 
-  /* ④：タイプ・過去の節目を主役に。画数と鑑定条件は表紙内の補足として残す。 */
+  /* タイプの説明、振り返る年、現在のテーマを分けて示す。 */
   function renderSheet(me, who, cur, order, CH, extra) {
     var ty = me.type, b = me.birth;
     var roleArt = { '賢者': 'scholar', '開拓者': 'pioneer', '表現者': 'creator', '統率者': 'leader', '独立者': 'independent' }[ty.role];
-    var info = [['鑑定日', thisYear + '年' + (today.getMonth() + 1) + '月' + today.getDate() + '日'],
-      ['お名前', who],
-      ['生年月日', b.y + '年' + b.m + '月' + b.d + '日・' + (me.sex === 'M' ? '男性' : '女性') + (me.time ? '・' + me.time + '生まれ' : '')]];
-    if (cur) info.push(['今の10年', cur.start + '〜' + (cur.start + 9) + '年　' + plain(T.dayun[cur.star].now)]);
-    if (extra.pt) info.push(['お相手', extra.pname + '・' + typeName(extra.pt.type)]);
+    var years = me.nenpyo.past.map(function (r) { return r.year; }).sort(function (a, b) { return a - b; });
+    var info = [['生年月日', b.y + '年' + b.m + '月' + b.d + '日・' + (me.sex === 'M' ? '男性' : '女性') + (me.time ? '・' + me.time + '生まれ' : '')],
+      ['鑑定日', thisYear + '年' + (today.getMonth() + 1) + '月' + today.getDate() + '日']];
+    if (extra.pt) info.push(['相性のお相手', extra.pname + '・' + typeName(extra.pt.type)]);
     var points = order.filter(function (k) { return CH[k].point; }).map(function (k, i) {
       return '<li class="pt-' + k + '"><a href="#sec-' + k + '" data-jump="' + k + '">' +
         '<span class="pt-label"><span class="pt-no">' + pad(i + 1) + '</span>' + CH[k].tag + '</span>' +
         '<b>' + esc(CH[k].point) + '</b><span class="pt-more" aria-hidden="true">読む →</span></a></li>';
     }).join('');
-    var conclusion = conclusionOf(me, cur).split('。').filter(Boolean).map(function (line, i) {
-      return '<span class="' + (i ? 'conclusion-now' : 'conclusion-main') + '">' +
-        esc(line).replace(/(\d{4}年(?:・\d{4}年)*)/, '<strong class="conclusion-years">$1</strong>') + '。</span>';
-    }).join('');
     return '<section class="report-sheet" id="sec-overview">' +
-      '<header class="sheet-head"><h1 class="sheet-title">あなたの鑑定レポート</h1>' +
-      '<p class="sheet-desc">性格と価値観、これまでの節目をたどります。</p></header>' +
-      '<div class="sheet-type"><div class="sheet-identity"><p class="sheet-label">' + esc(who) + 'のタイプ</p>' +
-      '<p class="sheet-type-name">' + esc(typeName(ty)) + '</p>' +
-      '<div class="profile-tags"><span>' + esc(birthOf(ty)) + '</span><span>' + esc(ty.ten) + '</span></div></div>' +
-      '<img class="sheet-art" src="assets/img/modern-' + roleArt + '.webp" alt="" width="960" height="720" decoding="async">' +
-      '<p class="sheet-conclusion">' + conclusion + '</p></div>' +
-      '<a class="sheet-timeline-link" href="#sec-nenpyo" data-jump="nenpyo">' + (me.nenpyo.past.length ? 'この年に、心当たりはありますか。<span>年表で確かめる →</span>' : 'これまでと今の流れを見てみる<span>年表を読む →</span>') + '</a>' +
-      '<div class="sheet-side"><p class="sheet-label">このレポートの要点</p><ol class="sheet-points">' + points + '</ol></div>' +
-      guide('気になる要点から読めます。各項目の札を押すと、どこから読んだかが分かります。', 'guide-sheet') +
-      '<div class="sheet-supplements">' + (me.name ? '<details class="sheet-extra"><summary>名前の画数<span>5つの格を見る</span></summary>' + renderKakusu(me.name) + '</details>' : '') +
-      '<details class="sheet-extra"><summary>鑑定に使った情報<span>生年月日・鑑定日など</span></summary>' +
-      '<dl class="sheet-info">' + info.map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('') + '</dl></details></div></section>';
+      '<header class="sheet-head"><p class="report-eyebrow">四柱推命の鑑定レポート</p><h1 class="sheet-title">' + esc(who) + 'の鑑定結果</h1>' +
+      '<p class="sheet-desc">性格、大切にすること、人との関わり方を読み解きます。</p></header>' +
+      '<div class="sheet-type"><div class="sheet-identity"><p class="sheet-label">あなたのタイプ</p>' +
+      '<p class="sheet-type-name">' + esc(typeName(ty)) + '</p><p class="type-definition">' + esc(T.roleLine[ty.role]) + '。</p>' +
+      '<p class="type-caption">「' + esc(STEM_NAME[ty.dg]) + '」は生まれ日の性質、「' + esc(ty.role) + '」は持ち味を表しています。</p></div>' +
+      '<img class="sheet-art" src="assets/img/modern-' + roleArt + '.webp" alt="" width="960" height="720" decoding="async"></div>' +
+      '<div class="report-highlights"><div><h2>振り返りの手がかりになる年</h2><p class="highlight-years">' +
+      (years.length ? years.join('・') + '<span>年</span>' : 'これまでと今年を振り返る') + '</p>' +
+      '<p>暮らしや人間関係に、変化はありましたか。</p><a href="#sec-nenpyo" data-jump="nenpyo">年齢・出来事のテーマを見る <span aria-hidden="true">→</span></a></div>' +
+      (cur ? '<div><h2>今の10年間のテーマ</h2><p class="highlight-theme">' + esc(plain(T.dayun[cur.star].now)) + '</p><p>' + cur.start + '〜' + (cur.start + 9) + '年</p></div>' : '') + '</div>' +
+      '<p class="report-context">四柱推命による見立てです。ご自身の経験と照らし合わせてお読みください。</p>' +
+      '<div class="sheet-side"><h2 class="sheet-label">項目別に結果を読む</h2><ol class="sheet-points">' + points + '</ol></div>' +
+      '<div class="sheet-supplements"><h2 class="supplement-heading">鑑定に使った情報</h2><dl class="sheet-info">' +
+      info.map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('') + '</dl>' +
+      (me.name ? renderKakusu(me.name) : '') + '</div></section>';
   }
 
   function render(q) {
@@ -602,41 +599,41 @@
     var CH = {
       relations: { label: '相性', tag: '相性', point: hasPartner ? compatTail(me, pt, rel) : '' },
       seikaku: { label: '性格', tag: '性格', title: 'あなたの性格', point: firstSentence(T.face[ty.dg]),
-        body: '<div class="faces"><div class="face face-front"><h3>表の顔</h3><p class="face-sub">周りから見えるあなた</p>' +
+        body: '<div class="faces"><div class="face face-front"><p class="face-sub">周囲からの印象</p><h3>周りから見えるあなた</h3>' +
           '<p class="face-text">' + esc(T.face[ty.dg]) + '</p>' + fuda('day') + '</div>' +
-          '<div class="face face-back"><h3>裏の顔</h3><p class="face-sub">内側にある本音</p>' +
+          '<div class="face face-back"><p class="face-sub">あなた自身の価値観</p><h3>内側で大切にすること</h3>' +
           '<p class="face-text">' + esc(T.hidden[ty.tenStar]) + '</p>' + fuda(POS_FUDA[ty.deciding]) + '</div></div>' },
-      kachikan: { label: '仕事観・恋愛観・人生観', tag: '価値観', title: '仕事観・恋愛観・人生観', point: 'あなたの強みは、' + role.strength + '。',
+      kachikan: { label: '仕事・恋愛・人生の価値観', tag: '価値観', title: '仕事・恋愛・人生で大切にすること', point: 'あなたの強みは、' + role.strength + '。',
         body: '<div class="values">' +
           valueBlock('仕事観', T.work[me.zhiStar['月支']], 'month', '<p class="value-extra"><b>力が出る役回り</b>' + esc(role.place) + '</p>') +
           valueBlock('恋愛観', T.love[me.zhiStar['日支']], 'day') +
           valueBlock('人生観', T.life[me.ganStar['月干']], 'month') + '</div>' },
-      nenpyo: { label: '人生の節目', tag: '節目', title: '人生の節目と、今の流れ',
-        point: me.nenpyo.past.length ? '15歳からの年表で、人生が動きやすかった年が' + me.nenpyo.past.length + 'つあります。' : '',
-        body: guide('人生が動きやすかった年を、年齢と一緒に並べました。心当たりがあるかどうか、年ごとに押して教えてください。') + renderNenpyo(me) +
-          (cur ? '<div class="insight-block current-flow"><p class="profile-kicker">今のあなたを取り巻く流れ</p><h3>' + wb(T.dayun[cur.star].now) + '</h3>' +
+      nenpyo: { label: '人生の節目', tag: '節目', title: 'これまでの節目と、今のテーマ',
+        point: me.nenpyo.past.length ? '15歳以降の' + me.nenpyo.past.length + 'つの年を、振り返りの手がかりとして取り上げています。' : '',
+        body: guide('四柱推命で節目と読む年を、年齢と一緒に並べています。実際の経験を思い出しながら、心当たりがあるかを選んでください。') + renderNenpyo(me) +
+          (cur ? '<div class="insight-block current-flow"><p class="profile-kicker">今の10年間のテーマ</p><h3>' + wb(T.dayun[cur.star].now) + '</h3>' +
           '<p class="flow-period">' + cur.start + '〜' + (cur.start + 9) + '年</p>' + fuda('dayun') + '</div>' : '') },
       kakawari: { label: '人との関わり方', tag: '人間関係', title: '人との関わり方',
         point: STEM_NAME[KANGO_OF[ty.dg]] + 'の生まれの人とは、とくに強く引き合います。', body: renderKakawari(me, hasPartner) },
-      zure: { label: '気をつけたいズレ', tag: 'ズレ', title: '気をつけたいズレ', point: 'まず振り返りたい場面：' + zl[0].title,
-        body: '<p class="sec-lead">ふだんの場面に心当たりはありますか。次の章では、同じ番号のズレに合う工夫を紹介します。</p>' + zureTable(zl) },
-      jogen: { label: '豊かに生きるための助言', tag: '助言', title: '豊かに生きるための助言', point: zl[0].advice[0] + '。',
-        body: '<p class="sec-lead">前の章のズレに対応する、' + zl.length + 'つの工夫。気になるものを1つ、試してみてください。</p>' + adviceList(zl) }
+      zure: { label: 'つまずきやすい場面', tag: 'つまずきやすい場面', title: 'つまずきやすい場面', point: 'まず振り返りたい場面：' + zl[0].title,
+        body: '<p class="sec-lead">持ち味が、うまく伝わらないこともあります。ふだんの場面を振り返り、次の章で試せる工夫を見つけてください。</p>' + zureTable(zl) },
+      jogen: { label: '日常で試せる工夫', tag: '日常で試せる工夫', title: '日常で試せる工夫', point: zl[0].advice[0] + '。',
+        body: '<p class="sec-lead">前の章の場面に対応する、' + zl.length + 'つの工夫。気になるものを1つ、試してみてください。</p>' + adviceList(zl) }
     };
     var order = (hasPartner ? ['relations'] : []).concat(['seikaku', 'kachikan', 'nenpyo', 'kakawari', 'zure', 'jogen']);
 
     var toc = [['overview', 'レポートの要点']].concat(order.reduce(function (links, k) {
       links.push([k, CH[k].label]);
-      if (k === 'relations') links = links.concat([['relations-katachi', '二人の形の違い'], ['relations-ii', 'いいこと'],
-        ['relations-zure', '二人のズレ'], ['relations-mukiai', '向き合い方']]);
+      if (k === 'relations') links = links.concat([['relations-katachi', '二人の価値観を比べる'], ['relations-ii', '協力しやすいところ'],
+        ['relations-zure', 'すれ違いやすい場面'], ['relations-mukiai', 'すれ違いを減らす工夫']]);
       return links;
     }, []))
-      .concat([['matome', 'まとめ'], ['korekara', 'これからの流れ']]);
+      .concat([['matome', '振り返りと次の一歩'], ['korekara', 'サービスの提供予定'], ['reading', 'この鑑定の読み方']]);
     $('#toc').innerHTML = '<div class="profile-nav-person">' + godImg(ty.dg, '') + '<div><span>' + esc(who) + '</span><b>' + esc(typeName(ty)) + '</b></div></div>' +
       '<p class="profile-nav-title">このレポートの内容</p><div class="profile-nav-links">' + toc.map(function (t) {
         return '<a href="#sec-' + t[0] + '" data-sec="' + t[0] + '"' + (t[0].indexOf('relations-') === 0 ? ' class="toc-subpage"' : '') + '>' + t[1] + '</a>';
       }).join('') + '</div>' +
-      '<a class="profile-nav-cta" data-join href="#join">結果を保存する<small>無料の会員登録</small></a>';
+      '<a class="profile-nav-cta" data-join href="#join">保存・会員機能について<small>現在、準備中です</small></a>';
 
     var h = renderSheet(me, who, cur, order, CH, { pt: pt, pname: pname });
     order.forEach(function (k, i) {
@@ -645,25 +642,30 @@
     });
 
     var years = me.nenpyo.past.map(function (r) { return r.year; }).sort(function (a, b) { return a - b; });
-    h += '<section class="summary profile-summary" id="sec-matome"><h2>まとめ</h2>' +
+    h += '<section class="summary profile-summary" id="sec-matome"><h2>振り返りと、次の一歩</h2>' +
       '<p class="big">' + esc(who) + 'は、<wbr>' + esc(typeName(ty)) + '。</p><ul class="matome-list">' +
       '<li>' + esc(firstSentence(T.face[ty.dg])) + '</li>' +
       '<li>仕事では、' + esc(role.strength) + 'が武器になります。</li>' +
-      (years.length ? '<li>' + years.join('年・') + '年に、人生が動いていました。</li>' : '') +
+      (years.length ? '<li>' + years.join('年・') + '年を、振り返りの手がかりにしています。</li>' : '') +
       (cur ? '<li>いまは「' + esc(plain(T.dayun[cur.star].now)) + '」の途中です。</li>' : '') + '</ul>' +
       '<p class="matome-end">心当たりのある場面と、試してみたい工夫を1つずつ。日々の選び方を考えるときに、このレポートを読み返してみてください。</p></section>';
 
-    h += '<section class="sec profile-chapter profile-future" id="sec-korekara">' + chapterHeading(pad(order.length + 1), 'これからのあなたへ') +
-      '<p class="sec-lead">ここまでが、これまでと今です。これからのことは、月額会員の方にお届けしています。</p>' +
-      '<div class="locked"><h3>' + esc(T.future.lead) + '</h3><ul>' +
+    h += '<section class="sec profile-chapter profile-future" id="sec-korekara">' + chapterHeading(pad(order.length + 1), 'これからのサービスについて') +
+      '<p class="sec-lead">現在、鑑定レポートは登録なしで無料で読めます。保存機能と月額プランは準備中です。</p>' +
+      '<div class="service-options"><div class="service-free"><p class="service-status">現在ご利用いただけます</p><h3>無料の鑑定レポート</h3>' +
+      '<ul><li>あなたの性格・価値観・これまでの節目</li><li>相手1人との相性・関わり方の工夫</li></ul><p>会員登録せずに、そのままお読みいただけます。</p></div>' +
+      '<div class="locked"><p class="service-status">準備中</p><h3>これからの流れを読む月額プラン</h3><p class="price">月額 <b>500円</b>（提供予定）</p><ul>' +
       T.future.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul>' +
-      '<p class="price">月額 <b>500円</b>（初月も500円）</p>' +
-      '<p class="note">会員ページから申し込めます。解約も会員ページのボタン一つでできます。結果の保存とマイページは、無料の会員登録だけで使えます。</p>' +
-      '<a class="mini-line" data-join href="#join">会員登録して続きを見る</a></div></section>';
+      '<p class="note">申込受付はまだ始まっていません。無料の会員登録・結果の保存も準備中です。</p>' +
+      '<a class="mini-line" data-join href="#join">保存・会員機能について</a></div></div></section>';
 
-    h += '<footer class="foot"><p>この鑑定は、生年月日から四柱推命の計算で出した自己分析の材料です。' +
-      (me.note.length ? '（' + esc(me.note.join('、')) + '）' : '') + '</p>' +
-      '<p><a href="#">入力し直す</a>　<a href="privacy.html">プライバシーポリシー</a></p></footer>';
+    h += '<footer class="foot report-method" id="sec-reading"><h2>この鑑定の読み方</h2>' +
+      '<p>生年月日をもとに四柱推命で読み解いた、自己理解のためのレポートです。実際の出来事や相手の気持ちを確認した結果ではありません。</p>' +
+      '<dl class="method-list">' + ['year', 'month', 'day', 'dayun'].map(function (k) {
+        return '<div><dt>' + esc(T.fuda[k].label.replace(/から$/, '')) + '</dt><dd>' + esc(T.fuda[k].text) + '</dd></div>';
+      }).join('') + '</dl><p>名前の画数は熊崎式の旧字体で数えています。天格は判断に使っていません。</p>' +
+      (me.note.length ? '<p>' + esc(me.note.join('、')) + '</p>' : '') +
+      '<p class="method-operator">運営：株式会社La plus</p><p><a href="#">入力し直す</a>　<a href="privacy.html">個人情報の取り扱い</a></p></footer>';
 
     $('#report').className = 'el-' + STEM_EL[ty.dg] + ' profile-document';
     $('#report').innerHTML = h;
@@ -672,7 +674,7 @@
     SCREENS.forEach(function (id) { $('#' + id).hidden = true; });
     $('#result').hidden = false;
     $('#lineBar').hidden = false;
-    document.title = typeName(ty) + '｜' + who + 'の鑑定書';
+    document.title = typeName(ty) + '｜' + who + 'の鑑定結果';
     window.scrollTo(0, 0);
     bindReport();
     reveal($('#report'), '.report-page, .guide, .chapter-key, .sheet-type, .kakusu, .sheet-info, .sheet-points li, .face, .value-block, .insight-block, .tl, .tl-year, .zure-wrap, .advice-list li, .kakawari-wrap, .katachi-wrap, .locked, .summary .big');
@@ -724,7 +726,15 @@
         links.forEach(function (a) {
           var on = 'sec-' + a.dataset.sec === en.target.id;
           a.classList.toggle('on', on);
-          if (on) a.scrollIntoView({ block: 'nearest', inline: 'center' });
+          if (on) {
+            // 目次の中だけをスクロールし、読んでいる本文の位置を動かさない。
+            var nav = $('#toc'), nr = nav.getBoundingClientRect(), ar = a.getBoundingClientRect();
+            if (nav.scrollWidth > nav.clientWidth) {
+              if (ar.left < nr.left || ar.right > nr.right) nav.scrollLeft += ar.left - nr.left - (nav.clientWidth - ar.width) / 2;
+            } else if (ar.top < nr.top || ar.bottom > nr.bottom) {
+              nav.scrollTop += ar.top < nr.top ? ar.top - nr.top : ar.bottom - nr.bottom;
+            }
+          }
         });
       });
     }, { rootMargin: '-45% 0px -50% 0px' });
@@ -743,7 +753,7 @@
       if (jump) {
         e.preventDefault();
         var target = document.getElementById('sec-' + jump.dataset.jump);
-        if (target) target.scrollIntoView({ behavior: 'smooth' });
+        if (target) target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
         return;
       }
       var hb = e.target.closest('.hit button');
@@ -832,7 +842,7 @@
     $('#mpList').innerHTML = '<p class="mp-empty">読み込んでいます…</p>';
     A.readings().then(function (rs) {
       if (!rs.length) {
-        $('#mpList').innerHTML = '<p class="mp-empty">まだ保存した鑑定書はありません。鑑定書の下のボタンから保存できます。</p>';
+        $('#mpList').innerHTML = '<p class="mp-empty">まだ保存したレポートはありません。結果画面の下のボタンから保存できます。</p>';
         return;
       }
       $('#mpList').innerHTML = '<ul class="mp-list">' + rs.map(function (r) {
@@ -848,7 +858,7 @@
 
   document.addEventListener('hiyomi:auth', function (e) {
     authUser = e.detail;
-    $('.line-btn').textContent = authUser ? '会員ページに保存する' : '結果を保存する（無料の会員登録）';
+    $('.line-btn').textContent = authUser ? '会員ページに保存する' : '保存・会員機能について';
     if (!$('#mypage').hidden) renderMypage();
   });
   document.addEventListener('hiyomi:authError', function (e) {
@@ -871,7 +881,7 @@
     var q = new URLSearchParams(h.replace(/^#kantei\?/, ''));
     if (!/^\d{4}-\d{2}-\d{2}$/.test(q.get('d') || '') || !/^[MF]$/.test(q.get('s') || '')) { el.hidden = true; return; }
     var c = M.chart({ name: q.get('n') || '', date: q.get('d'), sex: q.get('s') });
-    el.innerHTML = '登録すると、いま見ていた鑑定書（' + esc(c.name ? c.name + 'さん' : 'あなた') + '・' + esc(typeName(c.type)) + '）が会員ページに保存されます。';
+    el.innerHTML = '表示中のレポート：' + esc(c.name ? c.name + 'さん' : 'あなた') + '・' + esc(typeName(c.type)) + '。保存機能は現在準備中です。';
     el.hidden = false;
   }
 
@@ -916,7 +926,7 @@
     if (toc) {
       e.preventDefault();
       var s = document.getElementById('sec-' + toc.dataset.sec);
-      if (s) s.scrollIntoView({ behavior: 'smooth' });
+      if (s) s.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
     }
   });
 
@@ -947,7 +957,7 @@
     if (screen === 'join') { showSaveNote(); markLastProvider(); }
     if (screen === 'found') showFound(new URLSearchParams(hash.split('?')[1] || ''));
     if (screen === 'mypage') renderMypage();
-    var t = { join: '無料の会員登録', found: 'すでに会員登録があります', recover: '前の登録を探す', mypage: '会員ページ' }[screen];
+    var t = { join: 'レポートの保存・ログイン', found: '登録済みアカウントの確認', recover: 'ログイン方法を確認する', mypage: 'マイページ' }[screen];
     document.title = t ? t + '｜HIYOMI' : TITLE;
     window.scrollTo(0, 0);
     if (screen === 'entry' && (name === 'aisho' || name === 'kojin')) setMode(name === 'aisho' ? 'pair' : 'solo', true);
@@ -968,7 +978,7 @@
     var err = $('#recoverErr');
     if (!MAIL_RE.test($('#recoverMail').value.trim())) { err.textContent = 'メールアドレスの形を確かめてください。'; return; }
     err.textContent = '';
-    sendMailLink($('#recoverMail'), $('#recoverSent'), 'ログイン用のリンクを送りました。前に登録したアドレスなら、リンクから前の鑑定書が見られます。');
+    sendMailLink($('#recoverMail'), $('#recoverSent'), 'ログイン用のリンクを送りました。前に登録したアドレスなら、リンクから保存したレポートが見られます。');
   });
 
   var src = new URLSearchParams(location.search).get('p');
