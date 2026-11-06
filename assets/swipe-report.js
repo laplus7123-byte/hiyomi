@@ -1,15 +1,16 @@
-/* HIYOMI: 既存の鑑定結果を移動して組み直す表示層。計算や保存は行わない。 */
+/* HIYOMI: 鑑定結果の表示だけを8枚の要点レポートに組み直す。 */
 (function () {
   'use strict';
   var cleanup = null;
-  function el(tag, cls, text) {
-    var node = document.createElement(tag);
-    if (cls) node.className = cls;
-    if (text != null) node.textContent = text;
-    return node;
+  function el(tag, cls, value) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (value != null) n.textContent = value;
+    return n;
   }
   function all(root, selector) { return Array.from(root.querySelectorAll(selector)); }
-  function text(root, selector) { var n = root.querySelector(selector); return n ? n.textContent.trim() : ''; }
+  function text(root, selector) { var n = root && root.querySelector(selector); return n ? n.textContent.trim() : ''; }
+  function sentence(value) { var i = value.indexOf('。'); return i < 0 ? value : value.slice(0, i + 1); }
   function wrap(tag, cls, nodes) { var n = el(tag, cls); nodes.filter(Boolean).forEach(function (x) { n.appendChild(x); }); return n; }
   function destroy() { if (cleanup) cleanup(); cleanup = null; }
 
@@ -24,175 +25,166 @@
     var track = el('div', 'swipe-viewport');
     track.id = 'swipeViewport';
     track.setAttribute('role', 'region');
-    track.setAttribute('aria-label', '鑑定結果のカード');
+    track.setAttribute('aria-label', '鑑定結果の要点レポート');
     track.setAttribute('aria-roledescription', 'カルーセル');
+    var fullReport = el('div', 'report-full');
+    fullReport.hidden = true;
     function listen(node, type, fn, options) { node.addEventListener(type, fn, options); listeners.push(function () { node.removeEventListener(type, fn, options); }); }
-    function slide(id, topic, title, nodes, kind) {
-      var s = el('section', 'swipe-slide');
-      s.id = 'sec-' + id;
-      s.dataset.kind = kind || 'info';
-      var body = el('div', 'swipe-slide-body');
-      body.tabIndex = 0;
+    function section(id) { return report.querySelector('#sec-' + id); }
+    function art(src) {
+      var img = el('img', 'poster-art'); img.src = src; img.alt = '';
+      img.width = 1200; img.height = 800; img.decoding = 'async';
+      return img;
+    }
+    function scene(key) { return 'assets/img/report-scenes/' + key + '.webp'; }
+    function hero(title, description, image, label) {
+      var copy = el('div', 'poster-intro');
+      if (label) copy.appendChild(el('p', 'poster-eyebrow', label));
+      copy.appendChild(el('h3', 'poster-headline', title));
+      if (description) copy.appendChild(el('p', 'poster-deck', description));
+      return wrap('div', 'poster-hero', [copy, image ? art(image) : null]);
+    }
+    function panel(label, value, note) {
+      return wrap('div', 'poster-panel', [el('p', 'poster-label', label), el('p', 'poster-emphasis', value), note ? el('p', 'poster-note', note) : null]);
+    }
+    function facts(rows, cls) {
+      var dl = el('dl', cls || 'poster-facts');
+      rows.filter(function (r) { return r[1]; }).forEach(function (r) {
+        dl.appendChild(wrap('div', '', [el('dt', '', r[0]), el('dd', '', r[1])]));
+      });
+      return dl;
+    }
+    function detailButton(label, id) {
+      var b = el('button', 'poster-detail', label + ' →');
+      b.type = 'button'; b.dataset.fullSection = id; return b;
+    }
+    function slide(id, topic, title, lead, nodes, kind, sourceId, detailLabel) {
+      var s = el('section', 'swipe-slide poster-slide');
+      s.id = 'brief-' + id; s.dataset.kind = kind;
+      var body = el('div', 'swipe-slide-body'); body.tabIndex = 0;
       var heading = el('header', 'swipe-slide-heading');
-      heading.appendChild(el('p', 'swipe-topic', topic));
-      var h = el(slides.length ? 'h2' : 'h1', 'swipe-title', title);
-      h.id = 'swipe-title-' + slides.length;
-      heading.appendChild(h);
+      var h = el(slides.length ? 'h2' : 'h1', 'swipe-title', title); h.id = 'swipe-title-' + slides.length;
+      heading.appendChild(wrap('div', 'poster-heading-copy', [el('p', 'swipe-topic', topic), h]));
+      var badge = el('span', 'poster-page-badge'); badge.setAttribute('aria-hidden', 'true');
+      badge.appendChild(el('b', '', String(slides.length + 1).padStart(2, '0')));
+      heading.appendChild(badge);
       body.setAttribute('aria-labelledby', h.id);
       body.appendChild(heading);
-      body.appendChild(wrap('div', 'swipe-content', nodes));
-      s.appendChild(body);
-      s.appendChild(el('span', 'swipe-card-page', String(slides.length + 1).padStart(2, '0')));
-      s.setAttribute('role', 'group');
-      s.setAttribute('aria-roledescription', 'スライド');
+      body.appendChild(wrap('div', 'poster-content', [lead, wrap('div', 'poster-copy', nodes)]));
+      body.appendChild(wrap('footer', 'poster-footer', [detailButton(detailLabel || '詳しい説明を読む', sourceId || id)]));
+      s.appendChild(body); s.setAttribute('role', 'group'); s.setAttribute('aria-roledescription', 'スライド');
       aliases[id] = slides.length;
-      slides.push({ node: s, body: body, title: title, topic: topic });
+      slides.push({node: s, body: body, title: title, topic: topic, sourceId: sourceId || id});
       track.appendChild(s);
-      return s;
+      return slides.length - 1;
     }
-    function section(id) { return report.querySelector('#sec-' + id); }
-    function contents(s) { return Array.from(s.children).filter(function (n) { return !n.matches('header, h2, .page-run, .page-no'); }); }
-    function combined(sceneId, adviceId, topic) {
-      var scenes = section(sceneId), advice = section(adviceId);
-      if (!scenes || !advice) return;
-      var items = all(scenes, '.zure-list > li'), tips = all(advice, '.advice-list > li');
-      var first = slides.length;
-      items.forEach(function (item, i) {
-        var nodes = [wrap('ol', 'zure-list', [item])];
-        if (tips[i]) nodes.push(wrap('ol', 'advice-list', [tips[i]]));
-        var basis = item.querySelector('.zure-basis');
-        if (basis) nodes.push(basis);
-        slide(i ? sceneId + '-' + i : sceneId, topic + ' ' + (i + 1), text(item, 'h3'), nodes, 'advice');
+    function adviceItems(sceneSection, adviceSection) {
+      var scenes = all(sceneSection, '.zure-list > li'), tips = all(adviceSection, '.advice-list > li');
+      var list = el('ol', 'poster-advice');
+      scenes.forEach(function (item, i) {
+        var li = el('li');
+        li.appendChild(el('span', 'poster-step', String(i + 1).padStart(2, '0')));
+        li.appendChild(wrap('div', '', [el('p', 'poster-situation', text(item, 'h3')), el('p', 'poster-action', text(tips[i], 'h3'))]));
+        list.appendChild(li);
       });
-      aliases[adviceId] = first;
+      return list;
     }
     try {
-      var supplements = overview.querySelector('.sheet-supplements');
-      var coverTitle = text(overview, '.sheet-title');
-      var typeCaption = overview.querySelector('.type-caption');
-      var reportContext = overview.querySelector('.report-context');
-      if (typeCaption) typeCaption.remove();
-      slide('overview', 'あなたの鑑定レポート', coverTitle, [overview.querySelector('.sheet-type')], 'cover');
+      var roleImage = overview.querySelector('.sheet-art').getAttribute('src');
+      var typeName = text(overview, '.sheet-type-name');
+      var faces = all(section('seikaku'), '.face');
+      var values = all(section('kachikan'), '.value-block');
+      var work = values[0], love = values[1], life = values[2];
+      var years = section('nenpyo'), past = all(years, '.tl-past'), now = years.querySelector('.tl-now'), flow = years.querySelector('.current-flow');
+      var summary = section('matome'), tips = all(section('jogen'), '.advice-list h3');
       var pair = section('relations');
+      var yearNames = past.map(function (y) { return text(y, '.node'); }).join('・');
+      var workRole = work.querySelector('.value-extra');
+      var roleCopy = workRole ? Array.from(workRole.childNodes).filter(function (n) { return n.nodeType === 3; }).map(function (n) { return n.textContent; }).join('').trim() : '';
+      slide('overview', 'あなたの鑑定レポート', 'まず、あなたの全体像',
+        hero(typeName, text(overview, '.type-definition'), roleImage, text(overview, '.sheet-title')),
+        [panel('あなたの強み', text(section('kachikan'), '.chapter-key-text').replace(/^あなたの強みは、/, '')),
+          facts([['振り返る年', yearNames || 'これまでと今年'], ['今の流れ', text(flow, 'h3') || text(now, 'h3')]])], 'cover', 'overview', '鑑定情報・名前の画数を見る');
+      slides[0].body.querySelector('.poster-detail').dataset.fullSection = 'info';
+
       if (pair) {
-        slide('relations', '二人の相性', '二人の関係の特徴', [pair.querySelector('.pair'), pair.querySelector('.chapter-key'), pair.querySelector('.sec-lead'), pair.querySelector('.caution')], 'pair');
-        slide('relations-view', '二人の相性', 'お互いをどう感じる？', [pair.querySelector('.pair-viewpoints'), pair.querySelector('.reading-source')], 'pair');
-        var comparison = section('relations-katachi');
-        // 同じ行の二人分を並べる。比較の内容は変更しない。
-        all(comparison, 'tbody tr').forEach(function (row, i) {
-          var dl = el('dl', 'swipe-compare');
-          all(row, 'td').forEach(function (cell) {
-            var entry = el('div');
-            entry.appendChild(el('dt', '', cell.dataset.label));
-            var dd = el('dd'); while (cell.firstChild) dd.appendChild(cell.firstChild);
-            entry.appendChild(dd); dl.appendChild(entry);
-          });
-          slide(i ? 'relations-katachi-' + i : 'relations-katachi', '二人の価値観', text(row, 'th'), [dl], 'comparison');
+        var viewpoints = all(pair, '.viewpoint');
+        var pairFigures = all(pair, '.pair figure');
+        var pairArt = el('div', 'poster-pair-art');
+        pairFigures.forEach(function (figure) {
+          var image = figure.querySelector('img');
+          var caption = figure.querySelector('figcaption');
+          var name = Array.from(caption.childNodes).filter(function (n) { return n.nodeType === 3; }).map(function (n) { return n.textContent; }).join('').trim();
+          pairArt.appendChild(wrap('figure', '', [art(image.getAttribute('src')), wrap('figcaption', '', [el('span', '', name), el('b', '', text(caption, 'b'))])]));
         });
-        var good = section('relations-ii');
-        all(good, '.goods li').forEach(function (li, i) {
-          slide(i ? 'relations-ii-' + i : 'relations-ii', '二人の相性', '協力しやすいところ ' + (i + 1), [wrap('ul', 'goods', [li])], 'goods');
-        });
-        combined('relations-zure', 'relations-mukiai', 'すれ違いを減らす工夫');
+        var pairHero = hero(sentence(text(pair, '.chapter-key-text')), text(pair, '.sec-lead'), null, '二人の関係の特徴');
+        pairHero.appendChild(pairArt);
+        var pairIndex = slide('relations', '相性のレポート', '二人の関係をひと目で', pairHero,
+          [facts(viewpoints.map(function (v) { return [text(v, '.viewpoint-label'), text(v, '.viewpoint-value')]; }))], 'pair', 'relations', '二人の価値観・相性を詳しく読む');
+        aliases['relations-katachi'] = aliases['relations-ii'] = pairIndex;
+        var pairAdvice = slide('relations-zure', '二人のコミュニケーション', '関係を育てる、小さな工夫',
+          hero('違いに気づくことから。', '気になる場面を選んで、一つずつ試してみてください。', scene('dialogue')),
+          [adviceItems(section('relations-zure'), section('relations-mukiai'))], 'advice', 'relations-zure', '二人のすれ違いと対処法を詳しく読む');
+        aliases['relations-mukiai'] = pairAdvice;
       }
-      all(section('seikaku'), '.face').forEach(function (face, i) {
-        slide(i ? 'seikaku-inner' : 'seikaku', 'あなたの性格', text(face, 'h3'), [face], 'face');
+
+      slide('seikaku', '性格と価値観', '外から見える顔、内側の思い',
+        hero('あなたらしさを、3つの視点で。', '', scene('self')),
+        [facts([[text(faces[0], 'h3'), sentence(text(faces[0], '.face-text'))],
+          [text(faces[1], 'h3'), sentence(text(faces[1], '.face-text'))]]),
+          panel('人生で大切にすること', text(life, 'h3'))], 'personality', 'seikaku', '性格と価値観を詳しく読む');
+      var workIndex = slide('kachikan', '仕事の強み', 'あなたの力が出る働き方',
+        hero(text(work, 'h3'), sentence(text(work, 'p:not(.value-label):not(.value-extra):not(.reading-source)')), scene('work')),
+        [panel('力が出る役回り', roleCopy), facts([['持ち味', text(section('kachikan'), '.chapter-key-text').replace(/^あなたの強みは、/, '')]])], 'work', 'kachikan', '仕事・人生の価値観を詳しく読む');
+      aliases['work-role'] = workIndex;
+
+      var people = el('dl', 'poster-people');
+      var nature = ['tree', 'sun', 'mountain', 'sword', 'sea'];
+      all(section('kakawari'), '.kakawari-table tbody tr').forEach(function (row, i) {
+        var th = row.querySelector('th');
+        var label = Array.from(th.childNodes).filter(function (n) { return n.nodeType === 3; }).map(function (n) { return n.textContent; }).join('').replace('の生まれ', '');
+        var dt = wrap('dt', '', [art('assets/img/kami_' + nature[i] + '.webp'), el('span', '', label)]);
+        people.appendChild(wrap('div', '', [dt, el('dd', '', text(row, 'td b'))]));
       });
-      all(section('kachikan'), '.value-block').forEach(function (value, i) {
-        var role = value.querySelector('.value-extra');
-        if (role) role.remove();
-        slide(i ? 'kachikan-' + i : 'kachikan', 'あなたの価値観', ['仕事で大切にすること', '恋愛で大切にすること', '人生で大切にすること'][i], [value], 'value');
-        if (role) slide('work-role', 'あなたの仕事', '力が出る役回り', [role], 'role');
+      var relationshipIndex = slide('kakawari', '恋愛と人間関係', '恋愛と人との関わり方',
+        hero(text(love, 'h3'), '', scene('love')),
+        [wrap('div', 'poster-people-block', [el('p', 'poster-label', '相手のタイプ別・あなたとの関わり'), people])], 'people', 'kakawari', '恋愛と対人関係を詳しく読む');
+      aliases.partner = relationshipIndex;
+
+      var timeline = el('ol', 'poster-timeline');
+      past.forEach(function (year) {
+        timeline.appendChild(wrap('li', '', [wrap('div', 'poster-year', [el('b', '', text(year, '.node')), el('span', '', text(year, '.year-age'))]),
+          wrap('div', 'poster-event', [el('h3', '', text(year, '.year-content h3')), el('p', '', sentence(text(year, '.year-lead')))])]));
       });
-      var years = section('nenpyo');
-      all(years, '.tl-year:not(.tl-next)').forEach(function (year, i) {
-        slide(i ? 'nenpyo-' + i : 'nenpyo', year.classList.contains('tl-now') ? '今年のテーマ' : '人生の節目', text(year, '.node') + ' · ' + text(year, '.year-age'), [wrap('ol', 'tl', [year])], 'year');
-      });
-      var flow = years.querySelector('.current-flow');
-      if (flow) slide('nenpyo-flow', '今の流れ', '今の10年間のテーマ', [flow, years.querySelector('#tally')], 'flow');
-      else if (years.querySelector('#tally')) slides[slides.length - 1].body.querySelector('.swipe-content').appendChild(years.querySelector('#tally'));
-      var relations = section('kakawari');
-      all(relations, '.kakawari-table tbody tr').forEach(function (row, i) {
-        var heading = row.querySelector('th'), description = row.querySelector('td');
-        var note = heading.querySelector('small');
-        if (note) note.remove();
-        var resultText = el('div', 'relationship-result');
-        while (description.firstChild) resultText.appendChild(description.firstChild);
-        slide(i ? 'kakawari-' + i : 'kakawari', '人との関わり方', heading.textContent.trim(), [note, resultText], 'relationship');
-      });
-      combined('zure', 'jogen', 'つまずきと日常の工夫');
-      slide('matome', 'レポートのまとめ', '振り返りと、次の一歩', contents(section('matome')), 'summary');
-      var partnerPrompt = relations.querySelector('.profile-partner-prompt');
-      if (partnerPrompt) slide('partner', '相性も見てみる', '気になる人との関係は？', [partnerPrompt], 'relations');
-      var nameResult = supplements.querySelector('.kakusu');
-      if (nameResult) nameResult.remove();
-      slide('info', '鑑定情報', '鑑定に使った情報', [supplements], 'info');
-      if (nameResult) slide('name', '名前の画数', '名前から見る5つの格', [nameResult], 'info');
-      var method = section('reading');
-      var methodNodes = contents(method);
-      methodNodes.splice(1, 0, typeCaption, reportContext);
-      slide('reading', 'HIYOMIについて', 'この鑑定の読み方', methodNodes, 'method');
-      var future = section('korekara');
-      slide('korekara', 'サービスのご案内', '無料で読める内容', [future.querySelector('.sec-lead'), future.querySelector('.service-free')], 'service');
-      var plan = future.querySelector('.locked');
-      var planNodes = [plan];
-      if (pair) {
-        var tail = section('relations-mukiai');
-        var pairNotes = wrap('div', 'swipe-plan-detail', [tail.querySelector('.locked-pair'), tail.querySelector('.third-person'), relations.querySelector('.third-person')]);
-        planNodes.push(pairNotes);
-      }
-      slide('korekara-plan', 'サービスのご案内', 'これからの流れを読む', planNodes, 'service');
-      // 要点表示は文の区切りでまとめる。全文は同じDOMに残し、いつでも読める。
-      all(track, '.zure-scene, .advice-copy > p:last-child, .value-block > p:not(.value-label):not(.reading-source):not(.value-extra), .year-lead').forEach(function (p) {
-        var full = p.textContent, stop = full.indexOf('。');
-        if (stop < 0 || !full.slice(stop + 1).trim()) return;
-        p.replaceChildren(document.createTextNode(full.slice(0, stop + 1)), el('span', 'swipe-full-detail', full.slice(stop + 1)));
-      });
-      // 結果の意味に対応した挿絵を配置する。鑑定の値や判定には使わない。
-      var roleImage = track.querySelector('.sheet-art').getAttribute('src');
-      function scene(key) { return 'assets/img/report-scenes/' + key + '.webp'; }
-      function addVisual(item, sources, compact) {
-        var figure = el('figure', 'report-illustration');
-        figure.setAttribute('aria-hidden', 'true');
-        sources.forEach(function (src) {
-          var img = el('img'); img.src = src; img.alt = '';
-          img.width = sources.length > 1 ? 480 : 1200;
-          img.height = sources.length > 1 ? 640 : 800;
-          img.decoding = 'async'; figure.appendChild(img);
-        });
-        if (sources.length > 1) figure.classList.add('illustration-pair');
-        item.body.insertBefore(figure, item.body.querySelector('.swipe-content'));
-        item.node.classList.add('has-visual');
-        if (compact) item.node.classList.add('visual-compact');
-      }
-      var nature = [['tree', 'flower'], ['sun', 'flame'], ['mountain', 'field'], ['sword', 'jewel'], ['sea', 'rain']];
-      var natureIndex = 0;
-      slides.forEach(function (item) {
-        var id = item.node.id, kind = item.node.dataset.kind, image;
-        if (kind === 'face') image = id === 'sec-seikaku' ? roleImage : scene('self');
-        if (kind === 'value') image = scene(id === 'sec-kachikan' ? 'work' : id === 'sec-kachikan-1' ? 'love' : 'life');
-        if (kind === 'role') image = roleImage;
-        if (kind === 'flow' || kind === 'summary') image = scene('life');
-        if (kind === 'advice') {
-          image = scene(/本音|希望|自分/.test(item.title) ? 'self' : /予定|変え|進め/.test(item.title) ? 'life' : 'dialogue');
-        }
-        if (kind === 'year') {
-          var oldImage = item.node.querySelector('.photo');
-          var theme = oldImage ? oldImage.getAttribute('src') : '';
-          image = scene(/go\.webp/.test(theme) ? 'dialogue' : /fukugin/.test(theme) ? 'self' : 'life');
-        }
-        if (kind === 'goods' || id === 'sec-partner') image = scene('dialogue');
-        if (kind === 'relationship') {
-          addVisual(item, nature[natureIndex++].map(function (key) { return 'assets/img/kami_' + key + '.webp'; }));
-          return;
-        }
-        if (image) addVisual(item, [image], kind === 'advice' || kind === 'summary');
-      });
-      all(track, '.face-text').forEach(function (p) {
-        var full = p.textContent, stop = full.indexOf('。');
-        if (stop >= 0 && full.slice(stop + 1).trim()) p.replaceChildren(document.createTextNode(full.slice(0, stop + 1)), el('span', 'swipe-full-detail', full.slice(stop + 1)));
-      });
-      report.replaceChildren(track);
+      if (!past.length) timeline.appendChild(el('li', 'poster-note', '15歳以降の節目は、これから年表に並びます。今年のテーマは次のページで確認できます。'));
+      slide('nenpyo', '人生の年表', 'これまでの節目を、一枚に',
+        hero('どんな変化が、ありましたか。', '', scene('life')),
+        [timeline], 'timeline', 'nenpyo', '詳しい年表で「心当たり」を振り返る');
+      var nowImage = now.querySelector('.photo');
+      var nowTheme = nowImage ? nowImage.getAttribute('src') : '';
+      var nowScene = /go\.webp/.test(nowTheme) ? 'dialogue' : /fukugin/.test(nowTheme) ? 'self' : 'life';
+      slide('nenpyo-flow', '今年と10年の流れ', '今、意識しておきたいテーマ',
+        hero(text(now, '.year-content h3'), sentence(text(now, '.year-lead')), scene(nowScene), text(now, '.node') + '・' + text(now, '.year-age')),
+        [panel(flow ? '今の10年間のテーマ' : '今年のテーマ', text(flow, 'h3') || text(now, 'h3'), text(flow, '.flow-period') || text(now, '.tl-period')),
+          facts([['今年の対象期間', text(now, '.tl-period')]])], 'flow', 'nenpyo-now', '今年と10年の流れを詳しく読む');
+      var adviceIndex = slide('zure', '日常で試せること', 'つまずきを、次の工夫に',
+        hero('気になるものを、ひとつから。', '', scene('dialogue')),
+        [adviceItems(section('zure'), section('jogen'))], 'advice', 'zure', 'つまずきの理由と工夫を詳しく読む');
+      aliases.jogen = adviceIndex;
+      var takeaways = el('ul', 'poster-takeaways');
+      all(summary, '.matome-list li').filter(function (li) { return !/^\s*\d{4}年/.test(li.textContent); }).forEach(function (li) { takeaways.appendChild(el('li', '', li.textContent)); });
+      var actions = el('div', 'poster-links');
+      actions.appendChild(detailButton('鑑定情報・名前の画数', 'info'));
+      var nextLink = el('a', 'poster-link', pair ? '保存・会員機能について' : '気になる人との相性を見る');
+      nextLink.href = pair ? '#join' : '#aisho'; actions.appendChild(nextLink);
+      var end = slide('matome', 'レポートのまとめ', 'あなたらしい次の一歩',
+        hero(typeName, '', roleImage),
+        [takeaways, panel('まず試してみること', tips[0] ? tips[0].textContent : text(summary, '.matome-end')), actions], 'summary', 'reading', '全文・この鑑定の読み方を見る');
+      aliases.korekara = aliases.reading = aliases.info = aliases.name = end;
+      slides.forEach(function (s) { s.node.querySelector('.poster-page-badge').appendChild(el('small', '', '/ ' + String(slides.length).padStart(2, '0'))); });
+      // 全文は元のノードを一度だけ保持する。年表の回答ボタン・根拠・鑑定情報を複製しない。
+      while (report.firstChild) fullReport.appendChild(report.firstChild);
+      report.appendChild(track); report.appendChild(fullReport);
 
       var toggle = el('button', '', '全文で読む'); toggle.id = 'swipeModeToggle'; toggle.type = 'button';
       toggle.setAttribute('aria-controls', 'report'); toggle.setAttribute('aria-pressed', 'false');
@@ -222,12 +214,12 @@
       function updateHint() {
         var b = slides[active].body;
         hint.textContent = b.scrollHeight > b.clientHeight + 3 && b.scrollTop + b.clientHeight < b.scrollHeight - 3
-          ? '左右で項目を切り替え · 詳細は「全文で読む」' : '左右にスワイプ · 詳細は「全文で読む」';
+          ? '左右で項目を切り替え · 上下で続きを見る' : '左右にスワイプ · 詳細は「全文で読む」';
       }
       function update() {
         slides.forEach(function (s, i) {
-          var hidden = !reading && i !== active;
-          if (hidden && s.node.contains(document.activeElement)) next.focus({ preventScroll: true });
+          var hidden = reading || i !== active;
+          if (hidden && s.node.contains(document.activeElement)) toggle.focus({ preventScroll: true });
           s.node.inert = hidden;
           if (hidden) s.node.setAttribute('aria-hidden', 'true'); else s.node.removeAttribute('aria-hidden');
           s.node.classList.toggle('is-active', i === active);
@@ -246,7 +238,7 @@
       }
       function go(i, instant) {
         active = Math.max(0, Math.min(slides.length - 1, i)); update();
-        if (reading) slides[active].node.scrollIntoView({ behavior: 'instant', block: 'start' });
+        if (reading) fullTarget(slides[active].sourceId).scrollIntoView({ behavior: 'instant', block: 'start' });
         else {
           pending = active;
           track.scrollTo({ left: targetLeft(active), behavior: instant || matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
@@ -268,21 +260,31 @@
       listen(prev, 'click', function () { go(active - 1); });
       listen(next, 'click', function () { go(active + 1); });
       listen(select, 'change', function () { go(Number(select.value), true); });
-      listen(toggle, 'click', function () {
-        reading = !reading;
+      function fullTarget(key) {
+        if (key === 'info' || key === 'name') return fullReport.querySelector('.sheet-supplements') || fullReport;
+        if (key === 'nenpyo-now') return fullReport.querySelector('.tl-now') || fullReport;
+        return fullReport.querySelector('#sec-' + key) || fullReport;
+      }
+      function setReading(value, key) {
+        reading = value;
+        track.hidden = reading; fullReport.hidden = !reading;
         result.classList.toggle('swipe-mode', !reading); result.classList.toggle('reading-mode', reading);
         toggle.textContent = reading ? '要点で読む' : '全文で読む'; toggle.setAttribute('aria-pressed', String(reading));
         syncVisibility(); update();
-        if (!reading) window.scrollTo(0, 0);
-        go(active, true);
-      });
+        if (reading) fullTarget(key || slides[active].sourceId).scrollIntoView({ behavior: 'instant', block: 'start' });
+        else { window.scrollTo(0, 0); go(active, true); }
+      }
+      listen(toggle, 'click', function () { setReading(!reading); });
       listen(result, 'click', function (e) {
+        var full = e.target.closest('[data-full-section]');
+        if (full) { e.preventDefault(); e.stopPropagation(); setReading(true, full.dataset.fullSection); return; }
         var a = e.target.closest('[data-jump], #toc [data-sec]');
         if (!a) return;
         var key = a.dataset.jump || a.dataset.sec;
         if (aliases[key] == null) return;
-        e.preventDefault(); e.stopPropagation(); go(aliases[key], true);
-        slides[active].body.focus({ preventScroll: true });
+        e.preventDefault(); e.stopPropagation();
+        if (reading) fullTarget(key).scrollIntoView({ behavior: 'instant', block: 'start' });
+        else { go(aliases[key], true); slides[active].body.focus({ preventScroll: true }); }
       }, true);
       listen(document, 'keydown', function (e) {
         if (reading || result.hidden || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.target.closest('input, select, textarea, [contenteditable]') || String(window.getSelection())) return;
