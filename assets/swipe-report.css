@@ -545,6 +545,91 @@ body.has-swipe-report #lineBar { display: none !important; }
   #result.swipe-mode .swipe-slide-heading { margin-bottom: 20px; }
   #result.swipe-mode .advice-copy > p:last-child { display: none; }
 }
+/* 大きな挿絵と結果の文章を一つの誌面に。絵だけを縮めて読みやすさを保つ。 */
+#result.swipe-ready .report-illustration { margin: 0; min-width: 0; min-height: 0; }
+#result.swipe-ready .report-illustration img { display: block; width: 100%; height: 100%; object-fit: contain; }
+#result.swipe-ready .illustration-pair { display: flex; justify-content: center; gap: 12px; }
+#result.swipe-ready .illustration-pair img { width: calc(50% - 6px); }
+#result.swipe-mode .has-visual .swipe-slide-body {
+  display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.08fr);
+  grid-template-rows: auto auto; align-content: center; gap: 22px 56px;
+  padding: 36px 56px 40px;
+}
+#result.swipe-mode .has-visual .swipe-slide-heading { grid-column: 1; margin: 0; }
+#result.swipe-mode .has-visual .swipe-title { font-size: 30px; }
+#result.swipe-mode .has-visual .report-illustration {
+  grid-column: 2; grid-row: 1 / 3; align-self: center; width: 100%; height: min(430px, 51dvh);
+}
+#result.swipe-mode .has-visual .swipe-content { grid-column: 1; grid-row: 2; }
+#result.swipe-mode .has-visual .face-text { font-size: 30px; line-height: 1.8; }
+#result.swipe-mode .has-visual .value-block h3 { font-size: 29px; line-height: 1.7; text-wrap: balance; word-break: auto-phrase; }
+#result.swipe-mode .has-visual .value-block > p:not(.value-label):not(.reading-source) { font-size: 18px; margin-top: 18px; }
+#result.swipe-mode .has-visual .reading-source { margin-top: 18px; }
+#result.swipe-mode .has-visual .relationship-result { padding: 0; background: none; }
+#result.swipe-mode .has-visual .relationship-result b { font-size: 30px; }
+#result.swipe-mode .has-visual .relationship-result small { margin-top: 16px; }
+#result.swipe-mode #report .has-visual .year-content { display: block; }
+#result.swipe-mode #report .has-visual .year-detail { margin-top: 20px; }
+#result.swipe-mode #report .has-visual .year-notes { display: block; padding: 0; background: none; }
+#result.swipe-mode #report .has-visual .photo-wrap { display: none; }
+#result.swipe-mode #report .has-visual .year-lead { font-size: 18px; }
+#result.swipe-mode #report .has-visual .current-flow { padding: 0; background: none; }
+#result.swipe-mode #report .has-visual .current-flow h3 { font-size: 30px; }
+#result.swipe-mode .has-visual .advice-list > li { padding: 18px 22px; }
+#result.swipe-mode .has-visual .advice-list h3 { font-size: 23px; }
+#result.swipe-mode .has-visual .zure-scene { font-size: 18px; }
+#result.swipe-mode .has-visual .advice-copy > p:last-child { font-size: 17px; }
+#result.swipe-mode .has-visual .matome-list { margin-top: 0; font-size: 18px; }
+#result.swipe-mode .has-visual .goods li { font-size: 26px; }
+#result.reading-mode .report-illustration { width: 100%; max-width: 420px; height: 240px; margin: 0 auto 28px; }
+@media (max-width: 700px) {
+  #result.swipe-mode .has-visual .swipe-slide-body {
+    grid-template-columns: minmax(0,1fr); grid-template-rows: auto minmax(100px,1fr) auto;
+    align-content: stretch; gap: 16px; padding: 22px 24px 28px;
+  }
+  #result.swipe-mode .has-visual .swipe-title { font-size: 26px; line-height: 1.5; }
+  #result.swipe-mode .has-visual .swipe-topic { margin-bottom: 7px; }
+  #result.swipe-mode .has-visual .report-illustration {
+    grid-column: 1; grid-row: 2; align-self: stretch; height: 100%; max-height: 280px;
+  }
+  #result.swipe-mode .has-visual .swipe-content { grid-column: 1; grid-row: 3; }
+  #result.swipe-mode .has-visual .face-text { font-size: 25px; line-height: 1.8; }
+  #result.swipe-mode .has-visual .value-block h3 { font-size: 24px; line-height: 1.65; }
+  #result.swipe-mode .has-visual .value-block > p:not(.value-label):not(.reading-source) { font-size: 17px; margin-top: 12px; }
+  #result.swipe-mode .has-visual .reading-source { margin-top: 14px; font-size: 12px; }
+  #result.swipe-mode .has-visual .relationship-result b { font-size: 25px; }
+  #result.swipe-mode .has-visual .relationship-result small { margin-top: 12px; }
+  #result.swipe-mode .has-visual[data-kind="relationship"] .swipe-content > small { margin-bottom: 10px; }
+  #result.swipe-mode #report .has-visual .year-content h3 { font-size: 23px; }
+  #result.swipe-mode #report .has-visual .year-lead { font-size: 17px; margin-top: 10px; }
+  #result.swipe-mode #report .has-visual .year-detail { margin-top: 14px; }
+  #result.swipe-mode #report .has-visual .year-feedback { margin-top: 14px; }
+  #result.swipe-mode #report .has-visual .current-flow h3 { font-size: 26px; }
+  #result.swipe-mode .has-visual .goods li { font-size: 24px; margin-bottom: 0; }
+  #result.swipe-mode .visual-compact .swipe-slide-body {
+    grid-template-rows: auto minmax(72px,1fr) auto;
+  }
+  #result.swipe-mode .visual-compact .report-illustration { max-height: 200px; }
+  #result.swipe-mode .has-visual .zure-scene { font-size: 17px; }
+  #result.swipe-mode .has-visual .advice-list { margin-top: 18px; }
+  #result.swipe-mode .has-visual .advice-list > li { padding: 18px; }
+  #result.swipe-mode .has-visual .advice-list h3 { font-size: 22px; }
+  #result.swipe-mode .has-visual .advice-copy > p:last-child { font-size: 16px; }
+  #result.swipe-mode .has-visual .matome-list { font-size: 17px; }
+}
+@media (max-height: 740px) and (max-width: 700px) {
+  #result.swipe-mode .has-visual .swipe-slide-body { padding-top: 16px; padding-bottom: 20px; gap: 12px; }
+  #result.swipe-mode .has-visual:not(.visual-compact) .swipe-slide-body { grid-template-rows: auto minmax(72px,1fr) auto; }
+  #result.swipe-mode #sec-name .swipe-slide-heading { margin-bottom: 12px; }
+  #result.swipe-mode #sec-name .kakusu-grid { gap: 4px; }
+  #result.swipe-mode #sec-name .kakusu-grid > div { padding: 3px 10px; }
+  #result.swipe-mode #sec-relations .swipe-slide-heading { margin-bottom: 12px; }
+  #result.swipe-mode #sec-relations .swipe-slide-body { padding-top: 4px; padding-bottom: 8px; }
+  #result.swipe-mode #sec-relations .pair { margin: 8px auto; }
+  #result.swipe-mode #sec-relations .pair img { height: 80px; }
+  #result.swipe-mode #sec-relations .sec-lead { margin-top: 0; }
+  #result.swipe-mode #report #sec-relations .chapter-key { margin-bottom: 12px; }
+}
 @media print {
   body.has-swipe-report { height: auto; overflow: visible; background: #fff; }
   #result.swipe-ready { display: block; width: 100%; max-width: none; height: auto; min-height: 0; padding: 0; overflow: visible; background: #fff; }
@@ -555,6 +640,8 @@ body.has-swipe-report #lineBar { display: none !important; }
   #result.swipe-ready .swipe-slide { display: block; width: 100%; height: auto; margin: 0 0 24px; padding: 0; overflow: visible; break-inside: avoid; opacity: 1 !important; transition: none; aspect-ratio: auto; }
   #result.swipe-ready .swipe-slide-body { display: block; width: 100%; max-width: none; height: auto; margin: 0; padding: 24px 0; overflow: visible; }
   #result.swipe-ready .swipe-slide-heading { break-after: avoid; }
+  #result.swipe-ready .has-visual .swipe-slide-body { display: block; padding: 24px 0; }
+  #result.swipe-ready .report-illustration { display: none; }
   #result.swipe-ready .swipe-full-detail { display: inline; }
   #result.swipe-ready .advice-copy > p:last-child,
   #result.swipe-ready [data-kind="method"] .method-list,

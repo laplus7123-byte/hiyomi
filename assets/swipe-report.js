@@ -148,6 +148,50 @@
         if (stop < 0 || !full.slice(stop + 1).trim()) return;
         p.replaceChildren(document.createTextNode(full.slice(0, stop + 1)), el('span', 'swipe-full-detail', full.slice(stop + 1)));
       });
+      // 結果の意味に対応した挿絵を配置する。鑑定の値や判定には使わない。
+      var roleImage = track.querySelector('.sheet-art').getAttribute('src');
+      function scene(key) { return 'assets/img/report-scenes/' + key + '.webp'; }
+      function addVisual(item, sources, compact) {
+        var figure = el('figure', 'report-illustration');
+        figure.setAttribute('aria-hidden', 'true');
+        sources.forEach(function (src) {
+          var img = el('img'); img.src = src; img.alt = '';
+          img.width = sources.length > 1 ? 480 : 1200;
+          img.height = sources.length > 1 ? 640 : 800;
+          img.decoding = 'async'; figure.appendChild(img);
+        });
+        if (sources.length > 1) figure.classList.add('illustration-pair');
+        item.body.insertBefore(figure, item.body.querySelector('.swipe-content'));
+        item.node.classList.add('has-visual');
+        if (compact) item.node.classList.add('visual-compact');
+      }
+      var nature = [['tree', 'flower'], ['sun', 'flame'], ['mountain', 'field'], ['sword', 'jewel'], ['sea', 'rain']];
+      var natureIndex = 0;
+      slides.forEach(function (item) {
+        var id = item.node.id, kind = item.node.dataset.kind, image;
+        if (kind === 'face') image = id === 'sec-seikaku' ? roleImage : scene('self');
+        if (kind === 'value') image = scene(id === 'sec-kachikan' ? 'work' : id === 'sec-kachikan-1' ? 'love' : 'life');
+        if (kind === 'role') image = roleImage;
+        if (kind === 'flow' || kind === 'summary') image = scene('life');
+        if (kind === 'advice') {
+          image = scene(/本音|希望|自分/.test(item.title) ? 'self' : /予定|変え|進め/.test(item.title) ? 'life' : 'dialogue');
+        }
+        if (kind === 'year') {
+          var oldImage = item.node.querySelector('.photo');
+          var theme = oldImage ? oldImage.getAttribute('src') : '';
+          image = scene(/go\.webp/.test(theme) ? 'dialogue' : /fukugin/.test(theme) ? 'self' : 'life');
+        }
+        if (kind === 'goods' || id === 'sec-partner') image = scene('dialogue');
+        if (kind === 'relationship') {
+          addVisual(item, nature[natureIndex++].map(function (key) { return 'assets/img/kami_' + key + '.webp'; }));
+          return;
+        }
+        if (image) addVisual(item, [image], kind === 'advice' || kind === 'summary');
+      });
+      all(track, '.face-text').forEach(function (p) {
+        var full = p.textContent, stop = full.indexOf('。');
+        if (stop >= 0 && full.slice(stop + 1).trim()) p.replaceChildren(document.createTextNode(full.slice(0, stop + 1)), el('span', 'swipe-full-detail', full.slice(stop + 1)));
+      });
       report.replaceChildren(track);
 
       var toggle = el('button', '', '全文で読む'); toggle.id = 'swipeModeToggle'; toggle.type = 'button';
