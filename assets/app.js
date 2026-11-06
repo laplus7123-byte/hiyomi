@@ -581,6 +581,7 @@
   }
 
   function render(q) {
+    if (window.HiyomiSwipe) window.HiyomiSwipe.destroy();
     var cs = chartsOf(q), me = cs.me, pt = cs.pt, pname = cs.pname;
     var who = me.name ? me.name + 'さん' : 'あなた';
     var ty = me.type;
@@ -676,6 +677,7 @@
     $('#lineBar').hidden = false;
     document.title = typeName(ty) + '｜' + who + 'の鑑定結果';
     window.scrollTo(0, 0);
+    if (window.HiyomiSwipe && window.HiyomiSwipe.mount()) return;
     bindReport();
     reveal($('#report'), '.report-page, .guide, .chapter-key, .sheet-type, .kakusu, .sheet-info, .sheet-points li, .face, .value-block, .insight-block, .tl, .tl-year, .zure-wrap, .advice-list li, .kakawari-wrap, .katachi-wrap, .locked, .summary .big');
   }

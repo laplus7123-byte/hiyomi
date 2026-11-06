@@ -1,0 +1,501 @@
+/* HIYOMI · 項目を1枚ずつ読む結果画面。計算・入力画面のスタイルには触れない。 */
+body.has-swipe-report {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: #f2f5f8;
+}
+body.has-swipe-report #lineBar { display: none !important; }
+
+#result.swipe-ready {
+  --swipe-paper: #fff;
+  --swipe-ink: #25364b;
+  --swipe-sub: #586779;
+  --swipe-action: #314e72;
+  --swipe-tint: #edf3f9;
+  color: var(--swipe-ink);
+}
+#result.swipe-ready[hidden] { display: none !important; }
+#result.swipe-mode {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1280px;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  margin: 0 auto;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+  background: #f2f5f8;
+}
+#result.swipe-ready .profile-masthead {
+  width: 100%;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  min-height: 64px;
+  gap: 22px;
+  margin: 0;
+  padding: 10px 36px;
+  border: 0;
+  background: #fff;
+}
+#result.swipe-ready .profile-masthead .profile-brand { color: var(--swipe-action); font-size: 22px; }
+#result.swipe-ready .profile-masthead > span { color: var(--swipe-sub); font-size: 12px; }
+#result.swipe-ready .profile-masthead .profile-member { margin-left: auto; font-size: 13px; }
+#result.swipe-ready #swipeModeToggle {
+  flex: none;
+  min-height: 44px;
+  padding: 8px 13px;
+  border: 1px solid #c9d5e2;
+  border-radius: 5px;
+  background: #fff;
+  color: var(--swipe-action);
+  font: 500 13px/1.5 var(--sans);
+  cursor: pointer;
+}
+#result.swipe-ready #swipeModeToggle:hover { background: var(--swipe-tint); }
+#result.swipe-mode #toc { display: none; }
+#result.swipe-mode #report { flex: 1 1 auto; width: 100%; min-height: 0; min-width: 0; overflow: hidden; }
+
+#result.swipe-ready .swipe-toolbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 52px;
+  padding: 4px 36px;
+  background: #fff;
+}
+#result.swipe-ready .swipe-select-label { display: block; min-width: 0; max-width: 680px; flex: 1; }
+#result.swipe-ready #swipeSelect {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 8px 30px 8px 0;
+  border: 0;
+  border-radius: 0;
+  background-color: #fff;
+  color: var(--swipe-ink);
+  font: 500 14px/1.5 var(--sans);
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+#result.swipe-ready .swipe-count { flex: none; color: var(--swipe-sub); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+#result.swipe-ready .swipe-progress { flex: 0 0 3px; height: 3px; background: #dfe6ef; overflow: hidden; }
+#result.swipe-ready .swipe-progress > span { display: block; width: 0; height: 100%; background: var(--swipe-action); transition: width .2s ease; }
+
+/* 横はページ送り、縦は今読んでいる1枚の本文だけ。 */
+#result.swipe-mode .swipe-viewport {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+#result.swipe-mode .swipe-viewport::-webkit-scrollbar { display: none; }
+#result.swipe-mode .swipe-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  overflow: hidden;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+#result.swipe-ready .swipe-slide-body {
+  box-sizing: border-box;
+  width: calc(100% - 72px);
+  max-width: 1000px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 32px 48px 36px;
+  background: var(--swipe-paper);
+  color: var(--swipe-ink);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #c5d0dd transparent;
+  -webkit-overflow-scrolling: touch;
+}
+#result.swipe-ready .swipe-slide-heading { display: block; margin: 0 0 26px; padding: 0; }
+#result.swipe-ready .swipe-topic { margin: 0 0 8px; color: var(--swipe-sub); font-size: 13px; font-weight: 500; line-height: 1.6; letter-spacing: .06em; }
+#result.swipe-ready .swipe-title { margin: 0; color: var(--swipe-ink); font-family: var(--sans); font-size: 28px; font-weight: 700; line-height: 1.55; letter-spacing: .01em; text-wrap: pretty; word-break: auto-phrase; overflow-wrap: anywhere; }
+#result.swipe-ready .swipe-content { min-width: 0; font-size: 17px; line-height: 1.9; }
+#result.swipe-ready .swipe-content > :first-child { margin-top: 0; }
+#result.swipe-ready .swipe-slide-note { margin-top: 24px; color: var(--swipe-sub); font-size: 13px; line-height: 1.8; }
+#result.swipe-ready .page-run, #result.swipe-ready .page-no { display: none; }
+#result.swipe-ready .rv, #result.swipe-ready .rv .guide-face, #result.swipe-ready .rv .guide-say { opacity: 1 !important; transform: none !important; transition: none !important; }
+#result.swipe-ready .reading-source { gap: 5px 10px; margin-top: 24px; color: var(--swipe-sub); font-size: 13px; line-height: 1.8; }
+#result.swipe-ready .reading-source a { color: var(--swipe-action); }
+#result.swipe-ready .sec-lead { margin-top: 12px; color: var(--swipe-sub); font-size: 16px; line-height: 1.9; }
+
+/* 表紙：タイプ名と短い定義を主役にする。 */
+#result.swipe-ready .swipe-slide[data-kind="cover"] .swipe-title { font-size: 20px; font-weight: 500; }
+#result.swipe-ready .swipe-slide[data-kind="cover"] .sheet-type { display: grid; grid-template-columns: minmax(0,1fr) 280px; align-items: center; margin: 14px 0 0; gap: 28px; }
+#result.swipe-ready .swipe-slide[data-kind="cover"] .sheet-label { margin: 0 0 8px; color: var(--swipe-sub); font-size: 14px; }
+#result.swipe-ready .swipe-slide[data-kind="cover"] .sheet-type-name { color: var(--swipe-ink); font-size: 48px; line-height: 1.4; letter-spacing: .015em; }
+#result.swipe-ready .swipe-slide[data-kind="cover"] .type-definition { margin-top: 18px; font-size: 23px; line-height: 1.8; font-weight: 500; }
+#result.swipe-ready .swipe-slide[data-kind="cover"] .type-caption { margin-top: 18px; color: var(--swipe-sub); font-size: 14px; line-height: 1.85; }
+#result.swipe-ready .swipe-slide[data-kind="cover"] .sheet-art { grid-column: 2; grid-row: 1; display: block; width: 100%; height: 250px; max-height: none; margin: 0; object-fit: contain; }
+#result.swipe-ready .swipe-slide[data-kind="cover"] .report-context { margin-top: 28px; color: var(--swipe-sub); font-size: 13px; line-height: 1.8; }
+
+/* 性格・価値観。見出しを重複させず、結果の文章を読みやすく置く。 */
+#result.swipe-ready .face { display: block; margin: 0; padding: 28px; border: 0; border-radius: 0; background: #eef3f8; }
+#result.swipe-ready .face h3, #result.swipe-ready .face .face-sub { display: none; }
+#result.swipe-ready .face-text { margin: 0; color: var(--swipe-ink); font-size: 22px; line-height: 1.95; }
+#result.swipe-ready .value-block { display: block; margin: 0; padding: 0; border: 0; background: transparent; }
+#result.swipe-ready .value-block .value-label { display: none; }
+#result.swipe-ready .value-block h3 { margin: 0; color: var(--swipe-ink); font-size: 27px; line-height: 1.75; }
+#result.swipe-ready .value-block > p:not(.value-label):not(.reading-source) { margin-top: 22px; color: var(--swipe-sub); font-size: 18px; line-height: 1.95; }
+#result.swipe-ready .value-block .value-extra { padding: 20px 24px; background: #eef3f8; }
+#result.swipe-ready .value-extra b { display: block; margin-bottom: 6px; color: var(--swipe-action); font-size: 13px; }
+
+/* 1年1枚。元の年表ノードをそのまま使い、回答状態を維持する。 */
+#result.swipe-ready .swipe-slide[data-kind="year"] .swipe-title { font-size: 34px; }
+#result.swipe-ready #report .tl { display: block; margin: 0; padding: 0; list-style: none; }
+#result.swipe-ready #report .tl::before, #result.swipe-ready #report .tl-year::before,
+#result.swipe-ready #report .tl-year::after, #result.swipe-ready #report .year-content::before { display: none; content: none; }
+#result.swipe-ready #report .tl > .tl-year { display: block; margin: 0; padding: 0 !important; border: 0; background: none; }
+#result.swipe-ready #report .year-heading { display: block; margin: 0; padding: 0; }
+#result.swipe-ready #report .year-date { display: none !important; }
+#result.swipe-ready #report .tl-year .year-content { display: block; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; transform: none !important; }
+#result.swipe-ready #report .year-content h3 { margin: 0; color: var(--swipe-ink); font-size: 24px; line-height: 1.65; }
+#result.swipe-ready #report .year-lead { margin-top: 12px; color: var(--swipe-sub); font-size: 17px; line-height: 1.85; }
+#result.swipe-ready #report .year-detail { margin: 20px 0 0; padding: 0; border: 0; }
+#result.swipe-ready #report .year-notes { display: grid; grid-template-columns: minmax(0,1fr) 110px; align-items: center; gap: 20px; margin: 0; padding: 18px 22px; border: 0; border-radius: 0; background: #f2f5f8; }
+#result.swipe-ready #report .year-detail-label { margin: 0; color: var(--swipe-sub); font-size: 12px; font-weight: 500; line-height: 1.6; }
+#result.swipe-ready #report .tl-period { margin-top: 4px; color: var(--swipe-ink); font-size: 15px; line-height: 1.7; }
+#result.swipe-ready #report .year-decade { margin-top: 13px; padding: 0; border: 0; }
+#result.swipe-ready #report .year-decade .pill { display: block; margin-top: 3px; padding: 0; color: var(--swipe-sub); background: none; font-size: 13px; line-height: 1.6; }
+#result.swipe-ready #report .year-decade .band-title { margin-top: 3px; color: var(--swipe-ink); font-size: 15px; font-weight: 500; line-height: 1.7; }
+#result.swipe-ready #report .photo-wrap { display: block; margin: 0; }
+#result.swipe-ready #report .year-detail .photo { display: block; width: 110px; height: auto; margin: 0; border-radius: 0; }
+#result.swipe-ready #report .tl-more { margin-top: 10px; color: var(--swipe-sub); font-size: 14px; line-height: 1.8; }
+#result.swipe-ready #report .year-feedback { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; margin-top: 20px; }
+#result.swipe-ready #report .feedback-label { color: var(--swipe-sub); font-size: 14px; }
+#result.swipe-ready #report .year-feedback .hit { display: flex; flex: 1; gap: 8px; max-width: 360px; min-width: 220px; margin: 0; }
+#result.swipe-ready #report .hit button { min-height: 46px; padding: 10px 18px; font-size: 14px; }
+#result.swipe-ready #report .current-flow { margin: 0; padding: 26px; background: #edf3f9; }
+#result.swipe-ready #report .current-flow .profile-kicker { display: none; }
+#result.swipe-ready #report .current-flow h3 { margin: 0; color: var(--swipe-ink); font-size: 29px; line-height: 1.7; }
+#result.swipe-ready #report .flow-period { margin-top: 20px; font-size: 18px; }
+
+/* 場面と対処法を1枚にまとめる。 */
+#result.swipe-ready .zure-wrap, #result.swipe-ready .zure-list { margin: 0; padding: 0; }
+#result.swipe-ready .zure-list > li { display: block; margin: 0; padding: 0; border: 0; }
+#result.swipe-ready .zure-heading, #result.swipe-ready .advice-context, #result.swipe-ready .advice-no { display: none; }
+#result.swipe-ready .zure-reading { padding: 0; }
+#result.swipe-ready .zure-scene { margin: 0; font-size: 17px; line-height: 1.9; }
+#result.swipe-ready .zure-basis { margin-top: 16px; color: var(--swipe-sub); font-size: 13px; line-height: 1.85; }
+#result.swipe-ready .advice-list { display: block; margin: 24px 0 0; padding: 0; list-style: none; }
+#result.swipe-ready .advice-list > li { display: block; margin: 0; padding: 22px 26px; border: 0; border-radius: 0; background: #edf3f9; }
+#result.swipe-ready .advice-list h3 { margin: 0; color: var(--swipe-action); font-size: 21px; line-height: 1.65; }
+#result.swipe-ready .advice-copy > p:last-child { margin-top: 12px; color: var(--swipe-ink); font-size: 16px; line-height: 1.9; }
+
+/* 比較表は比較のまま残し、説明は十分な行間で。 */
+#result.swipe-ready .pair { margin: 14px auto 18px; max-width: 560px; }
+#result.swipe-ready .pair img { max-height: 140px; object-fit: contain; }
+#result.swipe-ready .pair-viewpoints { gap: 16px; margin-top: 16px; }
+#result.swipe-ready .viewpoint { padding: 16px 20px; }
+#result.swipe-ready .pair-viewpoints .viewpoint-value { font-size: 19px; }
+#result.swipe-ready #report .chapter-key { margin: 0 0 22px; padding: 20px 24px; background: #edf3f9; }
+#result.swipe-ready #report .chapter-key-label { color: var(--swipe-sub); font-size: 13px; }
+#result.swipe-ready #report .chapter-key-text { color: var(--swipe-ink); font-size: 19px; line-height: 1.85; }
+#result.swipe-ready .katachi-wrap, #result.swipe-ready .kakawari-wrap { margin-top: 18px; overflow: visible; }
+#result.swipe-ready .katachi-table, #result.swipe-ready .kakawari-table { width: 100%; table-layout: fixed; }
+#result.swipe-ready .katachi-table th, #result.swipe-ready .katachi-table td,
+#result.swipe-ready .kakawari-table th, #result.swipe-ready .kakawari-table td { padding: 12px 14px; font-size: 15px; line-height: 1.8; word-break: auto-phrase; overflow-wrap: anywhere; }
+#result.swipe-ready .goods { margin: 0; padding-left: 1.2em; }
+#result.swipe-ready .goods li { margin: 0 0 20px; padding: 0; color: var(--swipe-ink); font-size: 17px; line-height: 1.95; }
+#result.swipe-ready .swipe-content > .big { color: var(--swipe-ink); font-size: 27px; line-height: 1.7; }
+#result.swipe-ready .matome-list { margin-top: 24px; font-size: 17px; line-height: 1.9; }
+#result.swipe-ready .matome-list li { margin-bottom: 12px; }
+#result.swipe-ready .matome-end { margin-top: 24px; color: var(--swipe-sub); font-size: 15px; }
+#result.swipe-ready .sheet-supplements { margin: 0; padding: 0; border: 0; }
+#result.swipe-ready .sheet-supplements > .supplement-heading { display: none; }
+#result.swipe-ready .sheet-info { margin-top: 0; }
+#result.swipe-ready .service-options { margin: 0; }
+#result.swipe-ready .service-free { padding-bottom: 22px; }
+#result.swipe-ready .method-list { margin: 22px 0; }
+#result.swipe-ready .method-list > div { gap: 20px; }
+#result.swipe-ready .method-list dd { font-size: 15px; }
+
+/* いつでも押せる前後操作。次に何が出るかも示す。 */
+#result.swipe-ready .swipe-controls { width: 100%; box-sizing: border-box; flex: 0 0 auto; margin: 0; padding: 8px 36px max(12px, env(safe-area-inset-bottom)); background: #fff; }
+#result.swipe-ready .swipe-hint { margin: 0 0 6px; color: var(--swipe-sub); font-size: 12px; line-height: 1.6; text-align: center; }
+#result.swipe-ready .swipe-actions { display: flex; justify-content: center; align-items: stretch; gap: 14px; width: 100%; max-width: 620px; margin: 0 auto; }
+#result.swipe-ready .swipe-actions button { min-height: 52px; padding: 9px 20px; border-radius: 5px; font-family: var(--sans); font-size: 15px; line-height: 1.5; font-weight: 500; cursor: pointer; }
+#result.swipe-ready .swipe-prev { flex: 1; max-width: 164px; border: 1px solid #b8c7d9; background: #fff; color: var(--swipe-action); }
+#result.swipe-ready .swipe-next { flex: 2; display: flex; align-items: center; justify-content: space-between; gap: 16px; border: 1px solid var(--swipe-action); background: var(--swipe-action); color: #fff; text-align: left; }
+#result.swipe-ready .swipe-next-label { flex: none; font-size: 15px; }
+#result.swipe-ready #swipeNextTitle { display: block; overflow: hidden; color: #fff; font-size: 12px; line-height: 1.5; text-align: right; text-overflow: ellipsis; white-space: nowrap; }
+#result.swipe-ready .swipe-prev:hover:not(:disabled) { background: var(--swipe-tint); }
+#result.swipe-ready .swipe-next:hover:not(:disabled) { background: #243e5e; }
+#result.swipe-ready .swipe-actions button:disabled { cursor: default; background: #f1f3f6; color: #6b7786; border-color: #dce3eb; }
+#result.swipe-ready .swipe-actions button:disabled #swipeNextTitle { color: #6b7786; }
+#result.swipe-ready :is(button,select,a):focus-visible { outline: 3px solid #517eb3; outline-offset: 3px; }
+#result.swipe-ready .swipe-slide-body:focus-visible { outline: 3px solid #517eb3; outline-offset: -3px; }
+
+/* 同じDOMを一覧で読む。回答やリンクの状態を複製しない。 */
+#result.reading-mode { display: block; width: 100%; max-width: 1080px; min-height: 100vh; padding: 0 28px 76px; background: #f2f5f8; }
+#result.reading-mode .profile-masthead { position: sticky; top: 0; z-index: 20; margin: 0 -28px 24px; }
+#result.reading-mode #toc, #result.reading-mode .swipe-toolbar,
+#result.reading-mode .swipe-progress, #result.reading-mode .swipe-controls { display: none; }
+#result.reading-mode #report { width: 100%; }
+#result.reading-mode .swipe-viewport { display: block; height: auto; overflow: visible; }
+#result.reading-mode .swipe-slide { width: 100%; height: auto; margin: 0 0 20px; padding: 0; border: 0; background: #fff; scroll-margin-top: 90px; }
+#result.reading-mode .swipe-slide-body { width: 100%; max-width: none; height: auto; min-height: 0; padding: 40px 48px; overflow: visible; }
+
+@media (max-width: 900px) {
+  #result.swipe-ready .profile-masthead { padding-right: 24px; padding-left: 24px; }
+  #result.swipe-ready .swipe-toolbar { padding-right: 24px; padding-left: 24px; }
+  #result.swipe-ready .swipe-slide-body { width: calc(100% - 40px); padding: 30px; }
+  #result.swipe-ready .swipe-slide[data-kind="cover"] .sheet-type { grid-template-columns: minmax(0,1fr) 220px; gap: 18px; }
+  #result.swipe-ready .swipe-slide[data-kind="cover"] .sheet-type-name { font-size: 42px; }
+  #result.swipe-ready .swipe-slide[data-kind="cover"] .sheet-art { height: 220px; }
+  #result.swipe-ready .swipe-controls { padding-right: 24px; padding-left: 24px; }
+  #result.reading-mode .swipe-slide-body { width: 100%; }
+}
+@media (max-width: 620px) {
+  #result.swipe-ready .profile-masthead { min-height: 58px; padding: 7px 20px; gap: 12px; }
+  #result.swipe-ready .profile-masthead .profile-brand { font-size: 19px; }
+  #result.swipe-ready .profile-masthead > span { display: none; }
+  #result.swipe-ready .profile-masthead .profile-member { font-size: 11px; }
+  #result.swipe-ready #swipeModeToggle { min-height: 44px; padding: 7px 10px; font-size: 12px; }
+  #result.swipe-ready .swipe-toolbar { min-height: 48px; padding: 2px 20px; gap: 12px; }
+  #result.swipe-ready #swipeSelect { font-size: 13px; }
+  #result.swipe-ready .swipe-count { font-size: 12px; }
+  #result.swipe-ready .swipe-slide-body { width: 100%; padding: 24px 22px 28px; }
+  #result.swipe-ready .swipe-slide-heading { margin-bottom: 22px; }
+  #result.swipe-ready .swipe-topic { margin-bottom: 8px; font-size: 12px; }
+  #result.swipe-ready .swipe-title { font-size: 24px; line-height: 1.6; }
+  #result.swipe-ready .swipe-content { font-size: 16px; }
+  #result.swipe-ready .swipe-slide-note { margin-top: 20px; }
+  #result.swipe-ready .swipe-slide[data-kind="cover"] .swipe-slide-heading { margin-bottom: 12px; }
+  #result.swipe-ready .swipe-slide[data-kind="cover"] .swipe-title { font-size: 17px; }
+  #result.swipe-ready .swipe-slide[data-kind="cover"] .sheet-type { grid-template-columns: 1fr; margin: 0; gap: 8px; }
+  #result.swipe-ready .swipe-slide[data-kind="cover"] .sheet-label { font-size: 13px; margin-bottom: 6px; }
+  #result.swipe-ready .swipe-slide[data-kind="cover"] .sheet-type-name { font-size: 37px; line-height: 1.4; }
+  #result.swipe-ready .swipe-slide[data-kind="cover"] .type-definition { margin-top: 10px; font-size: 20px; line-height: 1.75; }
+  #result.swipe-ready .swipe-slide[data-kind="cover"] .type-caption { margin-top: 12px; font-size: 13px; }
+  #result.swipe-ready .swipe-slide[data-kind="cover"] .sheet-art { grid-column: 1; grid-row: 2; width: 230px; height: 168px; margin: 0 auto; }
+  #result.swipe-ready .swipe-slide[data-kind="cover"] .report-context { margin-top: 12px; font-size: 12px; }
+  #result.swipe-ready .face { padding: 22px; }
+  #result.swipe-ready .face-text { font-size: 19px; line-height: 2; }
+  #result.swipe-ready .value-block h3 { font-size: 23px; line-height: 1.85; }
+  #result.swipe-ready .value-block > p:not(.value-label):not(.reading-source) { font-size: 17px; margin-top: 20px; }
+  #result.swipe-ready .value-block .value-extra { padding: 18px 20px; }
+  #result.swipe-ready .swipe-slide[data-kind="year"] .swipe-title { font-size: 28px; }
+  #result.swipe-ready #report .year-content h3 { font-size: 21px; }
+  #result.swipe-ready #report .year-lead { font-size: 16px; }
+  #result.swipe-ready #report .year-notes { grid-template-columns: minmax(0,1fr) 62px; padding: 15px 16px; gap: 12px; }
+  #result.swipe-ready #report .year-detail .photo { width: 62px; }
+  #result.swipe-ready #report .year-decade .band-title { font-size: 14px; }
+  #result.swipe-ready #report .year-feedback { display: block; margin-top: 18px; }
+  #result.swipe-ready #report .year-feedback .hit { max-width: none; min-width: 0; margin-top: 8px; }
+  #result.swipe-ready #report .current-flow { padding: 24px 22px; }
+  #result.swipe-ready #report .current-flow h3 { font-size: 25px; }
+  #result.swipe-ready .zure-scene { font-size: 16px; }
+  #result.swipe-ready .advice-list { margin-top: 20px; }
+  #result.swipe-ready .advice-list > li { padding: 19px 20px; }
+  #result.swipe-ready .advice-list h3 { font-size: 20px; }
+  #result.swipe-ready .advice-copy > p:last-child { font-size: 15px; }
+  #result.swipe-ready .pair img { max-height: 108px; }
+  #result.swipe-ready .pair figcaption { font-size: 13px; }
+  #result.swipe-ready .pair-viewpoints { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  #result.swipe-ready .viewpoint { padding: 13px 16px; }
+  #result.swipe-ready .pair-viewpoints .viewpoint-value { font-size: 17px; }
+  #result.swipe-ready #report .chapter-key { padding: 18px 20px; }
+  #result.swipe-ready #report .chapter-key-text { font-size: 17px; }
+  #result.swipe-ready .katachi-table th, #result.swipe-ready .katachi-table td,
+  #result.swipe-ready .kakawari-table th, #result.swipe-ready .kakawari-table td { padding: 10px 12px; font-size: 14px; }
+  #result.swipe-ready .goods li { font-size: 16px; }
+  #result.swipe-ready .swipe-content > .big { font-size: 24px; }
+  #result.swipe-ready .matome-list { font-size: 16px; }
+  #result.swipe-ready .method-list > div { display: block; }
+  #result.swipe-ready .method-list dt { margin-bottom: 5px; }
+  #result.swipe-ready .swipe-controls { padding: 8px 20px max(12px, env(safe-area-inset-bottom)); }
+  #result.swipe-ready .swipe-hint { font-size: 11px; }
+  #result.swipe-ready .swipe-actions { gap: 10px; }
+  #result.swipe-ready .swipe-actions button { min-height: 52px; padding: 8px 14px; }
+  #result.swipe-ready .swipe-prev { flex: 0 0 90px; }
+  #result.swipe-ready .swipe-next { gap: 10px; }
+  #result.swipe-ready #swipeNextTitle { max-width: 135px; font-size: 11px; }
+  #result.reading-mode { padding: 0 10px 70px; }
+  #result.reading-mode .profile-masthead { margin: 0 -10px 16px; }
+  #result.reading-mode .swipe-slide { margin-bottom: 16px; }
+  #result.reading-mode .swipe-slide-body { padding: 28px 22px; }
+}
+@media (max-height: 620px) and (min-width: 621px) {
+  #result.swipe-ready .profile-masthead { min-height: 54px; padding-top: 5px; padding-bottom: 5px; }
+  #result.swipe-ready .swipe-toolbar { min-height: 46px; }
+  #result.swipe-ready .swipe-slide-body { padding-top: 24px; padding-bottom: 24px; }
+  #result.swipe-ready .swipe-slide[data-kind="cover"] .sheet-art { height: 200px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #result.swipe-ready .swipe-viewport { scroll-behavior: auto; }
+  #result.swipe-ready .swipe-progress > span { transition: none; }
+}
+/* 幅3：高さ5の縦長カード。端の余白は最初と最後の中央揃えにも使う。 */
+#result.swipe-mode {
+  --card-width: min(420px, calc(100vw - 48px), max(240px, calc(60dvh - 132px)));
+  max-width: none;
+  min-height: 630px;
+}
+#result.swipe-mode #report { padding: 0; margin: 0 auto; max-width: 1000px; }
+#result.swipe-mode .swipe-viewport {
+  box-sizing: border-box;
+  align-items: center;
+  gap: 16px;
+  padding: 7px calc((100% - var(--card-width)) / 2);
+  scroll-padding: 0;
+}
+#result.swipe-mode .swipe-slide {
+  position: relative;
+  flex: 0 0 var(--card-width);
+  width: var(--card-width);
+  height: auto;
+  aspect-ratio: 3 / 5;
+  background: #fff;
+  scroll-snap-align: center;
+  opacity: .42;
+  transition: opacity .2s ease;
+}
+#result.swipe-mode .swipe-slide.is-active { opacity: 1; }
+#result.swipe-mode .swipe-slide-body {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  margin: 0;
+  padding: 24px 24px 36px;
+}
+#result.swipe-ready .swipe-card-page { display: none; }
+#result.swipe-mode .swipe-card-page {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 5px 16px;
+  background: #fff;
+  color: var(--swipe-sub);
+  font-size: 11px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+#result.swipe-mode .swipe-slide-heading { margin: 0 0 24px; }
+#result.swipe-mode .swipe-topic { margin: 0 0 10px; font-size: 12px; }
+#result.swipe-mode .swipe-title { font-size: 25px; line-height: 1.5; }
+#result.swipe-mode .swipe-content { font-size: 16px; line-height: 1.85; }
+#result.swipe-mode .swipe-slide[data-kind="cover"] .swipe-title { font-size: 16px; font-weight: 500; }
+#result.swipe-mode .swipe-slide[data-kind="cover"] .swipe-slide-heading { margin-bottom: 20px; }
+#result.swipe-mode .swipe-slide[data-kind="cover"] .sheet-type { display: flex; flex-direction: column; gap: 12px; margin: 0; }
+#result.swipe-mode .swipe-slide[data-kind="cover"] .sheet-identity { display: contents; }
+#result.swipe-mode .swipe-slide[data-kind="cover"] .sheet-label { order: 0; align-self: start; margin: 0 0 -12px; font-size: 12px; }
+#result.swipe-mode .swipe-slide[data-kind="cover"] .sheet-type-name { order: 1; align-self: start; font-size: 34px; line-height: 1.4; }
+#result.swipe-mode .swipe-slide[data-kind="cover"] .sheet-art { order: 2; width: 100%; height: 150px; margin: 0; object-fit: contain; }
+#result.swipe-mode .swipe-slide[data-kind="cover"] .type-definition { order: 3; align-self: start; margin: 0; font-size: 20px; line-height: 1.65; font-weight: 700; }
+#result.swipe-mode .swipe-slide[data-kind="cover"] .type-caption { order: 4; margin: 0; font-size: 12px; line-height: 1.8; }
+#result.swipe-mode .swipe-slide[data-kind="cover"] .report-context { margin: 20px 0 0; font-size: 11px; line-height: 1.75; }
+#result.swipe-mode .face { padding: 0; background: none; }
+#result.swipe-mode .face-text { font-size: 22px; line-height: 1.9; font-weight: 500; }
+#result.swipe-mode .reading-source { margin-top: 28px; font-size: 12px; }
+#result.swipe-mode .value-block h3 { font-size: 23px; line-height: 1.7; }
+#result.swipe-mode .value-block > p:not(.value-label):not(.reading-source) { margin-top: 20px; font-size: 16px; line-height: 1.85; }
+#result.swipe-mode .value-block .value-extra { padding: 16px; }
+#result.swipe-mode .swipe-slide[data-kind="year"] .swipe-title { font-size: 25px; }
+#result.swipe-mode #report .year-content h3 { font-size: 21px; line-height: 1.6; }
+#result.swipe-mode #report .year-lead { font-size: 16px; line-height: 1.85; }
+#result.swipe-mode #report .year-notes { grid-template-columns: minmax(0,1fr) 70px; gap: 10px; padding: 14px; }
+#result.swipe-mode #report .year-detail .photo { width: 70px; }
+#result.swipe-mode #report .year-feedback { margin-top: 18px; gap: 8px; }
+#result.swipe-mode #report .year-feedback .hit { min-width: 0; width: 100%; flex: 1 0 100%; }
+#result.swipe-mode #report .hit button { flex: 1; padding: 10px; }
+#result.swipe-mode #report .current-flow { padding: 20px; }
+#result.swipe-mode #report .current-flow h3 { font-size: 24px; }
+#result.swipe-mode .zure-scene { font-size: 16px; }
+#result.swipe-mode .advice-list { margin-top: 20px; }
+#result.swipe-mode .advice-list > li { padding: 18px; }
+#result.swipe-mode .advice-list h3 { font-size: 19px; }
+#result.swipe-mode .advice-copy > p:last-child { font-size: 15px; }
+#result.swipe-mode .zure-basis { font-size: 12px; }
+#result.swipe-mode .pair { display: flex; gap: 16px; }
+#result.swipe-mode .pair figure { flex: 1; min-width: 0; margin: 0; }
+#result.swipe-mode .pair img { width: 100%; height: 100px; }
+#result.swipe-mode .pair figcaption { font-size: 12px; }
+#result.swipe-mode .pair figcaption b { font-size: 14px; }
+#result.swipe-mode #report .chapter-key { padding: 0; background: none; }
+#result.swipe-mode #report .chapter-key-label { display: none; }
+#result.swipe-mode #report .chapter-key-text { font-size: 19px; }
+#result.swipe-mode .pair-viewpoints { display: grid; grid-template-columns: 1fr; gap: 20px; }
+#result.swipe-mode .pair-viewpoints .viewpoint { padding: 20px; }
+#result.swipe-ready .swipe-compare { display: grid; gap: 24px; margin: 0; }
+#result.swipe-ready .swipe-compare > div { padding: 20px; background: #edf3f9; }
+#result.swipe-ready .swipe-compare dt { margin-bottom: 12px; color: var(--swipe-sub); font-size: 13px; }
+#result.swipe-ready .swipe-compare dd { margin: 0; font-size: 22px; line-height: 1.7; }
+#result.swipe-mode .goods { padding: 0; list-style: none; }
+#result.swipe-mode .goods li { font-size: 22px; line-height: 1.9; }
+#result.swipe-mode .kakawari-table { min-width: 0; }
+#result.swipe-mode .kakawari-table th, #result.swipe-mode .kakawari-table td { padding: 12px 8px; font-size: 14px; }
+#result.swipe-mode .swipe-content > .big { font-size: 24px; }
+#result.swipe-mode .matome-list { font-size: 16px; }
+#result.swipe-mode .method-list > div { display: block; }
+#result.swipe-mode .method-list dt { margin-bottom: 6px; }
+#result.swipe-mode .service-options { display: block; }
+#result.swipe-mode .sheet-info { display: block; }
+#result.swipe-mode .sheet-info > div { display: block; margin-bottom: 16px; }
+#result.swipe-mode .kakusu { display: block; padding: 0; }
+#result.swipe-mode .kakusu-grid { display: grid; grid-template-columns: 1fr; gap: 6px; }
+#result.swipe-mode .kakusu-grid > div { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; text-align: left; }
+#result.swipe-mode .kakusu-grid dd { display: flex; align-items: center; gap: 12px; margin: 0; }
+#result.swipe-mode .kakusu-grid dt small { display: inline; margin-left: 8px; }
+#result.swipe-mode .kakusu-grid dd span { max-width: 60px; }
+#result.swipe-mode .swipe-content > .zure-basis { margin-top: 22px; }
+#result.swipe-mode .swipe-controls { background: transparent; padding-top: 4px; }
+#result.swipe-mode .swipe-hint { line-height: 1.5; margin-bottom: 4px; }
+#result.swipe-ready .swipe-actions { max-width: 420px; }
+#result.swipe-ready .swipe-toolbar { box-sizing: border-box; min-height: 48px; padding-top: 2px; padding-bottom: 2px; margin: 0 auto; width: 100%; max-width: 800px; background: transparent; }
+#result.swipe-ready #swipeSelect { background-color: transparent; }
+#result.swipe-ready .swipe-progress { max-width: 728px; width: calc(100% - 48px); margin: 0 auto; }
+@media (max-width: 620px) {
+  #result.swipe-mode .swipe-slide-body { padding: 24px 24px 36px; }
+  #result.swipe-mode .swipe-slide[data-kind="cover"] .sheet-art { height: 150px; }
+  #result.swipe-mode .swipe-slide[data-kind="cover"] .sheet-type { gap: 12px; }
+  #result.swipe-ready .swipe-controls { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+}
+@media (max-height: 629px) {
+  body.has-swipe-report { height: auto; overflow-y: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #result.swipe-mode .swipe-slide { transition: none; }
+}
+@media print {
+  body.has-swipe-report { height: auto; overflow: visible; background: #fff; }
+  #result.swipe-ready { display: block; width: 100%; max-width: none; height: auto; min-height: 0; padding: 0; overflow: visible; background: #fff; }
+  #result.swipe-ready .profile-masthead, #result.swipe-ready #toc,
+  #result.swipe-ready .swipe-toolbar, #result.swipe-ready .swipe-progress,
+  #result.swipe-ready .swipe-controls, #result.swipe-ready .swipe-card-page, #lineBar { display: none !important; }
+  #result.swipe-ready #report, #result.swipe-ready .swipe-viewport { padding: 0; max-width: none; display: block; width: 100%; height: auto; overflow: visible; }
+  #result.swipe-ready .swipe-slide { display: block; width: 100%; height: auto; margin: 0 0 24px; padding: 0; overflow: visible; break-inside: avoid; opacity: 1 !important; transition: none; aspect-ratio: auto; }
+  #result.swipe-ready .swipe-slide-body { display: block; width: 100%; max-width: none; height: auto; margin: 0; padding: 24px 0; overflow: visible; }
+  #result.swipe-ready .swipe-slide-heading { break-after: avoid; }
+}
