@@ -69,7 +69,10 @@
     try {
       var supplements = overview.querySelector('.sheet-supplements');
       var coverTitle = text(overview, '.sheet-title');
-      slide('overview', 'あなたの鑑定レポート', coverTitle, [overview.querySelector('.sheet-type'), overview.querySelector('.report-context')], 'cover');
+      var typeCaption = overview.querySelector('.type-caption');
+      var reportContext = overview.querySelector('.report-context');
+      if (typeCaption) typeCaption.remove();
+      slide('overview', 'あなたの鑑定レポート', coverTitle, [overview.querySelector('.sheet-type')], 'cover');
       var pair = section('relations');
       if (pair) {
         slide('relations', '二人の相性', '二人の関係の特徴', [pair.querySelector('.pair'), pair.querySelector('.chapter-key'), pair.querySelector('.sec-lead'), pair.querySelector('.caution')], 'pair');
@@ -96,7 +99,10 @@
         slide(i ? 'seikaku-inner' : 'seikaku', 'あなたの性格', text(face, 'h3'), [face], 'face');
       });
       all(section('kachikan'), '.value-block').forEach(function (value, i) {
+        var role = value.querySelector('.value-extra');
+        if (role) role.remove();
         slide(i ? 'kachikan-' + i : 'kachikan', 'あなたの価値観', ['仕事で大切にすること', '恋愛で大切にすること', '人生で大切にすること'][i], [value], 'value');
+        if (role) slide('work-role', 'あなたの仕事', '力が出る役回り', [role], 'role');
       });
       var years = section('nenpyo');
       all(years, '.tl-year:not(.tl-next)').forEach(function (year, i) {
@@ -106,7 +112,14 @@
       if (flow) slide('nenpyo-flow', '今の流れ', '今の10年間のテーマ', [flow, years.querySelector('#tally')], 'flow');
       else if (years.querySelector('#tally')) slides[slides.length - 1].body.querySelector('.swipe-content').appendChild(years.querySelector('#tally'));
       var relations = section('kakawari');
-      slide('kakawari', '人との関わり方', '相手のタイプで見る関係', [relations.querySelector('.sec-lead'), relations.querySelector('.kakawari-wrap'), relations.querySelector('.reading-source')], 'relations');
+      all(relations, '.kakawari-table tbody tr').forEach(function (row, i) {
+        var heading = row.querySelector('th'), description = row.querySelector('td');
+        var note = heading.querySelector('small');
+        if (note) note.remove();
+        var resultText = el('div', 'relationship-result');
+        while (description.firstChild) resultText.appendChild(description.firstChild);
+        slide(i ? 'kakawari-' + i : 'kakawari', '人との関わり方', heading.textContent.trim(), [note, resultText], 'relationship');
+      });
       combined('zure', 'jogen', 'つまずきと日常の工夫');
       slide('matome', 'レポートのまとめ', '振り返りと、次の一歩', contents(section('matome')), 'summary');
       var partnerPrompt = relations.querySelector('.profile-partner-prompt');
@@ -115,17 +128,29 @@
       if (nameResult) nameResult.remove();
       slide('info', '鑑定情報', '鑑定に使った情報', [supplements], 'info');
       if (nameResult) slide('name', '名前の画数', '名前から見る5つの格', [nameResult], 'info');
-      slide('reading', 'HIYOMIについて', 'この鑑定の読み方', contents(section('reading')), 'method');
+      var method = section('reading');
+      var methodNodes = contents(method);
+      methodNodes.splice(1, 0, typeCaption, reportContext);
+      slide('reading', 'HIYOMIについて', 'この鑑定の読み方', methodNodes, 'method');
       var future = section('korekara');
-      var futureNodes = contents(future);
+      slide('korekara', 'サービスのご案内', '無料で読める内容', [future.querySelector('.sec-lead'), future.querySelector('.service-free')], 'service');
+      var plan = future.querySelector('.locked');
+      var planNodes = [plan];
       if (pair) {
         var tail = section('relations-mukiai');
-        futureNodes.push(tail.querySelector('.locked-pair'), tail.querySelector('.third-person'), relations.querySelector('.third-person'));
+        var pairNotes = wrap('div', 'swipe-plan-detail', [tail.querySelector('.locked-pair'), tail.querySelector('.third-person'), relations.querySelector('.third-person')]);
+        planNodes.push(pairNotes);
       }
-      slide('korekara', 'サービスのご案内', 'これからのサービス', futureNodes, 'service');
+      slide('korekara-plan', 'サービスのご案内', 'これからの流れを読む', planNodes, 'service');
+      // 要点表示は文の区切りでまとめる。全文は同じDOMに残し、いつでも読める。
+      all(track, '.zure-scene, .advice-copy > p:last-child, .value-block > p:not(.value-label):not(.reading-source):not(.value-extra), .year-lead').forEach(function (p) {
+        var full = p.textContent, stop = full.indexOf('。');
+        if (stop < 0 || !full.slice(stop + 1).trim()) return;
+        p.replaceChildren(document.createTextNode(full.slice(0, stop + 1)), el('span', 'swipe-full-detail', full.slice(stop + 1)));
+      });
       report.replaceChildren(track);
 
-      var toggle = el('button', '', '一覧で読む'); toggle.id = 'swipeModeToggle'; toggle.type = 'button';
+      var toggle = el('button', '', '全文で読む'); toggle.id = 'swipeModeToggle'; toggle.type = 'button';
       toggle.setAttribute('aria-controls', 'report'); toggle.setAttribute('aria-pressed', 'false');
       result.querySelector('.profile-masthead').appendChild(toggle); extraUI.push(toggle);
       var toolbar = el('div', 'swipe-toolbar');
@@ -153,7 +178,7 @@
       function updateHint() {
         var b = slides[active].body;
         hint.textContent = b.scrollHeight > b.clientHeight + 3 && b.scrollTop + b.clientHeight < b.scrollHeight - 3
-          ? '左右で項目を切り替え · カード内を下へ読む ↓' : '左右にスワイプして次の項目へ';
+          ? '左右で項目を切り替え · 詳細は「全文で読む」' : '左右にスワイプ · 詳細は「全文で読む」';
       }
       function update() {
         slides.forEach(function (s, i) {
@@ -202,7 +227,7 @@
       listen(toggle, 'click', function () {
         reading = !reading;
         result.classList.toggle('swipe-mode', !reading); result.classList.toggle('reading-mode', reading);
-        toggle.textContent = reading ? 'カードで読む' : '一覧で読む'; toggle.setAttribute('aria-pressed', String(reading));
+        toggle.textContent = reading ? '要点で読む' : '全文で読む'; toggle.setAttribute('aria-pressed', String(reading));
         syncVisibility(); update();
         if (!reading) window.scrollTo(0, 0);
         go(active, true);
