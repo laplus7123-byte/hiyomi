@@ -37,6 +37,16 @@
       return img;
     }
     function scene(key) { return 'assets/img/report-scenes/' + key + '.webp'; }
+    function readingBasis(roots) {
+      var labels = [];
+      roots.filter(Boolean).forEach(function (root) {
+        all(root, '.reading-source a').forEach(function (link) {
+          var label = link.textContent.trim();
+          if (label && labels.indexOf(label) < 0) labels.push(label);
+        });
+      });
+      return labels.join('・');
+    }
     function hero(title, description, image, label) {
       var copy = el('div', 'poster-intro');
       if (label) copy.appendChild(el('p', 'poster-eyebrow', label));
@@ -71,7 +81,7 @@
       body.setAttribute('aria-labelledby', h.id);
       body.appendChild(heading);
       body.appendChild(wrap('div', 'poster-content', [lead, wrap('div', 'poster-copy', nodes)]));
-      body.appendChild(wrap('footer', 'poster-footer', [detailButton(detailLabel || '詳しい説明を読む', sourceId || id)]));
+      body.appendChild(wrap('footer', 'poster-footer', [el('p', 'poster-basis'), detailButton(detailLabel || '鑑定内容を詳しく読む', sourceId || id)]));
       s.appendChild(body); s.setAttribute('role', 'group'); s.setAttribute('aria-roledescription', 'スライド');
       aliases[id] = slides.length;
       slides.push({node: s, body: body, title: title, topic: topic, sourceId: sourceId || id});
@@ -98,13 +108,16 @@
       var years = section('nenpyo'), past = all(years, '.tl-past'), now = years.querySelector('.tl-now'), flow = years.querySelector('.current-flow');
       var summary = section('matome'), tips = all(section('jogen'), '.advice-list h3');
       var pair = section('relations');
-      var yearNames = past.map(function (y) { return text(y, '.node'); }).join('・');
+      var reportInfo = all(overview, '.sheet-info > div').filter(function (row) { return text(row, 'dt') !== '相性のお相手'; }).map(function (row) { return [text(row, 'dt') === '生年月日' ? '鑑定に用いた情報' : text(row, 'dt'), text(row, 'dd')]; });
+      var recipient = text(overview, '.sheet-title').replace(/さんの鑑定結果$/, ' 様').replace(/^あなたの鑑定結果$/, 'あなたの鑑定結果');
       var workRole = work.querySelector('.value-extra');
       var roleCopy = workRole ? Array.from(workRole.childNodes).filter(function (n) { return n.nodeType === 3; }).map(function (n) { return n.textContent; }).join('').trim() : '';
-      slide('overview', 'あなたの鑑定レポート', 'まず、あなたの全体像',
-        hero(typeName, text(overview, '.type-definition'), roleImage, text(overview, '.sheet-title')),
+      var coverHero = hero(typeName, text(overview, '.type-definition'), roleImage, recipient);
+      coverHero.querySelector('.poster-intro').appendChild(el('p', 'poster-type-note', 'HIYOMIのタイプ名 · 生まれの性質と持ち味'));
+      slide('overview', 'HIYOMI 個人鑑定', '四柱推命 鑑定書',
+        coverHero,
         [panel('あなたの強み', text(section('kachikan'), '.chapter-key-text').replace(/^あなたの強みは、/, '')),
-          facts([['振り返る年', yearNames || 'これまでと今年'], ['今の流れ', text(flow, 'h3') || text(now, 'h3')]])], 'cover', 'overview', '鑑定情報・名前の画数を見る');
+          facts(reportInfo, 'poster-metadata')], 'cover', 'overview', '鑑定情報・名前の画数を確認する');
       slides[0].body.querySelector('.poster-detail').dataset.fullSection = 'info';
 
       if (pair) {
@@ -115,38 +128,41 @@
           var image = figure.querySelector('img');
           var caption = figure.querySelector('figcaption');
           var name = Array.from(caption.childNodes).filter(function (n) { return n.nodeType === 3; }).map(function (n) { return n.textContent; }).join('').trim();
-          pairArt.appendChild(wrap('figure', '', [art(image.getAttribute('src')), wrap('figcaption', '', [el('span', '', name), el('b', '', text(caption, 'b'))])]));
+          var partnerType = text(caption, 'b');
+          var rolePictures = { '賢者': 'scholar', '開拓者': 'pioneer', '表現者': 'creator', '統率者': 'leader', '独立者': 'independent' };
+          var role = Object.keys(rolePictures).find(function (key) { return partnerType.endsWith(key); });
+          var illustration = role ? 'assets/img/modern-' + rolePictures[role] + '.webp' : image.getAttribute('src');
+          pairArt.appendChild(wrap('figure', '', [art(illustration), wrap('figcaption', '', [el('span', '', name), el('b', '', partnerType)])]));
         });
         var pairHero = hero(sentence(text(pair, '.chapter-key-text')), text(pair, '.sec-lead'), null, '二人の関係の特徴');
         pairHero.appendChild(pairArt);
-        var pairIndex = slide('relations', '相性のレポート', '二人の関係をひと目で', pairHero,
+        var pairIndex = slide('relations', '相性鑑定', '二人の関係性', pairHero,
           [facts(viewpoints.map(function (v) { return [text(v, '.viewpoint-label'), text(v, '.viewpoint-value')]; }))], 'pair', 'relations', '二人の価値観・相性を詳しく読む');
         aliases['relations-katachi'] = aliases['relations-ii'] = pairIndex;
-        var pairAdvice = slide('relations-zure', '二人のコミュニケーション', '関係を育てる、小さな工夫',
-          hero('違いに気づくことから。', '気になる場面を選んで、一つずつ試してみてください。', scene('dialogue')),
+        var pairAdvice = slide('relations-zure', '相性鑑定・行動の指針', '関係を育てるための指針',
+          hero('価値観の違いと、歩み寄りの手がかり', '', scene('dialogue')),
           [adviceItems(section('relations-zure'), section('relations-mukiai'))], 'advice', 'relations-zure', '二人のすれ違いと対処法を詳しく読む');
         aliases['relations-mukiai'] = pairAdvice;
       }
 
-      slide('seikaku', '性格と価値観', '外から見える顔、内側の思い',
-        hero('あなたらしさを、3つの視点で。', '', scene('self')),
+      slide('seikaku', '性格・価値観', '生まれ持った性質',
+        hero('外に表れる性質と、内面の価値観', '', scene('self')),
         [facts([[text(faces[0], 'h3'), sentence(text(faces[0], '.face-text'))],
           [text(faces[1], 'h3'), sentence(text(faces[1], '.face-text'))]]),
           panel('人生で大切にすること', text(life, 'h3'))], 'personality', 'seikaku', '性格と価値観を詳しく読む');
-      var workIndex = slide('kachikan', '仕事の強み', 'あなたの力が出る働き方',
+      var workIndex = slide('kachikan', '仕事・役割', '仕事の適性と強み',
         hero(text(work, 'h3'), sentence(text(work, 'p:not(.value-label):not(.value-extra):not(.reading-source)')), scene('work')),
         [panel('力が出る役回り', roleCopy), facts([['持ち味', text(section('kachikan'), '.chapter-key-text').replace(/^あなたの強みは、/, '')]])], 'work', 'kachikan', '仕事・人生の価値観を詳しく読む');
       aliases['work-role'] = workIndex;
 
       var people = el('dl', 'poster-people');
-      var nature = ['tree', 'sun', 'mountain', 'sword', 'sea'];
-      all(section('kakawari'), '.kakawari-table tbody tr').forEach(function (row, i) {
+      all(section('kakawari'), '.kakawari-table tbody tr').forEach(function (row) {
         var th = row.querySelector('th');
         var label = Array.from(th.childNodes).filter(function (n) { return n.nodeType === 3; }).map(function (n) { return n.textContent; }).join('').replace('の生まれ', '');
-        var dt = wrap('dt', '', [art('assets/img/kami_' + nature[i] + '.webp'), el('span', '', label)]);
+        var dt = el('dt', '', label);
         people.appendChild(wrap('div', '', [dt, el('dd', '', text(row, 'td b'))]));
       });
-      var relationshipIndex = slide('kakawari', '恋愛と人間関係', '恋愛と人との関わり方',
+      var relationshipIndex = slide('kakawari', '恋愛・人間関係', '恋愛と対人関係の傾向',
         hero(text(love, 'h3'), '', scene('love')),
         [wrap('div', 'poster-people-block', [el('p', 'poster-label', '相手のタイプ別・あなたとの関わり'), people])], 'people', 'kakawari', '恋愛と対人関係を詳しく読む');
       aliases.partner = relationshipIndex;
@@ -157,18 +173,18 @@
           wrap('div', 'poster-event', [el('h3', '', text(year, '.year-content h3')), el('p', '', sentence(text(year, '.year-lead')))])]));
       });
       if (!past.length) timeline.appendChild(el('li', 'poster-note', '15歳以降の節目は、これから年表に並びます。今年のテーマは次のページで確認できます。'));
-      slide('nenpyo', '人生の年表', 'これまでの節目を、一枚に',
-        hero('どんな変化が、ありましたか。', '', scene('life')),
+      slide('nenpyo', '過去の流れ', '人生の節目',
+        hero('これまでの流れを振り返る', '', scene('life')),
         [timeline], 'timeline', 'nenpyo', '詳しい年表で「心当たり」を振り返る');
       var nowImage = now.querySelector('.photo');
       var nowTheme = nowImage ? nowImage.getAttribute('src') : '';
       var nowScene = /go\.webp/.test(nowTheme) ? 'dialogue' : /fukugin/.test(nowTheme) ? 'self' : 'life';
-      slide('nenpyo-flow', '今年と10年の流れ', '今、意識しておきたいテーマ',
+      slide('nenpyo-flow', '現在の流れ', '今年と10年単位の流れ',
         hero(text(now, '.year-content h3'), sentence(text(now, '.year-lead')), scene(nowScene), text(now, '.node') + '・' + text(now, '.year-age')),
         [panel(flow ? '今の10年間のテーマ' : '今年のテーマ', text(flow, 'h3') || text(now, 'h3'), text(flow, '.flow-period') || text(now, '.tl-period')),
           facts([['今年の対象期間', text(now, '.tl-period')]])], 'flow', 'nenpyo-now', '今年と10年の流れを詳しく読む');
-      var adviceIndex = slide('zure', '日常で試せること', 'つまずきを、次の工夫に',
-        hero('気になるものを、ひとつから。', '', scene('dialogue')),
+      var adviceIndex = slide('zure', '行動の指針', '日常で意識したいこと',
+        hero('つまずきやすい場面と、対処の手がかり', '', scene('dialogue')),
         [adviceItems(section('zure'), section('jogen'))], 'advice', 'zure', 'つまずきの理由と工夫を詳しく読む');
       aliases.jogen = adviceIndex;
       var takeaways = el('ul', 'poster-takeaways');
@@ -177,11 +193,26 @@
       actions.appendChild(detailButton('鑑定情報・名前の画数', 'info'));
       var nextLink = el('a', 'poster-link', pair ? '保存・会員機能について' : '気になる人との相性を見る');
       nextLink.href = pair ? '#join' : '#aisho'; actions.appendChild(nextLink);
-      var end = slide('matome', 'レポートのまとめ', 'あなたらしい次の一歩',
+      var end = slide('matome', '鑑定のまとめ', '総合所見と日々の指針',
         hero(typeName, '', roleImage),
         [takeaways, panel('まず試してみること', tips[0] ? tips[0].textContent : text(summary, '.matome-end')), actions], 'summary', 'reading', '全文・この鑑定の読み方を見る');
       aliases.korekara = aliases.reading = aliases.info = aliases.name = end;
-      slides.forEach(function (s) { s.node.querySelector('.poster-page-badge').appendChild(el('small', '', '/ ' + String(slides.length).padStart(2, '0'))); });
+      var basis = {
+        overview: 'HIYOMI｜' + text(section('reading'), '.method-operator'),
+        relations: '参照：' + readingBasis([pair]),
+        'relations-zure': '参照：二人のすれ違いの読み解き',
+        seikaku: '参照：' + readingBasis([section('seikaku'), life]),
+        kachikan: '参照：' + readingBasis([work]) + '・持ち味',
+        kakawari: '参照：' + readingBasis([love, section('kakawari')]),
+        nenpyo: '参照：年ごとの暦・10年の流れ',
+        'nenpyo-flow': '参照：年ごとの暦・10年の流れ',
+        zure: '参照：各場面の読み解き',
+        matome: text(section('reading'), '.method-operator')
+      };
+      slides.forEach(function (s) {
+        s.node.querySelector('.poster-page-badge').appendChild(el('small', '', '/ ' + String(slides.length).padStart(2, '0')));
+        s.body.querySelector('.poster-basis').textContent = basis[s.node.id.replace('brief-', '')] || '四柱推命による読み解き';
+      });
       // 全文は元のノードを一度だけ保持する。年表の回答ボタン・根拠・鑑定情報を複製しない。
       while (report.firstChild) fullReport.appendChild(report.firstChild);
       report.appendChild(track); report.appendChild(fullReport);
